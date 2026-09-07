@@ -82,7 +82,7 @@ var (
 	// A suppressed bucket and an empty bucket must be indistinguishable, so an
 	// aggregate has nowhere to record that suppression happened.
 	suppressionMarker = regexp.MustCompile(`(?i)(suppress|redact|censor|masked|below_floor|withheld)`)
-	// SPEC section 14.7: a pseudonymous resident plus the service they
+	// SPEC section 13.3: a pseudonymous resident plus the service they
 	// authenticated to links a person to a domain by inference, which is the
 	// same defect as two pids on one stream.
 	// Domain terms are here because a domain list beside a pseudonym states that

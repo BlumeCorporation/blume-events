@@ -1,8 +1,8 @@
-# Internal working record. Decision reasoning, rejected alternatives and costs
-# are kept by the team and are not shipped with the schemas: five repositories
-# pin this one, and none of them need our deliberation. docs/SPEC.md carries
-# every decision that binds an implementer.
-docs/DECISIONS.md
+# Internal working material: the decision record, the planning annex, and
+# anything else forward-looking. This repository is public, so nothing here
+# ships. SPEC.md at the root is the contract; if something in docs/ starts to
+# bind an implementer, it belongs in SPEC.md instead.
+docs/
 
 # Agent and editor instruction files. Local tooling configuration, not repository
 # content. The durable engineering standards live in docs/REVIEW.md.

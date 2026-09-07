@@ -6,10 +6,10 @@ depend on this repository: `signal-broker`, `utility-telemetry`, `transit-core`,
 emitted events against the schemas here in their own CI, so a change that lands
 in this repository reaches all five.
 
-**`docs/SPEC.md` is normative. This README is not.** Where they disagree, the
-spec is right and this file is stale — say so rather than following it.
-`docs/REVIEW.md` records how changes here are reviewed and the standing rules
-that are easiest to erode by accident.
+**`SPEC.md` is normative. This README is not.** Where they disagree, the spec is
+right and this file is stale — say so rather than following it. `REVIEW.md`
+records how changes here are reviewed and the standing rules that are easiest to
+erode by accident.
 
 ## Layout
 
@@ -22,7 +22,6 @@ that are easiest to erode by accident.
 | `conformance/invalid/` | Events every SDK must reject, each annotated with its error class. |
 | `tools/beb-lint/` | The schema gate. Run it before pushing. |
 | `tools/schema-authoring/` | Bulk authoring aid for the corpus. Not a gate, not authoritative — see D-018. |
-| `docs/REVIEW.md` | How changes are reviewed, and the standing rules most easily eroded. |
 
 ## Adding an event
 
@@ -48,7 +47,7 @@ to parse and resolve; it does not apply newer structural rules to them.
 
 Removing a field, narrowing a type, promoting an optional field to required, or
 changing units is a major version, a new subject, and a dual-write migration. See
-SPEC §9.
+`SPEC.md` §9.
 
 ## Two conventions that look like mistakes
 

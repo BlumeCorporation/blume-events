@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Bulk authoring aid for the M1 schema corpus. See docs/DECISIONS.md D-018.
+"""Bulk authoring aid for the M1 schema corpus.
 
 Emits schemas/<domain>/<name>/<version>.json, both envelope examples, and
 catalog.yaml, from the event definitions below. It exists so that envelope

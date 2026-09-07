@@ -6,57 +6,6 @@ The common event fabric shared by all Blume municipal systems. This document is
 normative: a system is BEB-conformant if it satisfies every MUST in this
 specification and passes the conformance suite in `conformance/`.
 
-### Changes in v1.2
-
-- §14 added: `identity-gateway` becomes the tenant's OAuth 2.1 authorisation
-  server and OpenID Provider. The OIDC `sub` and the bus `pid` are separate
-  identifiers under separate keys, neither derivable from the other. `sub` is
-  derived from a shreddable per-subject secret so that erasure reaches it
-  (§14.9), the device grant is closed to resident subjects (§14.8), and OAuth
-  scopes are sealed rather than published on subject-linked events (§14.7).
-- `identity.authentication-evaluated` is removed. It had no consumer, and joined
-  on timestamp with an aggregate keyed by client it reconstructed the
-  `(subject, client)` pair §14.7 forbids. §14.7.
-- No event carries both a subject reference and a **domain** reference. This
-  extends the client and sector rule; `erasure-requested` and `consent-granted`
-  lose their domain `scope` arrays. §6, §14.7.
-- Access tokens are RFC 9068 JWTs, audience-restricted with RFC 8707 resource
-  indicators, capped at 5 minutes with a 90-day grant chain. Dynamic client
-  registration is prohibited. §14.2.
-- Aggregates name a disjoint bucket rather than a start and an end, so a
-  k-anonymity floor cannot be defeated by differencing. `aggregate` joins the
-  common types. §5, §7.
-- Common types are effectively immutable: they accept additive-optional changes
-  only, and a narrowing need creates a new type rather than a coordinated major
-  bump across every event that references the old one. §9.
-- `identity.pseudonym-issued` is replaced by `identity.pseudonym-issuance-recorded`,
-  an hourly `audit` aggregate. A per-issuance event left a timing channel even
-  without the pseudonym. §6.
-
-### Changes in v1.1
-
-Substantive:
-
-- `vision` carries no `subject_ref`, and uses a stream- and hour-scoped
-  `track_ref` instead. §6.
-- `traffic` and `telemetry` are anonymous domains. `transit-core` is the only
-  subject-linked producer outside `identity-gateway`. §6, §13.
-- Neither `audit` nor `analytical` may carry a pseudonym. A pseudonym is
-  personal data. §7.
-- `envelope`, `sealed` and `track_ref` join the common types. §5.
-- Canonical JSON is RFC 8785, and enums are open with an explicit marker. §9.
-
-Errata against v1.0:
-
-- §4's example omitted `provenance`, which is now REQUIRED on every event, and
-  located `observed_at` directly in `data` rather than in `provenance`.
-- §5's `subject_ref` example used a domain that can no longer carry a pseudonym
-  and a string that is not valid RFC 4648 base32.
-- §11's catalog example named schema `2.1.0.json` under a type ending `.v1`. The
-  schema major and the type major are the same number by construction; it should
-  have read `1.2.0.json`.
-- §13 described `signal-broker` as a subject-linked producer. It is not.
-
 ---
 
 ## 1. Scope
@@ -69,7 +18,7 @@ Five system families publish to and consume from the bus:
 | `telemetry` | `utility-telemetry` | Meter reads, substation load, pressure, outages |
 | `transit` | `transit-core` | Vehicle positions, stop events, load estimates |
 | `vision` | `mca-ingest` | Stream health, detections, classifications, retention |
-| `identity` | `identity-gateway` | Pseudonym lifecycle, authentication, consent, erasure, OAuth and OIDC (§14) |
+| `identity` | `identity-gateway` | Pseudonym lifecycle, authentication, consent, erasure, OAuth and OIDC (§13) |
 
 ### Goals
 
@@ -735,7 +684,8 @@ blume-events/
 │   ├── beb-lint/             # schema compatibility gate
 │   ├── beb-gen/              # codegen
 │   └── beb-replay/           # replay a window into a local consumer
-└── docs/
+├── SPEC.md                   # this document, normative
+└── REVIEW.md                 # how changes here are reviewed
 ```
 
 `catalog.yaml` is the human-readable index and the input to codegen. `beb-lint`
@@ -817,218 +767,41 @@ unrelated thing — it names an asset — and is never typed as a `SubjectRef`.
 
 ---
 
-## 13. Implementation order
-
-1. `blume-events` — common schemas, envelope, `beb-lint`, Go and Rust SDKs,
-   conformance suite. Nothing else starts until the envelope is frozen.
-2. `identity-gateway` — pseudonym derivation, epoch rotation, erasure. It is the
-   dependency for every subject-linked event elsewhere.
-3. `utility-telemetry` — highest event volume, no subject linkage. Proves the
-   transport under load without privacy surface.
-4. `transit-core` — the first and only subject-linked producer outside
-   `identity-gateway`. `signal-broker` — anonymous throughout.
-5. `mca-ingest` — last. Highest sensitivity, and it benefits from every lesson
-   the other four produce.
-
 ---
 
-## 14. Authorisation and identity federation
+## 13. Authorisation and identity events
 
-`identity-gateway` is the tenant's OAuth 2.1 authorisation server and OpenID
-Provider, in addition to its role as pseudonym authority under §6. This puts an
-HTTP API surface on the most security-critical component in the system.
+`identity-gateway` is also the tenant's OAuth 2.1 authorisation server and
+OpenID Provider. Its OAuth and OIDC endpoints are ordinary HTTPS and are not
+modelled as events — §2's exclusion of RPC from the bus is unchanged. Only the
+facts those endpoints produce reach the bus, and this section is the contract for
+those facts. The provider's own design is not part of this specification.
 
-§2's exclusion of RPC from the bus is unchanged. The gateway's OAuth and OIDC
-endpoints are ordinary HTTPS and are not modelled as events. Only the *facts*
-those endpoints produce reach the bus, per §14.7.
-
-### 14.1 Relying parties
-
-| Class | Examples | Client type |
-|---|---|---|
-| Resident-facing | Services portal, transit account, permit applications | Public, browser or native |
-| Staff-facing | Traffic operations, depot management, vision review | Confidential, federated per §14.6 |
-| Devices | Ticket machines, depot terminals, roadside tablets | Input-constrained, device grant |
-| Service-to-service | The five domain systems calling gateway APIs | Confidential, mTLS-bound |
-
-### 14.2 Standards
-
-Implement OAuth 2.1 and the current BCPs, not OAuth 2.0 as commonly deployed.
-
-**Required:**
-
-- **OAuth 2.1** — authorization code with PKCE mandatory for every client,
-  public and confidential.
-- **RFC 7636** PKCE, `S256` only. `plain` is rejected.
-- **RFC 9700** OAuth 2.0 Security Best Current Practice, treated as normative.
-- **OpenID Connect Core 1.0**, with **pairwise** subject identifiers (§14.3).
-- **OpenID Connect Discovery 1.0** — `/.well-known/openid-configuration`.
-- **RFC 9126** Pushed Authorization Requests — required for all confidential
-  clients.
-- **RFC 9449** DPoP — required for all public clients.
-- **RFC 8705** mTLS client authentication and certificate-bound tokens —
-  required for service-to-service, reusing the tenant CA from §10.
-- **RFC 8628** Device Authorization Grant — staff and service principals on
-  council hardware only; see §14.8.
-- **RFC 8707** Resource Indicators — `resource` is REQUIRED on every
-  authorization and token request; see below.
-- **RFC 9068** JWT profile for access tokens.
-- **RFC 7009** revocation. **RFC 7662** introspection, restricted to
-  confidential clients.
-- **OpenID Connect Back-Channel Logout 1.0**.
-- Refresh token rotation with reuse detection. A replayed refresh token revokes
-  the entire grant chain.
-
-**Prohibited.** The implicit grant and ROPC MUST return `unsupported_grant_type`.
-Also prohibited: bearer tokens without sender constraint, `none` client
-authentication for anything but a public client using both PKCE and DPoP,
-unsigned or `alg: none` ID tokens, wildcard redirect URIs, and **dynamic client
-registration (RFC 7591)**.
-
-Registration is administrative. §14.3 requires sector assignment to follow domain
-boundaries, and which domain a client belongs to is a judgement about that client
-made by someone else — not a claim a client can assert about itself at
-registration time. `oauth-client-registered` carries the registering principal
-for that reason.
-
-### Token format, audience and lifetime
-
-**Access tokens are JWTs** in the RFC 9068 profile, validated at the resource
-server against the JWKS. They are not opaque handles. Introspection exists for
-confidential clients that need immediate revocation certainty, and is not on the
-path of an ordinary API call.
-
-Local validation is only acceptable because the revocation window is bounded, so
-the two requirements travel together:
-
-| Token | Cap |
-|---|---|
-| Access token bearing a subject | 5 minutes |
-| Refresh token | Rotated on every use, with reuse detection |
-| Grant chain, absolute | 90 days |
-
-The five-minute cap is what makes local validation safe: a revoked or erased
-subject's token stops working within one cap, without every API call costing a
-round trip to the gateway. The 90-day chain cap bounds how long a public client
-holds a credential at all; it coincides with the §6 epoch, but only
-coincidentally — `sub` does not rotate with the epoch.
-
-**Tokens are audience-restricted.** Every authorization and token request carries
-a `resource` per RFC 8707, and the issued token's `aud` names it. A token minted
-for the transit account is rejected by the vision review console.
-
-This closes an inconsistency rather than adding a feature. §10 already promises
-subject-scoped authorisation on the bus — `signal-broker` can publish
-`beb.prod.mcr.traffic.>` and nothing else, so a compromised traffic controller
-cannot forge a vision detection. Without resource indicators the HTTP surface had
-no equivalent, and a token obtained for one domain's API was accepted by every
-other.
-
-**The discovery document is derived**, not separately specified: its
-`*_supported` arrays are exactly the required and prohibited lists above. Three
-values do not fall out of those lists and are fixed here —
-`subject_types_supported: ["pairwise"]`,
-`require_pushed_authorization_requests: true`, and a non-empty
-`dpop_signing_alg_values_supported`.
-
-### 14.3 The `sub` claim and the bus pid
+### 13.1 The `sub` claim and the bus pid
 
 OIDC requires `sub` to be stable for a given subject and client. §6 requires
-domain pseudonyms to rotate every 90 days. One identifier cannot do both:
-collapsing them either breaks every relying party's account mapping quarterly or
-abandons epoch rotation.
+domain pseudonyms to rotate every 90 days. One identifier cannot do both, so
+there are two, under separate derived keys, neither computable from the other
+without `K_tenant_root`.
 
-**Two identifiers, two keys, neither derivable from the other.**
+A relying party holding `sub` cannot compute the bus `pid` for the same person,
+and a bus consumer holding `pid` cannot compute `sub`. Both directions require
+the resolution endpoint in §6 and its audit trail.
 
-```
-sub  = base32(HMAC-SHA256(K_oidc_sector, S_subject)[0..15])
-       K_oidc_sector = HKDF(K_tenant_root, info = "oidc" ‖ sector_id)
-       S_subject     = 256 random bits, generated at first registration,
-                       held in the gateway wrapped by K_tenant_root
-       No epoch. Stable for the life of the client relationship.
+`sub` is long-lived and therefore a **stronger** identifier than any pid. It MUST
+remain confined to the OIDC surface: no token, introspection response or userinfo
+response may carry a bus pid, and no `sub` may reach the bus. No schema
+constraint can see inside a token, so this is enforced by a test in the gateway's
+own suite.
 
-pid  = base32(HMAC-SHA256(K_domain_epoch, root_subject_id)[0..10])
-       K_domain_epoch = HKDF(K_tenant_root, info = domain ‖ epoch)
-       Rotates per §6.
-```
-
-`S_subject` rather than `root_subject_id` is what makes `sub` erasable; see
-§14.9. It is a random value, so unlike the root identifier it carries no
-information about the person.
-
-Consequences, all normative:
-
-- A relying party holding `sub` cannot compute the bus `pid` for the same
-  person. A bus consumer holding `pid` cannot compute `sub`. Both directions
-  require `K_tenant_root`, which means both require `/v1/correlate` and its
-  audit trail.
-- `sector_identifier_uri` groups clients. Clients in one sector share a `sub`;
-  clients in different sectors do not. **Sector assignment MUST follow domain
-  boundaries** — a transit relying party and a vision relying party are never in
-  one sector.
-- **Tokens MUST NOT carry a bus pid.** Not in the ID token, not in the access
-  token, not in an introspection response, not in a userinfo response. No lint
-  rule can see inside a token, so this is a MUST with a test in the gateway's own
-  suite rather than a schema constraint.
-- `sub` is long-lived and therefore a **stronger** identifier than any pid. It
-  MUST remain confined to the OIDC surface and MUST NOT reach the bus.
-
-### 14.4 Claims and scopes
-
-Standard OIDC scopes (`openid`, `profile`, `email`, `offline_access`) plus a
-Blume set. The subject-linkage test from §6 applies unchanged: **claims carry
-entitlement classes, not identity, wherever a class suffices.**
-
-| Scope | Claims | Constraint |
-|---|---|---|
-| `blume.entitlements` | `entitlement_classes: [...]` | Classes only. Never the basis for an entitlement, never a document reference, never a condition. |
-| `blume.assistance` | `assistance_profile_ref` | An opaque handle resolvable only by transit assistance services. Never the profile itself. |
-| `blume.council` | `council_roles: [...]` | Staff only, federated per §14.6. |
-
-The pressure on `entitlement_classes` will be to include *why* someone
-qualifies. A disability, a benefit status and an age band are all special
-category or adjacent, and none of them are needed to open a gate or extend a
-green phase. The claim says `concessionary-travel`, and that is all it says.
-
-### 14.5 Consent
-
-An OIDC scope grant is the same fact as `identity.consent-granted.v1`. It MUST
-NOT be modelled twice: the consent screen writes through to the same consent
-record and emits the same event.
-
-Consent MUST be per-sector, and revocable per-sector from a resident-facing
-management surface. Revocation triggers back-channel logout to every client in
-that sector and revokes the grant chain.
-
-### 14.6 Staff federation
-
-Councils operate their own staff identity, typically Microsoft Entra ID. The
-gateway MUST support upstream OIDC federation for staff principals while
-residents authenticate locally.
-
-- Staff subjects are federated, and the gateway does **not** mint pseudonyms for
-  them. A staff member is an accountable named principal — which is the entire
-  point of the two-principal requirement on `/v1/correlate`.
-- Resident subjects are local and pseudonymous.
-- The two populations MUST NOT share a client, a sector, or a token audience. A
-  token that could be either is a token that defeats the audit trail.
-- Federated staff claims map to `council_roles`. The mapping is per-tenant
-  configuration, not code.
-
-### 14.7 Events
-
-The rule from §6 applies here in a second form: **no event may carry both a
-subject reference and a client or sector reference.** A pseudonymous resident
-plus the service they authenticated to is a link between a person and a domain,
-inferred rather than computed, and it is the same defect as putting two pids on
-one stream.
+### 13.2 Events
 
 **`audit`, no subject reference:**
 
 | Event | Carries |
 |---|---|
-| `oauth-client-registered.v1` | Client id, sector, grant types, principal |
-| `oauth-client-updated.v1` | Client id, changed fields, principal |
+| `oauth-client-registered.v1` | Client id, sector, grant types, auth method, redirect URIs, principal |
+| `oauth-client-updated.v1` | Client id, changed field names, principal |
 | `oauth-client-revoked.v1` | Client id, reason, principal |
 | `oauth-signing-key-rotated.v1` | `kid`, algorithm, effective time |
 | `authentication-aggregated.v1` | Hourly, by client and outcome, k-floored and bucketed per §5 |
@@ -1037,8 +810,8 @@ one stream.
 
 | Event | Carries |
 |---|---|
-| `oauth-grant-authorised.v1` | `subject_ref`, **sealed** scopes, `service_class`, expiry |
-| `oauth-grant-revoked.v1` | `subject_ref`, **sealed** scopes, reason, whether resident-initiated |
+| `oauth-grant-authorised.v1` | `subject_ref`, sealed scopes, `service_class`, expiry |
+| `oauth-grant-revoked.v1` | `subject_ref`, sealed scopes, reason, whether resident-initiated |
 | `oauth-refresh-reuse-detected.v1` | `subject_ref`, inferred with confidence, chain revocation outcome |
 
 **`operational`:**
@@ -1047,137 +820,59 @@ one stream.
 |---|---|
 | `oauth-session-terminated.v1` | `subject_ref`, reason, so relying parties can react to back-channel logout |
 
-**Grant lifecycle events join on `grant_id`, never on `subject_ref`.** The
-subject reference on these events is an identity pseudonym, and pseudonyms rotate
-every 90 days per §6 while a grant chain may span a rotation. A grant authorised
-in epoch 3 and revoked in epoch 4 therefore carries two different `subject_ref`
-values for one person. That is correct and intended — §6 forbids bridging epochs
-locally — but a consumer matching lifecycle on `subject_ref` will see gaps that
-look like lost events. `grant_id` is stable for the life of the chain and is the
-join.
+There is deliberately no per-authentication event. A subject-keyed authentication
+event and an aggregate keyed by client are individually compliant and jointly not
+— joined on timestamp they reconstruct the `(subject, client)` pair §13.3
+forbids. The bus carries the anomalies, `oauth-refresh-reuse-detected` and
+`oauth-session-terminated`; the aggregate carries the base rate.
 
-There is no per-authentication event. Nothing consumed one: domain systems learn
-what they need from `oauth-grant-authorised`, and the gateway's own monitoring
-reads its internal log faster than a bus round trip. More seriously, a
-per-subject authentication event and an aggregate keyed by client are
-individually compliant and jointly not — joined on timestamp they reconstruct the
-`(subject, client)` pair this section forbids. The bus carries the anomalies;
-the aggregate carries the base rate.
+`authentication-aggregated` is not prefixed `oauth-` because it counts federated
+staff authentication too, which is OIDC upstream rather than OAuth issuance.
 
-**`service_class`** is `self-service` | `assisted` | `machine`. It records
-whether a human intermediary was involved, which is the fraud-relevant and
-support-relevant part, at a granularity that cannot reconstruct the client: every
-sector contains `self-service` clients, so the mapping is many-to-one in the
-direction that matters. `machine` never appears on a subject-linked event.
+### 13.3 The linkage rule
+
+**No event carries both a subject reference and a client, sector or domain
+reference.** Sectors follow domain boundaries, so a pseudonymous resident beside
+the service they authenticated to links a person to a domain by inference — the
+same defect as two pseudonyms on one stream, reached by a different route. A
+domain list beside a pseudonym states that this person exists in that domain and
+is the same violation.
+
+A field that `$ref`s `sealed.json` is exempt: ciphertext is not a reference.
+
+`beb-lint` enforces this, and additionally allows only one subject reference per
+event. The sole exception is `identity.correlation-detail-recorded.v1`, whose
+purpose is to be that join, under two principals, a purpose code and a legal
+basis.
+
+### 13.4 `service_class`
+
+`self-service` | `assisted` | `machine`. It records whether a human intermediary
+was involved, which is the fraud-relevant and support-relevant part, at a
+granularity that cannot reconstruct the client: every sector contains
+`self-service` clients, so the mapping is many-to-one in the direction that
+matters. `machine` never appears on a subject-linked event.
 
 A class MUST NOT be used on a subject-linked event until at least two sectors
 have clients in it. A class present in one sector is that sector, and sectors
-follow domain boundaries. This is checked at client registration in the gateway's
-own suite; `beb-lint` cannot see client registrations.
+follow domain boundaries. This is checked at client registration; `beb-lint`
+cannot see client registrations.
 
 **Scopes are sealed**, not published. A Blume scope name can be domain-shaped:
-`blume.assistance` beside a pseudonym places that subject in the small,
-special-category-adjacent population of assistance users. The grant record proves
-in clear that a grant happened; what was granted is sealed under the subject's
-data key, so erasure reaches it and a passive stream holder cannot read it.
+`blume.assistance` beside a pseudonym places that subject in a small,
+special-category-adjacent population. The grant record proves in clear that a
+grant happened; what was granted is sealed under the subject's data key, so
+erasure reaches it and a passive stream holder cannot read it.
 
-### 14.8 Device grant and pseudonymous subjects
+### 13.5 Grant lifecycle joins on `grant_id`
 
-**The device grant MUST NOT be used for resident subjects.** It is available to
-staff and service principals on council-controlled hardware — depot terminals,
-roadside tablets — and to nothing else.
-
-The guarantee at risk is not the key separation in §14.3, which holds regardless.
-It is that the grant belongs to the person who approved it. RFC 8628 cannot
-deliver that here: an attacker starts a device flow against their own session,
-obtains a `user_code`, and places it on a council-branded sticker on a ticket
-machine. A resident reads it and approves it on their own authenticated phone,
-and the gateway issues a correct, well-formed, correctly-pseudonymised token to
-the attacker. Every cryptographic property holds and the outcome is still wrong.
-Short code lifetimes, rate limiting and typed rather than scanned entry do
-nothing against a sticker refreshed on a schedule. Public space, council-branded
-hardware, maximal trust, minimal ability to verify.
-
-Applying §6's test instead: a ticket machine selling a ticket needs a fare and a
-valid entitlement, which are `transit.entitlement-checked` and
-`transit.fare-validated` — subject-linked on the transit side, where the
-pseudonym belongs and never leaves in a token. No grant is involved. The only
-case that needs an account is managing it at the machine, and RFC 8628's premise
-is a device where the user has no better option, while this user is holding the
-phone the flow requires.
-
-The cost, so that it is chosen: **no account self-service at a ticket machine.**
-Should that become necessary, the mechanism is proximity binding — a code
-released only once the resident's device is demonstrably at the machine — which
-is a Blume extension to RFC 8628 and needs its own design and review. It is not
-"enable the device grant".
-
-### 14.9 Erasure of `sub`
-
-§6 erases by destroying keys. `sub` is a derivation rather than a ciphertext, so
-destroying a data key does not invalidate a `sub` a relying party already holds.
-This section says what does.
-
-**`sub` is erased by destroying `S_subject`.** Because `S_subject` is the HMAC
-input, its destruction makes the derivation unreproducible by anyone, the gateway
-included. The gateway destroys it alongside the per-subject data keys and counts
-it in `erasure-completed.keys_destroyed`. One erasure primitive, not two.
-
-This also closes a defect that a revocation list would not. `sub` derived from
-`root_subject_id` is deterministic, so a person who re-registers receives **the
-same `sub` back**, and a relying party that kept its row sees an erased account
-reanimate with its history attached. With `S_subject`, re-registration produces a
-fresh secret and therefore a different `sub` in every sector. The old row is
-orphaned permanently.
-
-**No revocation list is maintained.** Once `S_subject` is destroyed and the
-subject record is gone, a presented `sub` matches nothing: introspection returns
-inactive and userinfo does not resolve. It fails closed with nothing consulted.
-This is deliberate — a set of erased `sub` values is a permanent list of every
-person who exercised their right to erasure, keyed by an identifier derived from
-them, which is the one dataset that most should not exist. Proof that an erasure
-occurred is already held by `erasure-attested` in the `audit` class, keyed by
-`erasure_id` and carrying no subject reference.
-
-**The window is bounded, not instantaneous.** An already-issued access token
-validates by signature, not by re-deriving `sub`. Therefore:
-
-- A subject-bearing access token MUST NOT have a lifetime exceeding **5 minutes**,
-  and the grant chain is capped at 90 days; see the lifetime table in §14.2.
-- Back-channel logout fires to every client in every sector the subject held a
-  grant in.
-- `oauth-grant-revoked` is emitted with `reason: erasure`.
-
-**What the gateway cannot do**, stated rather than implied away: it cannot delete
-a relying party's database row. It can make the row worthless and make the
-obligation contractual and testable. Relying parties MUST delete on a
-back-channel logout carrying an erasure reason, and onboarding includes a test
-that they do.
-
-Two costs. The `S_subject` store becomes as critical as the root subject store —
-losing it breaks every relying party relationship irrecoverably, so it replicates
-with the vault under `K_tenant_root` and belongs in the DR plan. And `sub` can no
-longer be recomputed from the root identifier alone.
-
-Staff are unaffected: §14.6 federates them and does not pseudonymise them, so no
-`S_subject` exists and their erasure is the upstream provider's.
-
-### 14.10 Testing
-
-Beyond the bar in §12:
-
-- **Certification** — the gateway MUST pass the OpenID Foundation Basic OP and
-  Config OP profiles. The conformance suite runs in CI against a local instance,
-  not as a manual gate.
-- **`sub`/`pid` isolation** — a test asserting that no token emitted at any
-  endpoint, in any grant flow, contains a string matching the
-  `sub:<domain>:e<n>:` grammar anywhere in its claims.
-- **Sector isolation** — a test asserting that two clients in different sectors
-  receive different `sub` values for one synthetic subject, and that no function
-  of the two recovers the root or either pid.
-- **Refresh reuse** — a replayed refresh token revokes the whole chain and emits
-  the event. Table-driven across every grant type.
-- **Negative** — every prohibited item in §14.2 has a test asserting rejection.
+The subject reference on grant events is an identity pseudonym, and pseudonyms
+rotate every 90 days per §6 while a grant chain may span a rotation. A grant
+authorised in epoch 3 and revoked in epoch 4 therefore carries two different
+`subject_ref` values for one person. That is correct — §6 forbids bridging epochs
+locally — but a consumer matching lifecycle on `subject_ref` will see gaps that
+look like lost events. `grant_id` is stable for the life of the chain and is the
+join.
 
 ---
 

@@ -1,6 +1,6 @@
 # Review standards
 
-How work on this repository is checked before it lands. `docs/SPEC.md` is
+How work on this repository is checked before it lands. `SPEC.md` is
 normative about *what* the system is; this file is about *how* changes to it are
 reviewed.
 
@@ -17,7 +17,7 @@ project. The examples are the actual cases, not illustrations.
 Every decision not already settled by the spec goes in the team's decision
 record, appended, never rewritten. That record is kept outside this repository —
 five repositories pin this one and none of them need our deliberation — and
-anything that binds an implementer belongs in `docs/SPEC.md` instead:
+anything that binds an implementer belongs in `SPEC.md` instead:
 
 ```
 ## D-014 — Aggregates name a bucket, not an endpoint pair
@@ -126,7 +126,7 @@ Almost always yes, because a summary loses the cases you found by accident.
 ## 3. Standing rules
 
 Settled, and not to be relitigated without new information. They are all in
-`docs/SPEC.md`; they are repeated here because they are the ones most easily
+`SPEC.md`; they are repeated here because they are the ones most easily
 eroded by a convenient local decision.
 
 - **Generated code is generated.** `gen/` is never hand-edited. CI regenerates
