@@ -23,6 +23,7 @@ without justifying, including the costs each one accepted.
 | `tools/beb-lint/` | The schema gate. Run it before pushing. |
 | `tools/schema-authoring/` | Bulk authoring aid for the corpus. Not a gate, not authoritative — see D-018. |
 | `docs/DECISIONS.md` | Why the spec says what it says, and what each choice cost. Appended, never rewritten. |
+| `docs/REVIEW.md` | How changes are reviewed, and the standing rules most easily eroded. |
 
 ## Adding an event
 

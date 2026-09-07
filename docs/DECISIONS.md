@@ -341,7 +341,8 @@ so that envelope, provenance and enum handling stayed consistent across them.
 Decision: committed as `tools/schema-authoring/author.py`. The JSON is the source
 of truth; the script is not run in CI and does not gate anything.
 
-Reasoning: CLAUDE.md §3F — a generator that produced the corpus is a deliverable.
+Reasoning: `docs/REVIEW.md` pass F — a generator that produced the corpus is a
+deliverable.
 Regenerating from a summary would lose the consistency it enforced.
 
 Cost: two representations of the same corpus, and nothing detects divergence. A
@@ -479,3 +480,126 @@ losing it breaks every relying party relationship irrecoverably. `sub` can no
 longer be recomputed from the root identifier alone. And the gateway cannot
 delete a relying party's row: it can only make it worthless and make deletion a
 contractual, tested obligation.
+
+## D-024 — Access tokens are RFC 9068 JWTs validated at the resource server
+Date: 2026-09-07 · Milestone: M1 · Status: accepted
+
+Context: §14.2 required introspection but never said whether access tokens are
+JWTs validated locally or opaque handles requiring a gateway call. The choice
+decides whether every API call costs a round trip.
+
+Decision: JWTs in the RFC 9068 profile, validated at the resource server against
+the JWKS. Introspection remains available to confidential clients that need
+immediate revocation certainty and is not on the path of an ordinary call.
+
+Reasoning: D-023 already capped subject-bearing access tokens at five minutes,
+which is an implicit vote for local validation — under mandatory introspection
+the cap would be redundant, because revocation would take effect on the next
+call. The cap and local validation are the same decision and the spec should say
+so. Opaque tokens were rejected on operational grounds: every domain API call
+becoming a gateway dependency makes the gateway a hard availability dependency
+for the whole system, which §2's leaf-node design exists to avoid on the bus.
+
+Cost: a revoked or erased subject's access token keeps working for up to five
+minutes. Revocation is not immediate, and any requirement for immediacy has to be
+met by a resource server choosing to introspect, at its own latency cost.
+
+## D-025 — Tokens are audience-restricted with RFC 8707
+Date: 2026-09-07 · Milestone: M1 · Status: accepted
+
+Context: §14 as folded in had no audience restriction. A token obtained for one
+domain's API was acceptable at every other.
+
+Decision: `resource` is REQUIRED on every authorization and token request, and
+the issued token's `aud` names it.
+
+Reasoning: this closes an inconsistency rather than adding a capability. §10
+already promises subject-scoped authorisation on the bus, in the specific form
+that a compromised traffic controller cannot forge a vision detection. The HTTP
+surface carried no equivalent, so a compromised transit client held a token every
+domain API would accept. A security property claimed in one section and absent in
+another is worse than not claiming it.
+
+Cost: every client must know which resource it is calling and request a token per
+resource, so a client spanning two APIs holds two tokens and refreshes both.
+
+## D-026 — No dynamic client registration
+Date: 2026-09-07 · Milestone: M1 · Status: accepted
+
+Context: RFC 7591 was neither required nor prohibited, and
+`oauth-client-registered` carries a registering `principal`, implying
+administrative registration without stating it.
+
+Decision: prohibited. Registration is administrative.
+
+Reasoning: §14.3 requires sector assignment to follow domain boundaries, and
+which domain a client belongs to is a judgement about that client made by someone
+else. A self-registering client asserting its own sector chooses which residents
+it shares a `sub` with, which is the one thing sector assignment exists to
+control. Silence read as "maybe", and someone would have enabled it.
+
+Cost: onboarding a relying party is a human step with a lead time. There is no
+self-service path for a council team standing up a new service.
+
+## D-027 — Grant chains are capped at 90 days
+Date: 2026-09-07 · Milestone: M1 · Status: accepted
+
+Context: D-023 capped access tokens at five minutes and left refresh chains
+unbounded.
+
+Decision: refresh tokens rotate on every use with reuse detection, and the grant
+chain has an absolute 90-day lifetime.
+
+Reasoning: the erasure story held without this — a refresh after erasure fails
+closed — but an unbounded chain is a long-lived credential sitting in a public
+client on a resident's device, which is the thing refresh rotation is meant to
+bound rather than extend indefinitely. 90 days coincides with the §6 epoch; the
+alignment is mnemonic, not cryptographic, since `sub` does not rotate with the
+epoch, and it should not be relied on as though it were.
+
+Cost: a resident using a service less than once every 90 days re-authenticates
+every time. For infrequent council services — a permit renewal, an annual pass —
+that is most visits.
+
+## D-028 — Grant lifecycle joins on `grant_id`, not `subject_ref`
+Date: 2026-09-07 · Milestone: M1 · Status: accepted
+
+Context: found while reviewing §14 against §6 rather than by a rule.
+`oauth-grant-authorised` carries an identity pseudonym, pseudonyms rotate every
+90 days, and a grant chain may span a rotation.
+
+Decision: stated in §14.7 that grant lifecycle events join on `grant_id` and
+never on `subject_ref` across an epoch boundary.
+
+Reasoning: a grant authorised in epoch 3 and revoked in epoch 4 carries two
+different `subject_ref` values for one person. That is correct — §6 forbids
+bridging epochs locally, and it is the behaviour that makes epochs worth having —
+but it is invisible until it produces gaps, and the first consumer to match
+lifecycle on `subject_ref` will read those gaps as lost events rather than as the
+design working. No lint rule can see this; it costs a sentence to prevent.
+
+Cost: none beyond the documentation. Recorded because the absence of a cost here
+is itself unusual, and because the finding came from a manual cross-section read
+that no rule would have produced.
+
+## D-029 — `CLAUDE.md` is not committed; review standards live in `docs/REVIEW.md`
+Date: 2026-09-07 · Milestone: M1 · Status: accepted
+
+Context: `CLAUDE.md` was committed in cfbb53c and D-018 cited it, which would
+have left a committed decision record pointing at a file the repository does not
+carry.
+
+Decision: `CLAUDE.md` is gitignored and untracked. Its durable content — the
+decision-record format, review passes A–F, and the standing rules — is extracted
+into `docs/REVIEW.md` as ordinary engineering standards. D-018's reference is
+repointed.
+
+Reasoning: the review passes are repository governance and are worth having
+regardless of who or what runs them; several encode defects this project has
+already shipped and caught. Local tooling configuration is not repository
+content. Untracking without extracting would have discarded the governance and
+broken a reference in the same move.
+
+Cost: two copies of the same material, one tracked and one not, with nothing
+detecting divergence — the same failure mode recorded in D-018. `docs/REVIEW.md`
+is the one that governs the repository.

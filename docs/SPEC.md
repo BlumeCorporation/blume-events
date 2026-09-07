@@ -20,6 +20,9 @@ specification and passes the conformance suite in `conformance/`.
 - No event carries both a subject reference and a **domain** reference. This
   extends the client and sector rule; `erasure-requested` and `consent-granted`
   lose their domain `scope` arrays. §6, §14.7.
+- Access tokens are RFC 9068 JWTs, audience-restricted with RFC 8707 resource
+  indicators, capped at 5 minutes with a 90-day grant chain. Dynamic client
+  registration is prohibited. §14.2.
 - Aggregates name a disjoint bucket rather than a start and an end, so a
   k-anonymity floor cannot be defeated by differencing. `aggregate` joins the
   common types. §5, §7.
@@ -865,7 +868,11 @@ Implement OAuth 2.1 and the current BCPs, not OAuth 2.0 as commonly deployed.
 - **RFC 9449** DPoP — required for all public clients.
 - **RFC 8705** mTLS client authentication and certificate-bound tokens —
   required for service-to-service, reusing the tenant CA from §10.
-- **RFC 8628** Device Authorization Grant — ticket machines and depot terminals.
+- **RFC 8628** Device Authorization Grant — staff and service principals on
+  council hardware only; see §14.8.
+- **RFC 8707** Resource Indicators — `resource` is REQUIRED on every
+  authorization and token request; see below.
+- **RFC 9068** JWT profile for access tokens.
 - **RFC 7009** revocation. **RFC 7662** introspection, restricted to
   confidential clients.
 - **OpenID Connect Back-Channel Logout 1.0**.
@@ -875,7 +882,54 @@ Implement OAuth 2.1 and the current BCPs, not OAuth 2.0 as commonly deployed.
 **Prohibited.** The implicit grant and ROPC MUST return `unsupported_grant_type`.
 Also prohibited: bearer tokens without sender constraint, `none` client
 authentication for anything but a public client using both PKCE and DPoP,
-unsigned or `alg: none` ID tokens, and wildcard redirect URIs.
+unsigned or `alg: none` ID tokens, wildcard redirect URIs, and **dynamic client
+registration (RFC 7591)**.
+
+Registration is administrative. §14.3 requires sector assignment to follow domain
+boundaries, and which domain a client belongs to is a judgement about that client
+made by someone else — not a claim a client can assert about itself at
+registration time. `oauth-client-registered` carries the registering principal
+for that reason.
+
+### Token format, audience and lifetime
+
+**Access tokens are JWTs** in the RFC 9068 profile, validated at the resource
+server against the JWKS. They are not opaque handles. Introspection exists for
+confidential clients that need immediate revocation certainty, and is not on the
+path of an ordinary API call.
+
+Local validation is only acceptable because the revocation window is bounded, so
+the two requirements travel together:
+
+| Token | Cap |
+|---|---|
+| Access token bearing a subject | 5 minutes |
+| Refresh token | Rotated on every use, with reuse detection |
+| Grant chain, absolute | 90 days |
+
+The five-minute cap is what makes local validation safe: a revoked or erased
+subject's token stops working within one cap, without every API call costing a
+round trip to the gateway. The 90-day chain cap bounds how long a public client
+holds a credential at all; it coincides with the §6 epoch, but only
+coincidentally — `sub` does not rotate with the epoch.
+
+**Tokens are audience-restricted.** Every authorization and token request carries
+a `resource` per RFC 8707, and the issued token's `aud` names it. A token minted
+for the transit account is rejected by the vision review console.
+
+This closes an inconsistency rather than adding a feature. §10 already promises
+subject-scoped authorisation on the bus — `signal-broker` can publish
+`beb.prod.mcr.traffic.>` and nothing else, so a compromised traffic controller
+cannot forge a vision detection. Without resource indicators the HTTP surface had
+no equivalent, and a token obtained for one domain's API was accepted by every
+other.
+
+**The discovery document is derived**, not separately specified: its
+`*_supported` arrays are exactly the required and prohibited lists above. Three
+values do not fall out of those lists and are fixed here —
+`subject_types_supported: ["pairwise"]`,
+`require_pushed_authorization_requests: true`, and a non-empty
+`dpop_signing_alg_values_supported`.
 
 ### 14.3 The `sub` claim and the bus pid
 
@@ -993,6 +1047,15 @@ one stream.
 |---|---|
 | `oauth-session-terminated.v1` | `subject_ref`, reason, so relying parties can react to back-channel logout |
 
+**Grant lifecycle events join on `grant_id`, never on `subject_ref`.** The
+subject reference on these events is an identity pseudonym, and pseudonyms rotate
+every 90 days per §6 while a grant chain may span a rotation. A grant authorised
+in epoch 3 and revoked in epoch 4 therefore carries two different `subject_ref`
+values for one person. That is correct and intended — §6 forbids bridging epochs
+locally — but a consumer matching lifecycle on `subject_ref` will see gaps that
+look like lost events. `grant_id` is stable for the life of the chain and is the
+join.
+
 There is no per-authentication event. Nothing consumed one: domain systems learn
 what they need from `oauth-grant-authorised`, and the gateway's own monitoring
 reads its internal log faster than a bus round trip. More seriously, a
@@ -1079,7 +1142,8 @@ occurred is already held by `erasure-attested` in the `audit` class, keyed by
 **The window is bounded, not instantaneous.** An already-issued access token
 validates by signature, not by re-deriving `sub`. Therefore:
 
-- A subject-bearing access token MUST NOT have a lifetime exceeding **5 minutes**.
+- A subject-bearing access token MUST NOT have a lifetime exceeding **5 minutes**,
+  and the grant chain is capped at 90 days; see the lifetime table in §14.2.
 - Back-channel logout fires to every client in every sector the subject held a
   grant in.
 - `oauth-grant-revoked` is emitted with `reason: erasure`.

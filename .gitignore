@@ -1,0 +1,44 @@
+# Agent and editor instruction files. Local tooling configuration, not repository
+# content. The durable engineering standards live in docs/REVIEW.md.
+CLAUDE.md
+AGENTS.md
+.claude/
+.cursor/
+.cursorrules
+.aider*
+.continue/
+.windsurf/
+.github/copilot-instructions.md
+
+# Editors and operating systems
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Go
+*.exe
+*.test
+*.out
+/beb-lint
+/beb-gen
+/beb-replay
+coverage.txt
+coverage.html
+
+# Rust
+target/
+**/*.rs.bk
+
+# Local scratch. Anything worth keeping belongs in tools/ or conformance/.
+scratch/
+tmp/
+*.local.*
+
+# NOT ignored, deliberately:
+#   gen/            generated, committed, and checked for drift in CI
+#   Cargo.lock      the workspace ships binaries
+#   go.sum          dependency pinning is part of the contract
