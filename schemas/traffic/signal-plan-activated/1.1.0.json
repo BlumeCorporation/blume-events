@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://schemas.blume.systems/traffic/signal-plan-activated/1.1.0.json",
   "title": "SignalPlanActivated",
-  "description": "A controller began running a different timing plan. Covers scheduled changes, operator overrides, adaptive selection, and falls back. Version 1.1.0 adds one value to `reason`, which is the additive enum change SPEC section 9 permits.",
+  "description": "A controller began running a different timing plan. Covers scheduled changes, operator overrides, adaptive selection, and falls back.",
   "type": "object",
   "properties": {
     "asset_ref": {
@@ -34,11 +34,10 @@
         "operator",
         "adaptive",
         "fallback",
-        "recovery",
-        "adaptive-fallback"
+        "recovery"
       ],
       "x-beb-enum": "open",
-      "description": "Why the plan changed. Consumers MUST ignore unknown values. 1.1.0 adds \"adaptive-fallback\", the case where adaptive selection itself failed and the controller fell back; 1.0.0 reported it as \"fallback\" and lost the distinction."
+      "description": "Why the plan changed. Consumers MUST ignore unknown values."
     },
     "effective_at": {
       "type": "string",

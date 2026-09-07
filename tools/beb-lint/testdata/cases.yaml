@@ -407,3 +407,40 @@
       pointer: /properties/sector
       value: '{"type": "string", "description": "Sector the consent applies to."}'
   expect: may not appear on one event
+
+- name: domain-list-beside-a-pseudonym
+  rule: R24
+  why: A domain list beside a subject reference states that this person exists in
+    that domain. Two shipped schemas carried exactly this — erasure-requested and
+    consent-granted each had a `scope` array of domains — which is why the rule
+    now covers domain terms and not only client and sector ones.
+  mutations:
+    - file: schemas/identity/erasure-requested/1.0.0.json
+      op: json_set
+      pointer: /properties/scope
+      value: '{"type": "array", "items": {"type": "string"}, "description": "Domains covered."}'
+  expect: may not appear on one event
+
+- name: sealed-field-is-not-a-linkage-reference
+  rule: R24
+  why: The inverse. oauth-grant-authorised carries sealed `scopes` beside a
+    pseudonym and must NOT fire, because ciphertext is not a reference. Asserted
+    by the clean-tree test; this case pins that unsealing it does fire.
+  mutations:
+    - file: schemas/identity/oauth-grant-authorised/1.0.0.json
+      op: json_set
+      pointer: /properties/scopes
+      value: '{"type": "array", "items": {"type": "string"}, "description": "Scopes granted."}'
+  expect: may not appear on one event
+
+- name: two-pseudonyms-on-one-event
+  rule: R25
+  why: Two pseudonyms on one event is the cross-domain join the construction
+    prevents. Only the audited correlation record may do it, and only because two
+    principals, a purpose code and a legal basis stand behind it.
+  mutations:
+    - file: schemas/identity/erasure-completed/1.0.0.json
+      op: json_set
+      pointer: /properties/subject_ref_prior
+      value: '{"$ref": "https://schemas.blume.systems/common/subject_ref.json"}'
+  expect: only the audited correlation record may carry more than one

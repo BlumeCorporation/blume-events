@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.blume.systems/identity/authentication-aggregated/1.0.0.json",
+  "title": "AuthenticationAggregated",
+  "description": "Hourly count of authentication outcomes by client. This absorbs what was a per-authentication event. Nothing consumed the per-event form: domain systems learn what they need from oauth-grant-authorised, and the gateway's own security monitoring reads its internal log faster than a bus round trip. Worse, a per-subject authentication event and an aggregate keyed by client are individually compliant and jointly not - joined on timestamp they reconstruct the (subject, client) pair 14.7 forbids. The bus carries authentication anomalies, oauth-refresh-reuse-detected and oauth-session-terminated; the aggregate carries the base rate. Not prefixed `oauth-`: it covers federated staff authentication too, which is OIDC upstream rather than OAuth issuance.",
+  "type": "object",
+  "properties": {
+    "client_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9._-]{1,63}$",
+      "description": "Client the attempts were made against."
+    },
+    "outcome": {
+      "type": "string",
+      "enum": [
+        "success",
+        "failure-credentials",
+        "failure-locked",
+        "failure-mfa",
+        "failure-unknown-principal",
+        "failure-expired",
+        "failure-federation"
+      ],
+      "x-beb-enum": "open",
+      "description": "Outcome the bucket counts. Consumers MUST ignore unknown values."
+    },
+    "count": {
+      "type": "integer",
+      "minimum": 5,
+      "description": "Attempts in the window. Floored at 5; a smaller bucket is suppressed entirely, because a client with a single operator makes a count of one a record about that person."
+    },
+    "aggregate": {
+      "$ref": "https://schemas.blume.systems/common/aggregate.json",
+      "description": "Bucket, identity and revision of this figure."
+    },
+    "provenance": {
+      "$ref": "https://schemas.blume.systems/common/provenance.json",
+      "description": "How the fact was produced. Required on every event."
+    }
+  },
+  "required": [
+    "client_id",
+    "outcome",
+    "count",
+    "aggregate",
+    "provenance"
+  ],
+  "x-beb-aggregate": {
+    "window": "PT1H",
+    "count_field": "count",
+    "k_floor": 5
+  }
+}

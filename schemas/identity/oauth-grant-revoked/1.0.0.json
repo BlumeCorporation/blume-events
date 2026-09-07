@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.blume.systems/identity/oauth-grant-revoked/1.0.0.json",
+  "title": "OauthGrantRevoked",
+  "description": "A grant chain was revoked. `resident_initiated` is carried explicitly rather than inferred from `reason`, because whether the data subject asked is the legally significant fact and should not require reading an enum correctly.",
+  "type": "object",
+  "properties": {
+    "subject_ref": {
+      "$ref": "https://schemas.blume.systems/common/subject_ref.json",
+      "description": "Pairwise pseudonym of the data subject. Subject whose grant was revoked."
+    },
+    "grant_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
+      "description": "Grant being revoked. Matches a prior oauth-grant-authorised."
+    },
+    "reason": {
+      "type": "string",
+      "enum": [
+        "resident-initiated",
+        "operator",
+        "erasure",
+        "expiry",
+        "reuse-detected",
+        "consent-withdrawn",
+        "client-revoked"
+      ],
+      "x-beb-enum": "open",
+      "description": "Why the grant was revoked. Consumers MUST ignore unknown values."
+    },
+    "resident_initiated": {
+      "type": "boolean",
+      "description": "True when the data subject asked. Carried explicitly because it is the legally significant fact."
+    },
+    "scopes": {
+      "$ref": "https://schemas.blume.systems/common/sealed.json",
+      "description": "Scopes that were revoked, sealed as at authorisation time."
+    },
+    "revoked_at": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{3}Z$",
+      "description": "When the grant was revoked."
+    },
+    "provenance": {
+      "$ref": "https://schemas.blume.systems/common/provenance.json",
+      "description": "How the fact was produced. Required on every event."
+    }
+  },
+  "required": [
+    "subject_ref",
+    "grant_id",
+    "reason",
+    "resident_initiated",
+    "revoked_at",
+    "provenance"
+  ]
+}

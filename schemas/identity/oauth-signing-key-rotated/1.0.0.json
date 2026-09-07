@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.blume.systems/identity/oauth-signing-key-rotated/1.0.0.json",
+  "title": "OauthSigningKeyRotated",
+  "description": "A token signing key was rotated. Relying parties refetch the JWKS; the retiring key stays published until `retires_at` so tokens in flight verify.",
+  "type": "object",
+  "properties": {
+    "kid": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
+      "description": "Key identifier now signing."
+    },
+    "algorithm": {
+      "type": "string",
+      "enum": [
+        "ES256",
+        "ES384",
+        "RS256",
+        "EdDSA"
+      ],
+      "x-beb-enum": "open",
+      "description": "Signature algorithm. `none` is prohibited by SPEC 14.2 and is therefore not representable here. Consumers MUST ignore unknown values."
+    },
+    "previous_kid": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
+      "description": "Key being retired. Absent on first issue."
+    },
+    "effective_at": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{3}Z$",
+      "description": "When the new key began signing."
+    },
+    "retires_at": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{3}Z$",
+      "description": "When the previous key stops being published in the JWKS."
+    },
+    "provenance": {
+      "$ref": "https://schemas.blume.systems/common/provenance.json",
+      "description": "How the fact was produced. Required on every event."
+    }
+  },
+  "required": [
+    "kid",
+    "algorithm",
+    "effective_at",
+    "provenance"
+  ]
+}

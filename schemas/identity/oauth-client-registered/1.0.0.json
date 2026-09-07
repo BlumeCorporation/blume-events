@@ -1,0 +1,90 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.blume.systems/identity/oauth-client-registered/1.0.0.json",
+  "title": "OauthClientRegistered",
+  "description": "A relying party was registered with the authorisation server.",
+  "type": "object",
+  "properties": {
+    "client_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9._-]{1,63}$",
+      "description": "Registered client identifier."
+    },
+    "sector": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
+      "description": "Sector the client belongs to. Sector assignment follows domain boundaries: a transit relying party and a vision relying party are never in one sector."
+    },
+    "client_type": {
+      "type": "string",
+      "enum": [
+        "public",
+        "confidential"
+      ],
+      "x-beb-enum": "open",
+      "description": "Client type. Consumers MUST ignore unknown values."
+    },
+    "grant_types": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "authorization-code",
+          "client-credentials",
+          "device-code",
+          "refresh-token"
+        ],
+        "x-beb-enum": "open",
+        "description": "Grant type. The implicit grant and ROPC are prohibited and are therefore not representable. Consumers MUST ignore unknown values."
+      },
+      "minItems": 1,
+      "description": "Grant types the client is registered for."
+    },
+    "token_endpoint_auth_method": {
+      "type": "string",
+      "enum": [
+        "private-key-jwt",
+        "tls-client-auth",
+        "client-secret-basic",
+        "none"
+      ],
+      "x-beb-enum": "open",
+      "description": "Client authentication method. `none` is permitted only for a public client using both PKCE and DPoP. Consumers MUST ignore unknown values."
+    },
+    "redirect_uris": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^(https://[a-zA-Z0-9.-]+(:[0-9]{1,5})?(/[^*\\s]*)?|http://127\\.0\\.0\\.1(:[0-9]{1,5})?(/[^*\\s]*)?)$",
+        "maxLength": 512,
+        "description": "Registered redirect URI. HTTPS, or loopback for a native client. The pattern excludes `*`, which makes SPEC 14.2's prohibition on wildcard redirect URIs a validation failure rather than a review comment."
+      },
+      "maxItems": 32,
+      "description": "Registered redirect URIs."
+    },
+    "principal": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9._-]{1,63}$",
+      "description": "Principal that performed the registration."
+    },
+    "registered_at": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{3}Z$",
+      "description": "When the client was registered."
+    },
+    "provenance": {
+      "$ref": "https://schemas.blume.systems/common/provenance.json",
+      "description": "How the fact was produced. Required on every event."
+    }
+  },
+  "required": [
+    "client_id",
+    "sector",
+    "client_type",
+    "grant_types",
+    "token_endpoint_auth_method",
+    "principal",
+    "registered_at",
+    "provenance"
+  ]
+}

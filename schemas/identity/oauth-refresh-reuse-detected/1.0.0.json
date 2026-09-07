@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.blume.systems/identity/oauth-refresh-reuse-detected/1.0.0.json",
+  "title": "OauthRefreshReuseDetected",
+  "description": "A refresh token was presented after it had already been redeemed. Inferred, and it carries confidence: a replay is usually an attack and is sometimes a client retrying across a dropped connection, and the two are not distinguishable at the point of detection. The chain is revoked either way - failing closed on a retry costs a re-authentication, failing open on an attack costs the account.",
+  "type": "object",
+  "properties": {
+    "subject_ref": {
+      "$ref": "https://schemas.blume.systems/common/subject_ref.json",
+      "description": "Pairwise pseudonym of the data subject. Subject whose grant chain was replayed."
+    },
+    "grant_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
+      "description": "Grant chain the replayed token belonged to."
+    },
+    "chain_revoked": {
+      "type": "boolean",
+      "description": "Whether the whole grant chain was revoked in response."
+    },
+    "tokens_revoked": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Tokens invalidated by the chain revocation."
+    },
+    "detected_at": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{3}Z$",
+      "description": "When the replay was detected."
+    },
+    "provenance": {
+      "$ref": "https://schemas.blume.systems/common/provenance.json",
+      "required": [
+        "confidence"
+      ],
+      "description": "How the fact was inferred. `confidence` is required: this event is produced by inference, and consumers MUST NOT treat it as measured."
+    }
+  },
+  "required": [
+    "subject_ref",
+    "grant_id",
+    "chain_revoked",
+    "detected_at",
+    "provenance"
+  ]
+}

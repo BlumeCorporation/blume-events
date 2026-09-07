@@ -25,19 +25,9 @@
       "x-beb-enum": "open",
       "description": "Basis for the erasure. Consumers MUST ignore unknown values."
     },
-    "scope": {
-      "type": "array",
-      "items": {
-        "type": "string",
-        "enum": [
-          "transit",
-          "identity"
-        ],
-        "x-beb-enum": "open",
-        "description": "Domain in scope. Only domains that carry pseudonyms can appear: traffic and telemetry are anonymous and vision uses track_ref. Consumers MUST ignore unknown values."
-      },
-      "minItems": 1,
-      "description": "Domains the erasure covers. Absent means every domain."
+    "erase_all_domains": {
+      "type": "boolean",
+      "description": "True when the erasure covers every domain the subject appears in. Which domains those are is not published: a domain list beside a pseudonym states that this person exists in that domain, which is the cross-domain link the pseudonymisation construction exists to prevent. The gateway holds the list internally, where it is acted on."
     },
     "requested_at": {
       "type": "string",

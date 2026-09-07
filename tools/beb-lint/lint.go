@@ -85,7 +85,12 @@ var (
 	// SPEC section 14.7: a pseudonymous resident plus the service they
 	// authenticated to links a person to a domain by inference, which is the
 	// same defect as two pids on one stream.
-	clientReference = regexp.MustCompile(`^(client_id|client_ref|client|sector|sector_id|sector_identifier|relying_party|audience|aud)$`)
+	// Domain terms are here because a domain list beside a pseudonym states that
+	// this person exists in that domain, which is the same link by a different
+	// spelling. This rule was added after two shipped schemas carried exactly
+	// that: erasure-requested and consent-granted each had a `scope` array of
+	// domains alongside a subject_ref.
+	linkageReference = regexp.MustCompile(`^(client_id|client_ref|client|sector|sector_id|sector_identifier|relying_party|audience|aud|domain|domains|domain_ref|domain_scope|scope|scopes)$`)
 	// An aggregate window is a bucket, never an author-chosen endpoint pair.
 	endpointPair = regexp.MustCompile(`^(period|window|range|interval)_(start|end|from|to)$`)
 )

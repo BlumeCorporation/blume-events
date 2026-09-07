@@ -391,19 +391,24 @@
   producers: [mca-ingest]
 
 # ---------------------------------------------------------------- identity
-- type: systems.blume.identity.authentication-evaluated.v1
+- type: systems.blume.identity.authentication-aggregated.v1
   domain: identity
-  schema: identity/authentication-evaluated/1.0.0.json
-  retention: operational
-  subject_linked: true
+  schema: identity/authentication-aggregated/1.0.0.json
+  retention: audit
+  subject_linked: false
   inferred: false
   description: >
-    An authentication attempt was evaluated. Carries a subject reference
-    only when the principal was recognised: a failure against an unknown
-    principal has no subject to name, which is why `subject_ref` is
-    optional here. No network or device identifiers: they would re-
-    identify across the pseudonym boundary and the operational stream does
-    not need them to be useful.
+    Hourly count of authentication outcomes by client. This absorbs what
+    was a per-authentication event. Nothing consumed the per-event form:
+    domain systems learn what they need from oauth-grant-authorised, and
+    the gateway's own security monitoring reads its internal log faster
+    than a bus round trip. Worse, a per-subject authentication event and
+    an aggregate keyed by client are individually compliant and jointly
+    not - joined on timestamp they reconstruct the (subject, client) pair
+    14.7 forbids. The bus carries authentication anomalies, oauth-refresh-
+    reuse-detected and oauth-session-terminated; the aggregate carries the
+    base rate. Not prefixed `oauth-`: it covers federated staff
+    authentication too, which is OIDC upstream rather than OAuth issuance.
   producers: [identity-gateway]
 
 - type: systems.blume.identity.consent-granted.v1
@@ -496,6 +501,109 @@
     erasure is performed by destroying the per-subject data key rather
     than by rewriting the log. Evidential rather than audit, because it
     names the subject.
+  producers: [identity-gateway]
+
+- type: systems.blume.identity.oauth-client-registered.v1
+  domain: identity
+  schema: identity/oauth-client-registered/1.0.0.json
+  retention: audit
+  subject_linked: false
+  inferred: false
+  description: >
+    A relying party was registered with the authorisation server.
+  producers: [identity-gateway]
+
+- type: systems.blume.identity.oauth-client-revoked.v1
+  domain: identity
+  schema: identity/oauth-client-revoked/1.0.0.json
+  retention: audit
+  subject_linked: false
+  inferred: false
+  description: >
+    A relying party's registration was revoked. Terminal for the client
+    id; outstanding grants to it are revoked separately and per subject.
+  producers: [identity-gateway]
+
+- type: systems.blume.identity.oauth-client-updated.v1
+  domain: identity
+  schema: identity/oauth-client-updated/1.0.0.json
+  retention: audit
+  subject_linked: false
+  inferred: false
+  description: >
+    A registered relying party's configuration changed. Names the fields
+    that changed rather than their values: a redirect URI or an auth
+    method changing is the auditable fact, and the current values are in
+    the client register.
+  producers: [identity-gateway]
+
+- type: systems.blume.identity.oauth-grant-authorised.v1
+  domain: identity
+  schema: identity/oauth-grant-authorised/1.0.0.json
+  retention: evidential
+  subject_linked: true
+  inferred: false
+  description: >
+    A subject authorised a grant to a relying party. Carries no client id
+    and no sector: a pseudonymous resident beside the service they
+    authenticated to links a person to a domain by inference, and sectors
+    follow domain boundaries. `service_class` carries the fraud- and
+    support-relevant part - whether a human intermediary was involved - at
+    a granularity that cannot reconstruct the client. Scopes are sealed
+    rather than published, because a scope name can be domain-shaped and
+    places the subject in a small population.
+  producers: [identity-gateway]
+
+- type: systems.blume.identity.oauth-grant-revoked.v1
+  domain: identity
+  schema: identity/oauth-grant-revoked/1.0.0.json
+  retention: evidential
+  subject_linked: true
+  inferred: false
+  description: >
+    A grant chain was revoked. `resident_initiated` is carried explicitly
+    rather than inferred from `reason`, because whether the data subject
+    asked is the legally significant fact and should not require reading
+    an enum correctly.
+  producers: [identity-gateway]
+
+- type: systems.blume.identity.oauth-refresh-reuse-detected.v1
+  domain: identity
+  schema: identity/oauth-refresh-reuse-detected/1.0.0.json
+  retention: evidential
+  subject_linked: true
+  inferred: true
+  description: >
+    A refresh token was presented after it had already been redeemed.
+    Inferred, and it carries confidence: a replay is usually an attack and
+    is sometimes a client retrying across a dropped connection, and the
+    two are not distinguishable at the point of detection. The chain is
+    revoked either way - failing closed on a retry costs a re-
+    authentication, failing open on an attack costs the account.
+  producers: [identity-gateway]
+
+- type: systems.blume.identity.oauth-session-terminated.v1
+  domain: identity
+  schema: identity/oauth-session-terminated/1.0.0.json
+  retention: operational
+  subject_linked: true
+  inferred: false
+  description: >
+    A subject's session ended. Operational because relying parties and
+    domain systems act on it now, dropping cached state to match the back-
+    channel logout the gateway delivers over HTTP.
+  producers: [identity-gateway]
+
+- type: systems.blume.identity.oauth-signing-key-rotated.v1
+  domain: identity
+  schema: identity/oauth-signing-key-rotated/1.0.0.json
+  retention: audit
+  subject_linked: false
+  inferred: false
+  description: >
+    A token signing key was rotated. Relying parties refetch the JWKS; the
+    retiring key stays published until `retires_at` so tokens in flight
+    verify.
   producers: [identity-gateway]
 
 - type: systems.blume.identity.pseudonym-epoch-rotated.v1

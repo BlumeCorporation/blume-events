@@ -1,0 +1,30 @@
+{
+  "specversion": "1.0",
+  "id": "7NZKC2FK9DCAW3JG06MM7ECERS",
+  "source": "//blume.systems/mcr/identity/gateway/GW-MCR-ID-01",
+  "type": "systems.blume.identity.oauth-client-registered.v1",
+  "time": "2026-05-14T09:20:00.310Z",
+  "datacontenttype": "application/json",
+  "dataschema": "https://schemas.blume.systems/identity/oauth-client-registered/1.0.0.json",
+  "blumetenant": "mcr",
+  "blumeretention": "audit",
+  "blumetrace": "00-94d30346a8076d0dcd95567b0ac59618-6694f3febc70013b-01",
+  "blumeseq": 28004,
+  "data": {
+    "client_id": "transit-account-web",
+    "sector": "transit-resident",
+    "client_type": "public",
+    "grant_types": [
+      "authorization-code",
+      "refresh-token"
+    ],
+    "token_endpoint_auth_method": "none",
+    "principal": "platform.mcr.gov",
+    "registered_at": "2026-05-14T09:20:00.000Z",
+    "provenance": {
+      "producer": "identity-gateway/1.0.0",
+      "node": "core-mcr-id-01",
+      "observed_at": "2026-05-14T09:20:00.310Z"
+    }
+  }
+}

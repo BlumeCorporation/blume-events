@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"sort"
 	"strings"
 )
 
@@ -273,10 +274,39 @@ func (l *linter) checkEntry(e Entry) {
 	// reference. Either alone is fine; together they link a pseudonymous
 	// resident to a service domain by inference.
 	if hasSubject {
-		for name := range props {
-			if clientReference.MatchString(name) {
-				l.add("R24", e.Type, "carries subject_ref and %q; a subject reference and a client or sector reference may not appear on one event", name)
+		for name, p := range props {
+			if !linkageReference.MatchString(name) {
+				continue
 			}
+			// Ciphertext is not a reference. A sealed field beside a pseudonym
+			// discloses nothing, which is the mechanism SPEC section 6 provides
+			// for exactly this case.
+			if pm, ok := obj(p); ok {
+				if ref, ok := pm["$ref"].(string); ok && strings.HasPrefix(ref, commonPrefix+"sealed.json") {
+					continue
+				}
+			}
+			l.add("R24", e.Type, "carries subject_ref and %q in clear; a subject reference and a domain, client or sector reference may not appear on one event", name)
+		}
+	}
+
+	// R25: one subject reference per event. Two pseudonyms on one event is the
+	// cross-domain join the construction exists to prevent. The single exception
+	// is the audited correlation record, whose entire purpose is to be that join
+	// under two principals, a purpose code and a legal basis.
+	if hasSubject && e.Type != "systems.blume.identity.correlation-detail-recorded.v1" {
+		refs := []string{}
+		for name, p := range props {
+			if pm, ok := obj(p); ok {
+				if ref, ok := pm["$ref"].(string); ok && ref == subjectRefID {
+					refs = append(refs, name)
+				}
+			}
+		}
+		if len(refs) > 1 {
+			sort.Strings(refs)
+			l.add("R25", e.Type, "declares %d subject references (%s); only the audited correlation record may carry more than one",
+				len(refs), strings.Join(refs, ", "))
 		}
 	}
 

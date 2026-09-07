@@ -18,9 +18,6 @@
     },
     "consent_id": "CON-2026-04-02-0918",
     "purpose_code": "ASSISTED-TRAVEL",
-    "scope": [
-      "transit"
-    ],
     "granted_at": "2026-04-02T10:31:00.000Z",
     "expires_at": "2027-04-02T00:00:00.000Z",
     "evidence": {

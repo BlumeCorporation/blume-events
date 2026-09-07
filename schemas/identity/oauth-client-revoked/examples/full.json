@@ -1,0 +1,26 @@
+{
+  "specversion": "1.0",
+  "id": "4PZK65P26M1CTDRWTPFFB33WFJ",
+  "source": "//blume.systems/mcr/identity/gateway/GW-MCR-ID-01",
+  "type": "systems.blume.identity.oauth-client-revoked.v1",
+  "subject": "asset:gateway:GW-MCR-ID-01",
+  "time": "2026-09-01T00:00:00.220Z",
+  "datacontenttype": "application/json",
+  "dataschema": "https://schemas.blume.systems/identity/oauth-client-revoked/1.0.0.json",
+  "blumetenant": "mcr",
+  "blumeretention": "audit",
+  "blumetrace": "00-9f37c407ac3de3a870e75b8fdf050096-6da4e0fef603a069-01",
+  "blumeseq": 33110,
+  "data": {
+    "client_id": "depot-terminal-legacy",
+    "reason": "superseded",
+    "principal": "platform.mcr.gov",
+    "revoked_at": "2026-09-01T00:00:00.000Z",
+    "provenance": {
+      "producer": "identity-gateway/1.0.0",
+      "node": "core-mcr-id-01",
+      "observed_at": "2026-09-01T00:00:00.220Z",
+      "method": "registration-console"
+    }
+  }
+}

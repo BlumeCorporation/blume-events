@@ -10,7 +10,16 @@ specification and passes the conformance suite in `conformance/`.
 
 - §14 added: `identity-gateway` becomes the tenant's OAuth 2.1 authorisation
   server and OpenID Provider. The OIDC `sub` and the bus `pid` are separate
-  identifiers under separate keys, neither derivable from the other.
+  identifiers under separate keys, neither derivable from the other. `sub` is
+  derived from a shreddable per-subject secret so that erasure reaches it
+  (§14.9), the device grant is closed to resident subjects (§14.8), and OAuth
+  scopes are sealed rather than published on subject-linked events (§14.7).
+- `identity.authentication-evaluated` is removed. It had no consumer, and joined
+  on timestamp with an aggregate keyed by client it reconstructed the
+  `(subject, client)` pair §14.7 forbids. §14.7.
+- No event carries both a subject reference and a **domain** reference. This
+  extends the client and sector rule; `erasure-requested` and `consent-granted`
+  lose their domain `scope` arrays. §6, §14.7.
 - Aggregates name a disjoint bucket rather than a start and an end, so a
   k-anonymity floor cannot be defeated by differencing. `aggregate` joins the
   common types. §5, §7.
@@ -878,14 +887,20 @@ abandons epoch rotation.
 **Two identifiers, two keys, neither derivable from the other.**
 
 ```
-sub  = base32(HMAC-SHA256(K_oidc_sector, root_subject_id)[0..15])
+sub  = base32(HMAC-SHA256(K_oidc_sector, S_subject)[0..15])
        K_oidc_sector = HKDF(K_tenant_root, info = "oidc" ‖ sector_id)
+       S_subject     = 256 random bits, generated at first registration,
+                       held in the gateway wrapped by K_tenant_root
        No epoch. Stable for the life of the client relationship.
 
 pid  = base32(HMAC-SHA256(K_domain_epoch, root_subject_id)[0..10])
        K_domain_epoch = HKDF(K_tenant_root, info = domain ‖ epoch)
        Rotates per §6.
 ```
+
+`S_subject` rather than `root_subject_id` is what makes `sub` erasable; see
+§14.9. It is a random value, so unlike the root identifier it carries no
+information about the person.
 
 Consequences, all normative:
 
@@ -962,14 +977,14 @@ one stream.
 | `oauth-client-updated.v1` | Client id, changed fields, principal |
 | `oauth-client-revoked.v1` | Client id, reason, principal |
 | `oauth-signing-key-rotated.v1` | `kid`, algorithm, effective time |
-| `oauth-authentication-aggregated.v1` | Hourly, by client and outcome, k-floored and bucketed per §5 |
+| `authentication-aggregated.v1` | Hourly, by client and outcome, k-floored and bucketed per §5 |
 
 **`evidential`, subject-linked, no client identity:**
 
 | Event | Carries |
 |---|---|
-| `oauth-grant-authorised.v1` | `subject_ref`, scopes, `service_class`, expiry |
-| `oauth-grant-revoked.v1` | `subject_ref`, scopes, reason, whether resident-initiated |
+| `oauth-grant-authorised.v1` | `subject_ref`, **sealed** scopes, `service_class`, expiry |
+| `oauth-grant-revoked.v1` | `subject_ref`, **sealed** scopes, reason, whether resident-initiated |
 | `oauth-refresh-reuse-detected.v1` | `subject_ref`, inferred with confidence, chain revocation outcome |
 
 **`operational`:**
@@ -978,10 +993,112 @@ one stream.
 |---|---|
 | `oauth-session-terminated.v1` | `subject_ref`, reason, so relying parties can react to back-channel logout |
 
-`service_class` is a coarse vocabulary, deliberately not the client id and
-deliberately not the sector.
+There is no per-authentication event. Nothing consumed one: domain systems learn
+what they need from `oauth-grant-authorised`, and the gateway's own monitoring
+reads its internal log faster than a bus round trip. More seriously, a
+per-subject authentication event and an aggregate keyed by client are
+individually compliant and jointly not — joined on timestamp they reconstruct the
+`(subject, client)` pair this section forbids. The bus carries the anomalies;
+the aggregate carries the base rate.
 
-### 14.8 Testing
+**`service_class`** is `self-service` | `assisted` | `machine`. It records
+whether a human intermediary was involved, which is the fraud-relevant and
+support-relevant part, at a granularity that cannot reconstruct the client: every
+sector contains `self-service` clients, so the mapping is many-to-one in the
+direction that matters. `machine` never appears on a subject-linked event.
+
+A class MUST NOT be used on a subject-linked event until at least two sectors
+have clients in it. A class present in one sector is that sector, and sectors
+follow domain boundaries. This is checked at client registration in the gateway's
+own suite; `beb-lint` cannot see client registrations.
+
+**Scopes are sealed**, not published. A Blume scope name can be domain-shaped:
+`blume.assistance` beside a pseudonym places that subject in the small,
+special-category-adjacent population of assistance users. The grant record proves
+in clear that a grant happened; what was granted is sealed under the subject's
+data key, so erasure reaches it and a passive stream holder cannot read it.
+
+### 14.8 Device grant and pseudonymous subjects
+
+**The device grant MUST NOT be used for resident subjects.** It is available to
+staff and service principals on council-controlled hardware — depot terminals,
+roadside tablets — and to nothing else.
+
+The guarantee at risk is not the key separation in §14.3, which holds regardless.
+It is that the grant belongs to the person who approved it. RFC 8628 cannot
+deliver that here: an attacker starts a device flow against their own session,
+obtains a `user_code`, and places it on a council-branded sticker on a ticket
+machine. A resident reads it and approves it on their own authenticated phone,
+and the gateway issues a correct, well-formed, correctly-pseudonymised token to
+the attacker. Every cryptographic property holds and the outcome is still wrong.
+Short code lifetimes, rate limiting and typed rather than scanned entry do
+nothing against a sticker refreshed on a schedule. Public space, council-branded
+hardware, maximal trust, minimal ability to verify.
+
+Applying §6's test instead: a ticket machine selling a ticket needs a fare and a
+valid entitlement, which are `transit.entitlement-checked` and
+`transit.fare-validated` — subject-linked on the transit side, where the
+pseudonym belongs and never leaves in a token. No grant is involved. The only
+case that needs an account is managing it at the machine, and RFC 8628's premise
+is a device where the user has no better option, while this user is holding the
+phone the flow requires.
+
+The cost, so that it is chosen: **no account self-service at a ticket machine.**
+Should that become necessary, the mechanism is proximity binding — a code
+released only once the resident's device is demonstrably at the machine — which
+is a Blume extension to RFC 8628 and needs its own design and review. It is not
+"enable the device grant".
+
+### 14.9 Erasure of `sub`
+
+§6 erases by destroying keys. `sub` is a derivation rather than a ciphertext, so
+destroying a data key does not invalidate a `sub` a relying party already holds.
+This section says what does.
+
+**`sub` is erased by destroying `S_subject`.** Because `S_subject` is the HMAC
+input, its destruction makes the derivation unreproducible by anyone, the gateway
+included. The gateway destroys it alongside the per-subject data keys and counts
+it in `erasure-completed.keys_destroyed`. One erasure primitive, not two.
+
+This also closes a defect that a revocation list would not. `sub` derived from
+`root_subject_id` is deterministic, so a person who re-registers receives **the
+same `sub` back**, and a relying party that kept its row sees an erased account
+reanimate with its history attached. With `S_subject`, re-registration produces a
+fresh secret and therefore a different `sub` in every sector. The old row is
+orphaned permanently.
+
+**No revocation list is maintained.** Once `S_subject` is destroyed and the
+subject record is gone, a presented `sub` matches nothing: introspection returns
+inactive and userinfo does not resolve. It fails closed with nothing consulted.
+This is deliberate — a set of erased `sub` values is a permanent list of every
+person who exercised their right to erasure, keyed by an identifier derived from
+them, which is the one dataset that most should not exist. Proof that an erasure
+occurred is already held by `erasure-attested` in the `audit` class, keyed by
+`erasure_id` and carrying no subject reference.
+
+**The window is bounded, not instantaneous.** An already-issued access token
+validates by signature, not by re-deriving `sub`. Therefore:
+
+- A subject-bearing access token MUST NOT have a lifetime exceeding **5 minutes**.
+- Back-channel logout fires to every client in every sector the subject held a
+  grant in.
+- `oauth-grant-revoked` is emitted with `reason: erasure`.
+
+**What the gateway cannot do**, stated rather than implied away: it cannot delete
+a relying party's database row. It can make the row worthless and make the
+obligation contractual and testable. Relying parties MUST delete on a
+back-channel logout carrying an erasure reason, and onboarding includes a test
+that they do.
+
+Two costs. The `S_subject` store becomes as critical as the root subject store —
+losing it breaks every relying party relationship irrecoverably, so it replicates
+with the vault under `K_tenant_root` and belongs in the DR plan. And `sub` can no
+longer be recomputed from the root identifier alone.
+
+Staff are unaffected: §14.6 federates them and does not pseudonymise them, so no
+`S_subject` exists and their erasure is the upstream provider's.
+
+### 14.10 Testing
 
 Beyond the bar in §12:
 

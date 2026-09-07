@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.blume.systems/identity/oauth-client-updated/1.0.0.json",
+  "title": "OauthClientUpdated",
+  "description": "A registered relying party's configuration changed. Names the fields that changed rather than their values: a redirect URI or an auth method changing is the auditable fact, and the current values are in the client register.",
+  "type": "object",
+  "properties": {
+    "client_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9._-]{1,63}$",
+      "description": "Client that was updated."
+    },
+    "changed_fields": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "redirect_uris",
+          "grant_types",
+          "token_endpoint_auth_method",
+          "sector",
+          "scopes",
+          "jwks",
+          "contacts"
+        ],
+        "x-beb-enum": "open",
+        "description": "Configuration field that changed. Consumers MUST ignore unknown values."
+      },
+      "minItems": 1,
+      "description": "Fields that changed."
+    },
+    "principal": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9._-]{1,63}$",
+      "description": "Principal that performed the update."
+    },
+    "updated_at": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{3}Z$",
+      "description": "When the update took effect."
+    },
+    "provenance": {
+      "$ref": "https://schemas.blume.systems/common/provenance.json",
+      "description": "How the fact was produced. Required on every event."
+    }
+  },
+  "required": [
+    "client_id",
+    "changed_fields",
+    "principal",
+    "updated_at",
+    "provenance"
+  ]
+}

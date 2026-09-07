@@ -1,0 +1,27 @@
+{
+  "specversion": "1.0",
+  "id": "0W43Z714552JE85E5H207Y6X44",
+  "source": "//blume.systems/mcr/identity/gateway/GW-MCR-ID-01",
+  "type": "systems.blume.identity.oauth-signing-key-rotated.v1",
+  "subject": "asset:gateway:GW-MCR-ID-01",
+  "time": "2026-09-01T00:00:00.000Z",
+  "datacontenttype": "application/json",
+  "dataschema": "https://schemas.blume.systems/identity/oauth-signing-key-rotated/1.0.0.json",
+  "blumetenant": "mcr",
+  "blumeretention": "audit",
+  "blumetrace": "00-971d154dddbfd4e39ec12e1c928faf97-5b7af9a9f2e66202-01",
+  "blumeseq": 91358,
+  "data": {
+    "kid": "sig-2026-09",
+    "algorithm": "ES256",
+    "previous_kid": "sig-2026-06",
+    "effective_at": "2026-09-01T00:00:00.000Z",
+    "retires_at": "2026-09-08T00:00:00.000Z",
+    "provenance": {
+      "producer": "identity-gateway/1.0.0",
+      "node": "core-mcr-id-01",
+      "observed_at": "2026-09-01T00:00:00.080Z",
+      "method": "kms-rotate"
+    }
+  }
+}

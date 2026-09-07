@@ -1,0 +1,37 @@
+{
+  "specversion": "1.0",
+  "id": "5Y2WRMZ46A1EQGEGW54ZRGQMRD",
+  "source": "//blume.systems/mcr/identity/gateway/GW-MCR-ID-01",
+  "type": "systems.blume.identity.oauth-grant-authorised.v1",
+  "subject": "asset:gateway:GW-MCR-ID-01",
+  "time": "2026-09-07T08:15:31.120Z",
+  "datacontenttype": "application/json",
+  "dataschema": "https://schemas.blume.systems/identity/oauth-grant-authorised/1.0.0.json",
+  "blumetenant": "mcr",
+  "blumeretention": "evidential",
+  "blumetrace": "00-ee777c47f29067330f2743dd97fd91f9-3c0f41b69b4395ac-01",
+  "blumeseq": 65626,
+  "data": {
+    "subject_ref": {
+      "pid": "sub:identity:e3:S7LHKBTABGA5D5VD",
+      "epoch": 3
+    },
+    "grant_id": "GR-3-4a1c88f0",
+    "service_class": "self-service",
+    "scopes": {
+      "alg": "AES-256-GCM",
+      "key_id": "dk_2RJV387CF824CTFF6FTMYS6KRX",
+      "epoch": 3,
+      "ct": "zhhwT3crbDfP2M48Se4WxjlruxYFnJbkMiEIpOGBp7rLspSZzWEBkuef2/dIBZan",
+      "iv": "LbG8GKuTVJt3gWIN"
+    },
+    "authorised_at": "2026-09-07T08:15:31.000Z",
+    "expires_at": "2027-09-07T08:15:31.000Z",
+    "provenance": {
+      "producer": "identity-gateway/1.0.0",
+      "node": "core-mcr-id-01",
+      "observed_at": "2026-09-07T08:15:31.120Z",
+      "method": "authorization-code"
+    }
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "specversion": "1.0",
+  "id": "4B5W5GATVCGFCCTBNYT05SHT27",
+  "source": "//blume.systems/mcr/identity/gateway/GW-MCR-ID-01",
+  "type": "systems.blume.identity.oauth-grant-authorised.v1",
+  "time": "2026-09-07T08:15:31.120Z",
+  "datacontenttype": "application/json",
+  "dataschema": "https://schemas.blume.systems/identity/oauth-grant-authorised/1.0.0.json",
+  "blumetenant": "mcr",
+  "blumeretention": "evidential",
+  "blumetrace": "00-51d6c243964f26b305a2b275ab7ccfa4-245e4c99a6ea87ce-01",
+  "blumeseq": 42106,
+  "data": {
+    "subject_ref": {
+      "pid": "sub:identity:e3:S7LHKBTABGA5D5VD",
+      "epoch": 3
+    },
+    "grant_id": "GR-3-4a1c88f0",
+    "service_class": "self-service",
+    "authorised_at": "2026-09-07T08:15:31.000Z",
+    "provenance": {
+      "producer": "identity-gateway/1.0.0",
+      "node": "core-mcr-id-01",
+      "observed_at": "2026-09-07T08:15:31.120Z"
+    }
+  }
+}
