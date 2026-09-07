@@ -269,6 +269,17 @@ func (l *linter) checkEntry(e Entry) {
 		}
 	}
 
+	// R24: no event carries both a subject reference and a client or sector
+	// reference. Either alone is fine; together they link a pseudonymous
+	// resident to a service domain by inference.
+	if hasSubject {
+		for name := range props {
+			if clientReference.MatchString(name) {
+				l.add("R24", e.Type, "carries subject_ref and %q; a subject reference and a client or sector reference may not appear on one event", name)
+			}
+		}
+	}
+
 	l.checkAggregate(e, doc, props, required, graph)
 	l.checkExamples(e, id, rel)
 }

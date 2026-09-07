@@ -1,10 +1,25 @@
 # Blume Event Bus
 
-**Specification v1.1** · `blume-events`
+**Specification v1.2** · `blume-events`
 
 The common event fabric shared by all Blume municipal systems. This document is
 normative: a system is BEB-conformant if it satisfies every MUST in this
 specification and passes the conformance suite in `conformance/`.
+
+### Changes in v1.2
+
+- §14 added: `identity-gateway` becomes the tenant's OAuth 2.1 authorisation
+  server and OpenID Provider. The OIDC `sub` and the bus `pid` are separate
+  identifiers under separate keys, neither derivable from the other.
+- Aggregates name a disjoint bucket rather than a start and an end, so a
+  k-anonymity floor cannot be defeated by differencing. `aggregate` joins the
+  common types. §5, §7.
+- Common types are effectively immutable: they accept additive-optional changes
+  only, and a narrowing need creates a new type rather than a coordinated major
+  bump across every event that references the old one. §9.
+- `identity.pseudonym-issued` is replaced by `identity.pseudonym-issuance-recorded`,
+  an hourly `audit` aggregate. A per-issuance event left a timing channel even
+  without the pseudonym. §6.
 
 ### Changes in v1.1
 
@@ -18,14 +33,6 @@ Substantive:
   personal data. §7.
 - `envelope`, `sealed` and `track_ref` join the common types. §5.
 - Canonical JSON is RFC 8785, and enums are open with an explicit marker. §9.
-- Aggregates name a disjoint bucket rather than a start and an end, so a
-  k-anonymity floor cannot be defeated by differencing. `aggregate` joins the
-  common types. §5, §7.
-- Common types are effectively immutable: they accept additive-optional changes
-  only, and a narrowing need creates a new type rather than a coordinated major
-  bump across every event that references the old one. §9.
-- `identity.pseudonym-issued` is replaced by `identity.pseudonym-issuance-recorded`,
-  an hourly `audit` aggregate. §6.
 
 Errata against v1.0:
 
@@ -50,7 +57,7 @@ Five system families publish to and consume from the bus:
 | `telemetry` | `utility-telemetry` | Meter reads, substation load, pressure, outages |
 | `transit` | `transit-core` | Vehicle positions, stop events, load estimates |
 | `vision` | `mca-ingest` | Stream health, detections, classifications, retention |
-| `identity` | `identity-gateway` | Pseudonym lifecycle, authentication, consent, erasure |
+| `identity` | `identity-gateway` | Pseudonym lifecycle, authentication, consent, erasure, OAuth and OIDC (§14) |
 
 ### Goals
 
@@ -810,6 +817,186 @@ unrelated thing — it names an asset — and is never typed as a `SubjectRef`.
    `identity-gateway`. `signal-broker` — anonymous throughout.
 5. `mca-ingest` — last. Highest sensitivity, and it benefits from every lesson
    the other four produce.
+
+---
+
+## 14. Authorisation and identity federation
+
+`identity-gateway` is the tenant's OAuth 2.1 authorisation server and OpenID
+Provider, in addition to its role as pseudonym authority under §6. This puts an
+HTTP API surface on the most security-critical component in the system.
+
+§2's exclusion of RPC from the bus is unchanged. The gateway's OAuth and OIDC
+endpoints are ordinary HTTPS and are not modelled as events. Only the *facts*
+those endpoints produce reach the bus, per §14.7.
+
+### 14.1 Relying parties
+
+| Class | Examples | Client type |
+|---|---|---|
+| Resident-facing | Services portal, transit account, permit applications | Public, browser or native |
+| Staff-facing | Traffic operations, depot management, vision review | Confidential, federated per §14.6 |
+| Devices | Ticket machines, depot terminals, roadside tablets | Input-constrained, device grant |
+| Service-to-service | The five domain systems calling gateway APIs | Confidential, mTLS-bound |
+
+### 14.2 Standards
+
+Implement OAuth 2.1 and the current BCPs, not OAuth 2.0 as commonly deployed.
+
+**Required:**
+
+- **OAuth 2.1** — authorization code with PKCE mandatory for every client,
+  public and confidential.
+- **RFC 7636** PKCE, `S256` only. `plain` is rejected.
+- **RFC 9700** OAuth 2.0 Security Best Current Practice, treated as normative.
+- **OpenID Connect Core 1.0**, with **pairwise** subject identifiers (§14.3).
+- **OpenID Connect Discovery 1.0** — `/.well-known/openid-configuration`.
+- **RFC 9126** Pushed Authorization Requests — required for all confidential
+  clients.
+- **RFC 9449** DPoP — required for all public clients.
+- **RFC 8705** mTLS client authentication and certificate-bound tokens —
+  required for service-to-service, reusing the tenant CA from §10.
+- **RFC 8628** Device Authorization Grant — ticket machines and depot terminals.
+- **RFC 7009** revocation. **RFC 7662** introspection, restricted to
+  confidential clients.
+- **OpenID Connect Back-Channel Logout 1.0**.
+- Refresh token rotation with reuse detection. A replayed refresh token revokes
+  the entire grant chain.
+
+**Prohibited.** The implicit grant and ROPC MUST return `unsupported_grant_type`.
+Also prohibited: bearer tokens without sender constraint, `none` client
+authentication for anything but a public client using both PKCE and DPoP,
+unsigned or `alg: none` ID tokens, and wildcard redirect URIs.
+
+### 14.3 The `sub` claim and the bus pid
+
+OIDC requires `sub` to be stable for a given subject and client. §6 requires
+domain pseudonyms to rotate every 90 days. One identifier cannot do both:
+collapsing them either breaks every relying party's account mapping quarterly or
+abandons epoch rotation.
+
+**Two identifiers, two keys, neither derivable from the other.**
+
+```
+sub  = base32(HMAC-SHA256(K_oidc_sector, root_subject_id)[0..15])
+       K_oidc_sector = HKDF(K_tenant_root, info = "oidc" ‖ sector_id)
+       No epoch. Stable for the life of the client relationship.
+
+pid  = base32(HMAC-SHA256(K_domain_epoch, root_subject_id)[0..10])
+       K_domain_epoch = HKDF(K_tenant_root, info = domain ‖ epoch)
+       Rotates per §6.
+```
+
+Consequences, all normative:
+
+- A relying party holding `sub` cannot compute the bus `pid` for the same
+  person. A bus consumer holding `pid` cannot compute `sub`. Both directions
+  require `K_tenant_root`, which means both require `/v1/correlate` and its
+  audit trail.
+- `sector_identifier_uri` groups clients. Clients in one sector share a `sub`;
+  clients in different sectors do not. **Sector assignment MUST follow domain
+  boundaries** — a transit relying party and a vision relying party are never in
+  one sector.
+- **Tokens MUST NOT carry a bus pid.** Not in the ID token, not in the access
+  token, not in an introspection response, not in a userinfo response. No lint
+  rule can see inside a token, so this is a MUST with a test in the gateway's own
+  suite rather than a schema constraint.
+- `sub` is long-lived and therefore a **stronger** identifier than any pid. It
+  MUST remain confined to the OIDC surface and MUST NOT reach the bus.
+
+### 14.4 Claims and scopes
+
+Standard OIDC scopes (`openid`, `profile`, `email`, `offline_access`) plus a
+Blume set. The subject-linkage test from §6 applies unchanged: **claims carry
+entitlement classes, not identity, wherever a class suffices.**
+
+| Scope | Claims | Constraint |
+|---|---|---|
+| `blume.entitlements` | `entitlement_classes: [...]` | Classes only. Never the basis for an entitlement, never a document reference, never a condition. |
+| `blume.assistance` | `assistance_profile_ref` | An opaque handle resolvable only by transit assistance services. Never the profile itself. |
+| `blume.council` | `council_roles: [...]` | Staff only, federated per §14.6. |
+
+The pressure on `entitlement_classes` will be to include *why* someone
+qualifies. A disability, a benefit status and an age band are all special
+category or adjacent, and none of them are needed to open a gate or extend a
+green phase. The claim says `concessionary-travel`, and that is all it says.
+
+### 14.5 Consent
+
+An OIDC scope grant is the same fact as `identity.consent-granted.v1`. It MUST
+NOT be modelled twice: the consent screen writes through to the same consent
+record and emits the same event.
+
+Consent MUST be per-sector, and revocable per-sector from a resident-facing
+management surface. Revocation triggers back-channel logout to every client in
+that sector and revokes the grant chain.
+
+### 14.6 Staff federation
+
+Councils operate their own staff identity, typically Microsoft Entra ID. The
+gateway MUST support upstream OIDC federation for staff principals while
+residents authenticate locally.
+
+- Staff subjects are federated, and the gateway does **not** mint pseudonyms for
+  them. A staff member is an accountable named principal — which is the entire
+  point of the two-principal requirement on `/v1/correlate`.
+- Resident subjects are local and pseudonymous.
+- The two populations MUST NOT share a client, a sector, or a token audience. A
+  token that could be either is a token that defeats the audit trail.
+- Federated staff claims map to `council_roles`. The mapping is per-tenant
+  configuration, not code.
+
+### 14.7 Events
+
+The rule from §6 applies here in a second form: **no event may carry both a
+subject reference and a client or sector reference.** A pseudonymous resident
+plus the service they authenticated to is a link between a person and a domain,
+inferred rather than computed, and it is the same defect as putting two pids on
+one stream.
+
+**`audit`, no subject reference:**
+
+| Event | Carries |
+|---|---|
+| `oauth-client-registered.v1` | Client id, sector, grant types, principal |
+| `oauth-client-updated.v1` | Client id, changed fields, principal |
+| `oauth-client-revoked.v1` | Client id, reason, principal |
+| `oauth-signing-key-rotated.v1` | `kid`, algorithm, effective time |
+| `oauth-authentication-aggregated.v1` | Hourly, by client and outcome, k-floored and bucketed per §5 |
+
+**`evidential`, subject-linked, no client identity:**
+
+| Event | Carries |
+|---|---|
+| `oauth-grant-authorised.v1` | `subject_ref`, scopes, `service_class`, expiry |
+| `oauth-grant-revoked.v1` | `subject_ref`, scopes, reason, whether resident-initiated |
+| `oauth-refresh-reuse-detected.v1` | `subject_ref`, inferred with confidence, chain revocation outcome |
+
+**`operational`:**
+
+| Event | Carries |
+|---|---|
+| `oauth-session-terminated.v1` | `subject_ref`, reason, so relying parties can react to back-channel logout |
+
+`service_class` is a coarse vocabulary, deliberately not the client id and
+deliberately not the sector.
+
+### 14.8 Testing
+
+Beyond the bar in §12:
+
+- **Certification** — the gateway MUST pass the OpenID Foundation Basic OP and
+  Config OP profiles. The conformance suite runs in CI against a local instance,
+  not as a manual gate.
+- **`sub`/`pid` isolation** — a test asserting that no token emitted at any
+  endpoint, in any grant flow, contains a string matching the
+  `sub:<domain>:e<n>:` grammar anywhere in its claims.
+- **Sector isolation** — a test asserting that two clients in different sectors
+  receive different `sub` values for one synthetic subject, and that no function
+  of the two recovers the root or either pid.
+- **Refresh reuse** — a replayed refresh token revokes the whole chain and emits
+  the event. Table-driven across every grant type.
+- **Negative** — every prohibited item in §14.2 has a test asserting rejection.
 
 ---
 

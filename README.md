@@ -85,3 +85,8 @@ go test ./tools/beb-lint/          # the rules, each with a passing and a failin
 Every rule has a fixture in `tools/beb-lint/testdata/cases.yaml` that mutates the
 real tree and names the rule that must fire. Adding a rule without adding its
 failing case is how a rule silently stops working.
+
+Structural rules run against the version `catalog.yaml` names. Superseded
+versions must still parse and resolve — a `dataschema` URI that resolved once
+resolves forever — but a rule tightened today does not retroactively fail a
+schema that was correct when it shipped.

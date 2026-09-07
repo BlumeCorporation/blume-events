@@ -384,3 +384,26 @@
       pointer: /properties/asset_ref/$ref
       value: '"https://schemas.blume.systems/common/device_ref.json"'
   expect: does not compile
+
+- name: subject-ref-beside-client-reference
+  rule: R24
+  why: A pseudonymous resident plus the service they authenticated to links a
+    person to a domain by inference. Either reference alone is fine; the pair is
+    the same defect as two pids on one stream.
+  mutations:
+    - file: schemas/transit/fare-validated/1.0.0.json
+      op: json_set
+      pointer: /properties/client_id
+      value: '{"type": "string", "description": "Relying party that presented the fare."}'
+  expect: may not appear on one event
+
+- name: subject-ref-beside-sector-reference
+  rule: R24
+  why: Sector is the coarser spelling of the same link, and sectors follow domain
+    boundaries, so it leaks the domain directly.
+  mutations:
+    - file: schemas/identity/consent-granted/1.0.0.json
+      op: json_set
+      pointer: /properties/sector
+      value: '{"type": "string", "description": "Sector the consent applies to."}'
+  expect: may not appear on one event

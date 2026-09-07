@@ -78,10 +78,14 @@ var (
 	majorInType  = regexp.MustCompile(`\.v([0-9]+)$`)
 	// SPEC section 12: no golden event carries a field matching a known
 	// root-identifier pattern.
-	rootIdentifier = regexp.MustCompile(`(?i)(^|_)(nhs|nino|passport|ssn|dob|email|phone|msisdn|imei|imsi|mac|name|surname|forename|address|postcode|plate|vrm|vrn|face|biometric|fingerprint|root_subject|subject_id|client_id|sector_id)($|_)`)
+	rootIdentifier = regexp.MustCompile(`(?i)(^|_)(nhs|nino|passport|ssn|dob|email|phone|msisdn|imei|imsi|mac|name|surname|forename|address|postcode|plate|vrm|vrn|face|biometric|fingerprint|root_subject|subject_id)($|_)`)
 	// A suppressed bucket and an empty bucket must be indistinguishable, so an
 	// aggregate has nowhere to record that suppression happened.
 	suppressionMarker = regexp.MustCompile(`(?i)(suppress|redact|censor|masked|below_floor|withheld)`)
+	// SPEC section 14.7: a pseudonymous resident plus the service they
+	// authenticated to links a person to a domain by inference, which is the
+	// same defect as two pids on one stream.
+	clientReference = regexp.MustCompile(`^(client_id|client_ref|client|sector|sector_id|sector_identifier|relying_party|audience|aud)$`)
 	// An aggregate window is a bucket, never an author-chosen endpoint pair.
 	endpointPair = regexp.MustCompile(`^(period|window|range|interval)_(start|end|from|to)$`)
 )
