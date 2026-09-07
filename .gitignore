@@ -1,3 +1,9 @@
+# Internal working record. Decision reasoning, rejected alternatives and costs
+# are kept by the team and are not shipped with the schemas: five repositories
+# pin this one, and none of them need our deliberation. docs/SPEC.md carries
+# every decision that binds an implementer.
+docs/DECISIONS.md
+
 # Agent and editor instruction files. Local tooling configuration, not repository
 # content. The durable engineering standards live in docs/REVIEW.md.
 CLAUDE.md

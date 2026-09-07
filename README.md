@@ -8,8 +8,8 @@ in this repository reaches all five.
 
 **`docs/SPEC.md` is normative. This README is not.** Where they disagree, the
 spec is right and this file is stale — say so rather than following it.
-`docs/DECISIONS.md` records the reasoning behind decisions the spec states
-without justifying, including the costs each one accepted.
+`docs/REVIEW.md` records how changes here are reviewed and the standing rules
+that are easiest to erode by accident.
 
 ## Layout
 
@@ -22,7 +22,6 @@ without justifying, including the costs each one accepted.
 | `conformance/invalid/` | Events every SDK must reject, each annotated with its error class. |
 | `tools/beb-lint/` | The schema gate. Run it before pushing. |
 | `tools/schema-authoring/` | Bulk authoring aid for the corpus. Not a gate, not authoritative — see D-018. |
-| `docs/DECISIONS.md` | Why the spec says what it says, and what each choice cost. Appended, never rewritten. |
 | `docs/REVIEW.md` | How changes are reviewed, and the standing rules most easily eroded. |
 
 ## Adding an event

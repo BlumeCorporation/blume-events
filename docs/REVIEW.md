@@ -14,8 +14,10 @@ project. The examples are the actual cases, not illustrations.
 
 ## 1. Decision records
 
-Every decision not already settled by the spec goes in `docs/DECISIONS.md`,
-appended, never rewritten:
+Every decision not already settled by the spec goes in the team's decision
+record, appended, never rewritten. That record is kept outside this repository —
+five repositories pin this one and none of them need our deliberation — and
+anything that binds an implementer belongs in `docs/SPEC.md` instead:
 
 ```
 ## D-014 — Aggregates name a bucket, not an endpoint pair
@@ -156,7 +158,7 @@ eroded by a convenient local decision.
 3. Build. No stubs, no `TODO`, no `unimplemented!()`. If the work is too large to
    finish, say so rather than committing placeholders.
 4. Run passes A–D over what you built.
-5. Commit with `docs/DECISIONS.md` updated in the same commit.
+5. Commit, with the decision record updated at the same time.
 
 Every rule added to `beb-lint` needs a passing and a failing table case. Every
 violation class found by hand becomes a fixture in `tools/beb-lint/testdata/`.
