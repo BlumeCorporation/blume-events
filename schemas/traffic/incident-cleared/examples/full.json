@@ -1,0 +1,25 @@
+{
+  "specversion": "1.0",
+  "id": "5N1PM1DF8YSCPM4TF3BWDJDRR4",
+  "source": "//blume.systems/mcr/traffic/controller/A41-0271",
+  "type": "systems.blume.traffic.incident-cleared.v1",
+  "time": "2026-09-07T15:11:40.000Z",
+  "datacontenttype": "application/json",
+  "dataschema": "https://schemas.blume.systems/traffic/incident-cleared/1.0.0.json",
+  "blumetenant": "mcr",
+  "blumeretention": "operational",
+  "blumetrace": "00-6fa382d70990f1c5c4e8fc3487c922f9-f2922848c789216f-01",
+  "blumeseq": 13241,
+  "data": {
+    "incident_id": "INC-2026-09-07-0114",
+    "cleared_at": "2026-09-07T15:11:40.000Z",
+    "duration_s": 3998,
+    "resolution": "resolved",
+    "provenance": {
+      "producer": "signal-broker/1.0.0",
+      "node": "core-mcr-01",
+      "observed_at": "2026-09-07T15:11:40.220Z",
+      "method": "operator-console"
+    }
+  }
+}

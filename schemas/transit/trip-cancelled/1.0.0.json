@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.blume.systems/transit/trip-cancelled/1.0.0.json",
+  "title": "TripCancelled",
+  "description": "A scheduled trip will not run. Anonymous: affected travellers are notified by the passenger app from the route and time, not from a list of who was aboard.",
+  "type": "object",
+  "properties": {
+    "trip_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
+      "description": "Trip being cancelled."
+    },
+    "route_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
+      "description": "Route the trip belongs to."
+    },
+    "reason": {
+      "type": "string",
+      "enum": [
+        "vehicle-fault",
+        "staff-shortage",
+        "incident",
+        "weather",
+        "planned",
+        "congestion"
+      ],
+      "x-beb-enum": "open",
+      "description": "Why the trip was cancelled. Consumers MUST ignore unknown values."
+    },
+    "cancelled_at": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{3}Z$",
+      "description": "When the cancellation was decided."
+    },
+    "affected_stops": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
+        "description": "Stop identifier."
+      },
+      "description": "Stops that will not be served."
+    },
+    "provenance": {
+      "$ref": "https://schemas.blume.systems/common/provenance.json",
+      "description": "How the fact was produced. Required on every event."
+    }
+  },
+  "required": [
+    "trip_id",
+    "route_id",
+    "reason",
+    "cancelled_at",
+    "provenance"
+  ]
+}

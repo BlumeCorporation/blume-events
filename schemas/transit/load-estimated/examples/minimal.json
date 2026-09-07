@@ -1,0 +1,27 @@
+{
+  "specversion": "1.0",
+  "id": "77MASKNPGNY1T2EJ432GHDBBJB",
+  "source": "//blume.systems/mcr/transit/vehicle/BUS-4471",
+  "type": "systems.blume.transit.load-estimated.v1",
+  "time": "2026-09-07T14:03:45.000Z",
+  "datacontenttype": "application/json",
+  "dataschema": "https://schemas.blume.systems/transit/load-estimated/1.0.0.json",
+  "blumetenant": "mcr",
+  "blumeretention": "operational",
+  "blumetrace": "00-43f499180e69eb257f392e28308500b4-88e4f6ee4f54b797-01",
+  "blumeseq": 13276,
+  "data": {
+    "asset_ref": {
+      "class": "vehicle",
+      "id": "BUS-4471",
+      "tenant": "mcr"
+    },
+    "passenger_count": 34,
+    "provenance": {
+      "producer": "transit-core/1.0.0",
+      "node": "site-mcr-depot-01",
+      "observed_at": "2026-09-07T14:03:45.000Z",
+      "confidence": 0.88
+    }
+  }
+}

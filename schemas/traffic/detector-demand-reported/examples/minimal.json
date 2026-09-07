@@ -1,0 +1,29 @@
+{
+  "specversion": "1.0",
+  "id": "7ECXG6HB39H9JCV4BRXNZM11GC",
+  "source": "//blume.systems/mcr/traffic/controller/A41-0271",
+  "type": "systems.blume.traffic.detector-demand-reported.v1",
+  "time": "2026-09-07T14:03:00.000Z",
+  "datacontenttype": "application/json",
+  "dataschema": "https://schemas.blume.systems/traffic/detector-demand-reported/1.0.0.json",
+  "blumetenant": "mcr",
+  "blumeretention": "operational",
+  "blumetrace": "00-7ed541ddd2e463e7239346e03a746de1-5cb97f39709d5930-01",
+  "blumeseq": 79935,
+  "data": {
+    "asset_ref": {
+      "class": "controller",
+      "id": "A41-0271",
+      "tenant": "mcr"
+    },
+    "detector_id": "D-NB-2",
+    "approach": "NB",
+    "occupancy_pct": 31.4,
+    "window_s": 60,
+    "provenance": {
+      "producer": "signal-broker/1.0.0",
+      "node": "site-mcr-north-02",
+      "observed_at": "2026-09-07T14:03:00.000Z"
+    }
+  }
+}

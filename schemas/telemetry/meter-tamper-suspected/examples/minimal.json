@@ -1,0 +1,29 @@
+{
+  "specversion": "1.0",
+  "id": "0QEVQ1Z6DVXCMZST0AK7KYEQKB",
+  "source": "//blume.systems/mcr/telemetry/meter/M-88213-4",
+  "type": "systems.blume.telemetry.meter-tamper-suspected.v1",
+  "time": "2026-09-07T14:12:00.000Z",
+  "datacontenttype": "application/json",
+  "dataschema": "https://schemas.blume.systems/telemetry/meter-tamper-suspected/1.0.0.json",
+  "blumetenant": "mcr",
+  "blumeretention": "evidential",
+  "blumetrace": "00-d1f6724a069d13732699551c2b79f676-b37c5747d177ffa9-01",
+  "blumeseq": 39959,
+  "data": {
+    "asset_ref": {
+      "class": "meter",
+      "id": "M-88213-4",
+      "tenant": "mcr"
+    },
+    "indicators": [
+      "reverse-flow"
+    ],
+    "provenance": {
+      "producer": "utility-telemetry/1.0.0",
+      "node": "site-mcr-east-01",
+      "observed_at": "2026-09-07T14:12:00.000Z",
+      "confidence": 0.71
+    }
+  }
+}

@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.blume.systems/telemetry/consumption-aggregated/1.0.0.json",
+  "title": "ConsumptionAggregated",
+  "description": "Total consumption over a grid cell and a period. The analytical counterpart to meter-read-recorded, per the rule that a producer needing both views emits two events. Keys on `cell`, never on a meter: an aggregate over a handful of meters is a household read wearing a hat, which is why `meter_count` has a floor.",
+  "type": "object",
+  "properties": {
+    "geo": {
+      "$ref": "https://schemas.blume.systems/common/geo.json#/$defs/coarse"
+    },
+    "utility": {
+      "type": "string",
+      "enum": [
+        "electricity",
+        "gas",
+        "water",
+        "heat"
+      ],
+      "x-beb-enum": "open",
+      "description": "Utility network. Consumers MUST ignore unknown values."
+    },
+    "asset_ref": {
+      "$ref": "https://schemas.blume.systems/common/asset_ref.json",
+      "properties": {
+        "class": {
+          "enum": [
+            "substation"
+          ],
+          "x-beb-enum": "open"
+        }
+      },
+      "description": "Feeding substation. Class is narrowed to exclude `meter`: a meter identifier in a 90-day store re-identifies a household."
+    },
+    "period_start": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{3}Z$",
+      "description": "Start of the aggregation period, inclusive."
+    },
+    "period_end": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{3}Z$",
+      "description": "End of the aggregation period, exclusive."
+    },
+    "total": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Total consumption over the period in `unit`."
+    },
+    "unit": {
+      "type": "string",
+      "enum": [
+        "kWh",
+        "m3",
+        "MJ",
+        "L"
+      ],
+      "x-beb-enum": "open",
+      "description": "Unit of `total`. Consumers MUST ignore unknown values."
+    },
+    "meter_count": {
+      "type": "integer",
+      "minimum": 5,
+      "description": "Meters contributing to the aggregate. Floored at 5 so that a single premises cannot be isolated from the aggregate."
+    },
+    "provenance": {
+      "$ref": "https://schemas.blume.systems/common/provenance.json",
+      "description": "How the fact was produced. Required on every event."
+    }
+  },
+  "required": [
+    "geo",
+    "utility",
+    "period_start",
+    "period_end",
+    "total",
+    "unit",
+    "meter_count",
+    "provenance"
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "specversion": "1.0",
+  "id": "6BRSVQ6JT5QPHTFM25K5M8QMZY",
+  "source": "//blume.systems/mcr/identity/gateway/GW-MCR-ID-01",
+  "type": "systems.blume.identity.authentication-evaluated.v1",
+  "time": "2026-09-07T08:14:02.000Z",
+  "datacontenttype": "application/json",
+  "dataschema": "https://schemas.blume.systems/identity/authentication-evaluated/1.0.0.json",
+  "blumetenant": "mcr",
+  "blumeretention": "operational",
+  "blumetrace": "00-e5e6e70dffe9038432fdaeeb7ac2c315-e93d9ee826762f7f-01",
+  "blumeseq": 85049,
+  "data": {
+    "principal_kind": "natural-person",
+    "outcome": "failure-unknown-principal",
+    "method": "password",
+    "evaluated_at": "2026-09-07T08:14:02.000Z",
+    "provenance": {
+      "producer": "identity-gateway/1.0.0",
+      "node": "core-mcr-id-01",
+      "observed_at": "2026-09-07T08:14:02.090Z"
+    }
+  }
+}

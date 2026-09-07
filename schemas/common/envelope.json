@@ -1,0 +1,105 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.blume.systems/common/envelope.json",
+  "title": "Envelope",
+  "description": "CloudEvents 1.0, JSON mode, with the four Blume extension attributes. Closed: publishers MUST NOT define additional extensions without registry approval, so an unrecognised attribute is a validation failure rather than a tolerated addition. The `data` member is validated separately against the event's own schema, resolved from `dataschema`.",
+  "type": "object",
+  "properties": {
+    "specversion": {
+      "const": "1.0",
+      "description": "CloudEvents specification version."
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+      "description": "ULID, Crockford base32. Monotonic within a source. The idempotency key, and the value of the `Nats-Msg-Id` header."
+    },
+    "source": {
+      "type": "string",
+      "pattern": "^//blume\\.systems/[a-z][a-z0-9-]{1,11}/(traffic|telemetry|transit|vision|identity)/(signal|camera|meter|substation|vehicle|stop|gateway|controller)/[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
+      "description": "//blume.systems/<tenant>/<domain>/<asset-class>/<asset-id>. Ordering is guaranteed per source, not globally."
+    },
+    "type": {
+      "type": "string",
+      "pattern": "^systems\\.blume\\.(traffic|telemetry|transit|vision|identity)\\.[a-z0-9]+(-[a-z0-9]+)*\\.v[1-9][0-9]*$",
+      "description": "systems.blume.<domain>.<event-name>.<major>. The major token MUST equal the major of the semantic version in `dataschema`."
+    },
+    "subject": {
+      "type": "string",
+      "pattern": "^asset:(signal|camera|meter|substation|vehicle|stop|gateway|controller):[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
+      "description": "CloudEvents subject: the asset the event is about. Distinct from `subject_ref`, which references a natural person and never appears here. Optional."
+    },
+    "time": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{3}Z$",
+      "description": "RFC 3339, UTC, millisecond precision. The time the fact occurred, not the time it was published."
+    },
+    "datacontenttype": {
+      "const": "application/json",
+      "description": "Always application/json. The bus carries no binary content modes."
+    },
+    "dataschema": {
+      "type": "string",
+      "pattern": "^https://schemas\\.blume\\.systems/(traffic|telemetry|transit|vision|identity)/[a-z0-9]+(-[a-z0-9]+)*/[0-9]+\\.[0-9]+\\.[0-9]+\\.json$",
+      "description": "Absolute registry URI including the full semantic version. Every published version resolves permanently."
+    },
+    "blumetenant": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]{1,11}$",
+      "description": "Duplicates the subject token so the envelope is self-describing off-bus."
+    },
+    "blumeretention": {
+      "type": "string",
+      "enum": [
+        "operational",
+        "analytical",
+        "evidential",
+        "audit"
+      ],
+      "x-beb-enum": "open",
+      "description": "Retention class. An event carries exactly one. Consumers MUST ignore unknown values."
+    },
+    "blumetrace": {
+      "type": "string",
+      "pattern": "^00-[0-9a-f]{32}-[0-9a-f]{16}-[0-9a-f]{2}$",
+      "allOf": [
+        {
+          "not": {
+            "pattern": "^00-0{32}-"
+          }
+        },
+        {
+          "not": {
+            "pattern": "-0{16}-[0-9a-f]{2}$"
+          }
+        }
+      ],
+      "description": "W3C traceparent. Version 00; all-zero trace and span identifiers are invalid. Expressed with `not` rather than a lookahead so the pattern compiles under RE2, which is what the Go validator uses."
+    },
+    "blumeseq": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991,
+      "description": "Per-source monotonic counter. Gaps indicate loss."
+    },
+    "data": {
+      "type": "object",
+      "description": "Event payload. Validated against the schema named by `dataschema`."
+    }
+  },
+  "required": [
+    "specversion",
+    "id",
+    "source",
+    "type",
+    "time",
+    "datacontenttype",
+    "dataschema",
+    "blumetenant",
+    "blumeretention",
+    "blumetrace",
+    "blumeseq",
+    "data"
+  ],
+  "additionalProperties": false
+}

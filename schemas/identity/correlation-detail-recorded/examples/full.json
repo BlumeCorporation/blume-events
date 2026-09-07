@@ -1,0 +1,32 @@
+{
+  "specversion": "1.0",
+  "id": "39Y3J7Z8289QBYQ3CJ0TK1DPDP",
+  "source": "//blume.systems/mcr/identity/gateway/GW-MCR-ID-01",
+  "type": "systems.blume.identity.correlation-detail-recorded.v1",
+  "subject": "asset:gateway:GW-MCR-ID-01",
+  "time": "2026-09-07T16:40:00.000Z",
+  "datacontenttype": "application/json",
+  "dataschema": "https://schemas.blume.systems/identity/correlation-detail-recorded/1.0.0.json",
+  "blumetenant": "mcr",
+  "blumeretention": "evidential",
+  "blumetrace": "00-591d84a3b045ea66e1960e324e350e2e-5cd06c25d498d096-01",
+  "blumeseq": 28504,
+  "data": {
+    "correlation_id": "COR-2026-09-07-0007",
+    "subject_ref_a": {
+      "pid": "sub:transit:e3:FB2OA2F3DVYCLNHU",
+      "epoch": 3
+    },
+    "subject_ref_b": {
+      "pid": "sub:identity:e3:D5JDKKZX3CDYJL5Q",
+      "epoch": 3
+    },
+    "recorded_at": "2026-09-07T16:40:00.000Z",
+    "provenance": {
+      "producer": "identity-gateway/1.0.0",
+      "node": "core-mcr-id-01",
+      "observed_at": "2026-09-07T16:40:00.190Z",
+      "method": "correlate-v1"
+    }
+  }
+}

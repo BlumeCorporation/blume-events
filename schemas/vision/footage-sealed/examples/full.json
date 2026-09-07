@@ -1,0 +1,43 @@
+{
+  "specversion": "1.0",
+  "id": "5ZAJ1NM54SNE97875WFE3YF70P",
+  "source": "//blume.systems/mcr/vision/camera/CAM-0742-03",
+  "type": "systems.blume.vision.footage-sealed.v1",
+  "subject": "asset:camera:CAM-0742-03",
+  "time": "2026-09-07T16:02:00.000Z",
+  "datacontenttype": "application/json",
+  "dataschema": "https://schemas.blume.systems/vision/footage-sealed/1.0.0.json",
+  "blumetenant": "mcr",
+  "blumeretention": "evidential",
+  "blumetrace": "00-724f7fac315fa25b8bc4de092f17c070-53abf146515ac4cb-01",
+  "blumeseq": 76307,
+  "data": {
+    "asset_ref": {
+      "class": "camera",
+      "id": "CAM-0742-03",
+      "tenant": "mcr"
+    },
+    "stream_id": "cam-mcr-0742-03",
+    "seal_id": "SEAL-2026-0044",
+    "track_ref": {
+      "stream_id": "cam-mcr-0742-03",
+      "track_id": "9f2c1a7be4d05836",
+      "window": "2026-09-07T14Z"
+    },
+    "window_start": "2026-09-07T13:50:00.000Z",
+    "window_end": "2026-09-07T14:20:00.000Z",
+    "legal_basis_ref": "court-order/MCR-CC-2026-1187",
+    "hold_until": "2027-09-07T00:00:00.000Z",
+    "digest": {
+      "alg": "sha-256",
+      "value": "3b1f0c9a77e5d4218a6c0be93f4d271c5580aa9e1d6b3427ff8c0e21b4a97d05"
+    },
+    "sealed_at": "2026-09-07T16:02:00.000Z",
+    "provenance": {
+      "producer": "mca-ingest/1.0.0",
+      "node": "core-mcr-01",
+      "observed_at": "2026-09-07T16:02:00.310Z",
+      "method": "evidence-console"
+    }
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "specversion": "1.0",
+  "id": "3TFA0YGBK57AD6E6GTX9CB1F76",
+  "source": "//blume.systems/mcr/transit/vehicle/BUS-4471",
+  "type": "systems.blume.transit.trip-cancelled.v1",
+  "time": "2026-09-07T14:10:00.000Z",
+  "datacontenttype": "application/json",
+  "dataschema": "https://schemas.blume.systems/transit/trip-cancelled/1.0.0.json",
+  "blumetenant": "mcr",
+  "blumeretention": "operational",
+  "blumetrace": "00-673dfeadf4ad25df135c8a245b704f2d-6e11c51791a8e055-01",
+  "blumeseq": 55209,
+  "data": {
+    "trip_id": "T-142-0801",
+    "route_id": "R-142",
+    "reason": "vehicle-fault",
+    "cancelled_at": "2026-09-07T14:10:00.000Z",
+    "affected_stops": [
+      "S-00912",
+      "S-00913",
+      "S-00915"
+    ],
+    "provenance": {
+      "producer": "transit-core/1.0.0",
+      "node": "core-mcr-01",
+      "observed_at": "2026-09-07T14:10:00.500Z",
+      "method": "operations-console"
+    }
+  }
+}

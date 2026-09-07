@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.blume.systems/telemetry/substation-load-sampled/1.0.0.json",
+  "title": "SubstationLoadSampled",
+  "description": "A distribution substation reported an electrical load sample.",
+  "type": "object",
+  "properties": {
+    "asset_ref": {
+      "$ref": "https://schemas.blume.systems/common/asset_ref.json",
+      "properties": {
+        "class": {
+          "enum": [
+            "substation"
+          ],
+          "x-beb-enum": "open"
+        }
+      },
+      "description": "Substation sampled."
+    },
+    "phase": {
+      "type": "string",
+      "enum": [
+        "a",
+        "b",
+        "c",
+        "aggregate"
+      ],
+      "x-beb-enum": "open",
+      "description": "Phase the sample applies to. Consumers MUST ignore unknown values."
+    },
+    "load_kw": {
+      "type": "number",
+      "description": "Real power, kilowatts. Negative indicates export."
+    },
+    "voltage_v": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Line voltage, volts."
+    },
+    "current_a": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Line current, amperes."
+    },
+    "power_factor": {
+      "type": "number",
+      "minimum": -1,
+      "maximum": 1,
+      "description": "Power factor in [-1,1]."
+    },
+    "frequency_hz": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Supply frequency, hertz."
+    },
+    "provenance": {
+      "$ref": "https://schemas.blume.systems/common/provenance.json",
+      "description": "How the fact was produced. Required on every event."
+    }
+  },
+  "required": [
+    "asset_ref",
+    "phase",
+    "load_kw",
+    "provenance"
+  ]
+}

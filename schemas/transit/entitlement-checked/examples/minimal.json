@@ -1,0 +1,27 @@
+{
+  "specversion": "1.0",
+  "id": "73QBDGRSBZHGY4ZAKXEPWNPA79",
+  "source": "//blume.systems/mcr/transit/vehicle/BUS-4471",
+  "type": "systems.blume.transit.entitlement-checked.v1",
+  "time": "2026-09-07T14:03:21.000Z",
+  "datacontenttype": "application/json",
+  "dataschema": "https://schemas.blume.systems/transit/entitlement-checked/1.0.0.json",
+  "blumetenant": "mcr",
+  "blumeretention": "operational",
+  "blumetrace": "00-0fbe1fef2bab79c29c525b3867ebedd7-e3aae0a8d33438c3-01",
+  "blumeseq": 75175,
+  "data": {
+    "subject_ref": {
+      "pid": "sub:transit:e3:QGZ4TQGPWMJWLLGO",
+      "epoch": 3
+    },
+    "entitlement": "concessionary-disabled",
+    "valid": true,
+    "checked_at": "2026-09-07T14:03:21.000Z",
+    "provenance": {
+      "producer": "transit-core/1.0.0",
+      "node": "site-mcr-depot-01",
+      "observed_at": "2026-09-07T14:03:21.030Z"
+    }
+  }
+}

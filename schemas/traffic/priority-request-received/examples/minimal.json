@@ -1,0 +1,28 @@
+{
+  "specversion": "1.0",
+  "id": "2QP7N0XEB1693PQHZ2BTKBGDR1",
+  "source": "//blume.systems/mcr/traffic/controller/A41-0271",
+  "type": "systems.blume.traffic.priority-request-received.v1",
+  "time": "2026-09-07T14:01:58.000Z",
+  "datacontenttype": "application/json",
+  "dataschema": "https://schemas.blume.systems/traffic/priority-request-received/1.0.0.json",
+  "blumetenant": "mcr",
+  "blumeretention": "operational",
+  "blumetrace": "00-a8318c7b47819c77f081f72300be6b1e-c69425459a30ae63-01",
+  "blumeseq": 98549,
+  "data": {
+    "asset_ref": {
+      "class": "signal",
+      "id": "A41-0271",
+      "tenant": "mcr"
+    },
+    "entitlement_class": "extended-crossing",
+    "granted": true,
+    "requested_at": "2026-09-07T14:01:58.000Z",
+    "provenance": {
+      "producer": "signal-broker/1.0.0",
+      "node": "site-mcr-north-02",
+      "observed_at": "2026-09-07T14:01:58.090Z"
+    }
+  }
+}

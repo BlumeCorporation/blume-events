@@ -1,0 +1,22 @@
+{
+  "specversion": "1.0",
+  "id": "4RCDTV5MP6DDDN6MJW02W8ZQSB",
+  "source": "//blume.systems/mcr/telemetry/substation/SS-MCR-0742",
+  "type": "systems.blume.telemetry.outage-restored.v1",
+  "time": "2026-09-07T15:22:09.000Z",
+  "datacontenttype": "application/json",
+  "dataschema": "https://schemas.blume.systems/telemetry/outage-restored/1.0.0.json",
+  "blumetenant": "mcr",
+  "blumeretention": "operational",
+  "blumetrace": "00-918fee1e805685155c802436551cf2a6-d326dfa4347fa0b1-01",
+  "blumeseq": 83408,
+  "data": {
+    "outage_id": "OUT-2026-09-07-0031",
+    "restored_at": "2026-09-07T15:22:09.000Z",
+    "provenance": {
+      "producer": "utility-telemetry/1.0.0",
+      "node": "core-mcr-01",
+      "observed_at": "2026-09-07T15:22:09.400Z"
+    }
+  }
+}

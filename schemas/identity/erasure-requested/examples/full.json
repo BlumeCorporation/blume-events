@@ -1,0 +1,33 @@
+{
+  "specversion": "1.0",
+  "id": "7HEYVBAGGSJ3TX03C0G2EH6Y7H",
+  "source": "//blume.systems/mcr/identity/gateway/GW-MCR-ID-01",
+  "type": "systems.blume.identity.erasure-requested.v1",
+  "subject": "asset:gateway:GW-MCR-ID-01",
+  "time": "2026-09-07T09:12:00.000Z",
+  "datacontenttype": "application/json",
+  "dataschema": "https://schemas.blume.systems/identity/erasure-requested/1.0.0.json",
+  "blumetenant": "mcr",
+  "blumeretention": "evidential",
+  "blumetrace": "00-076e383d97c889041d0d592f3c2dd127-26e0b3748f714880-01",
+  "blumeseq": 55881,
+  "data": {
+    "erasure_id": "ERA-2026-09-07-0021",
+    "subject_ref": {
+      "pid": "sub:identity:e3:FRMJEMN2BWVARVZK",
+      "epoch": 3
+    },
+    "basis": "data-subject-request",
+    "scope": [
+      "transit",
+      "identity"
+    ],
+    "requested_at": "2026-09-07T09:12:00.000Z",
+    "provenance": {
+      "producer": "identity-gateway/1.0.0",
+      "node": "core-mcr-id-01",
+      "observed_at": "2026-09-07T09:12:00.410Z",
+      "method": "dsr-console"
+    }
+  }
+}

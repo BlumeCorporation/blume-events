@@ -1,0 +1,92 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.blume.systems/transit/fare-validated/1.0.0.json",
+  "title": "FareValidated",
+  "description": "A fare product was presented and validated. Subject-linked because a fare cap is a sum over that person's journeys: settling it requires per-person state, and an entitlement class alone cannot express it.",
+  "type": "object",
+  "properties": {
+    "subject_ref": {
+      "$ref": "https://schemas.blume.systems/common/subject_ref.json",
+      "description": "Pairwise pseudonym of the traveller, issued by identity-gateway for the `transit` domain. Required to accumulate a daily or weekly cap."
+    },
+    "asset_ref": {
+      "$ref": "https://schemas.blume.systems/common/asset_ref.json",
+      "properties": {
+        "class": {
+          "enum": [
+            "vehicle"
+          ],
+          "x-beb-enum": "open"
+        }
+      },
+      "description": "Vehicle the validator is mounted in."
+    },
+    "stop_ref": {
+      "$ref": "https://schemas.blume.systems/common/asset_ref.json",
+      "properties": {
+        "class": {
+          "enum": [
+            "stop"
+          ],
+          "x-beb-enum": "open"
+        }
+      },
+      "description": "Stop the validation occurred at, where the validator is fixed."
+    },
+    "product": {
+      "type": "string",
+      "enum": [
+        "single",
+        "day-cap",
+        "season",
+        "concessionary",
+        "contactless",
+        "mobile"
+      ],
+      "x-beb-enum": "open",
+      "description": "Fare product presented. Consumers MUST ignore unknown values."
+    },
+    "result": {
+      "type": "string",
+      "enum": [
+        "accepted",
+        "rejected-expired",
+        "rejected-blocked",
+        "rejected-insufficient",
+        "rejected-unknown"
+      ],
+      "x-beb-enum": "open",
+      "description": "Outcome of validation. Consumers MUST ignore unknown values."
+    },
+    "fare_minor": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Fare charged in minor currency units. Zero for concessionary travel."
+    },
+    "currency": {
+      "type": "string",
+      "pattern": "^[A-Z]{3}$",
+      "description": "ISO 4217 currency code."
+    },
+    "cap_reached": {
+      "type": "boolean",
+      "description": "True if this validation brought the traveller to a fare cap."
+    },
+    "validated_at": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{3}Z$",
+      "description": "When the product was presented."
+    },
+    "provenance": {
+      "$ref": "https://schemas.blume.systems/common/provenance.json",
+      "description": "How the fact was produced. Required on every event."
+    }
+  },
+  "required": [
+    "subject_ref",
+    "product",
+    "result",
+    "validated_at",
+    "provenance"
+  ]
+}

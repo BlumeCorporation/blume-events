@@ -1,0 +1,29 @@
+{
+  "specversion": "1.0",
+  "id": "539EKPK0QKVQQ99Y2HT8PMYEKM",
+  "source": "//blume.systems/mcr/traffic/controller/A41-0271",
+  "type": "systems.blume.traffic.incident-declared.v1",
+  "time": "2026-09-07T14:05:02.000Z",
+  "datacontenttype": "application/json",
+  "dataschema": "https://schemas.blume.systems/traffic/incident-declared/1.0.0.json",
+  "blumetenant": "mcr",
+  "blumeretention": "operational",
+  "blumetrace": "00-1129318a5e7ac2ad523456c4bf9a773a-29bfc515a689bd2a-01",
+  "blumeseq": 52339,
+  "data": {
+    "incident_id": "INC-2026-09-07-0114",
+    "kind": "collision",
+    "severity": "high",
+    "geo": {
+      "lat": 53.6097,
+      "lon": -2.1561
+    },
+    "reported_by": "operator",
+    "declared_at": "2026-09-07T14:05:02.000Z",
+    "provenance": {
+      "producer": "signal-broker/1.0.0",
+      "node": "core-mcr-01",
+      "observed_at": "2026-09-07T14:05:02.480Z"
+    }
+  }
+}

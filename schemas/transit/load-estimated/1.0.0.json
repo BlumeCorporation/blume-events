@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.blume.systems/transit/load-estimated/1.0.0.json",
+  "title": "LoadEstimated",
+  "description": "Estimated passenger load aboard a vehicle. Inferred from APC or weight sensing, so confidence is required and consumers MUST NOT treat the count as measured.",
+  "type": "object",
+  "properties": {
+    "asset_ref": {
+      "$ref": "https://schemas.blume.systems/common/asset_ref.json",
+      "properties": {
+        "class": {
+          "enum": [
+            "vehicle"
+          ],
+          "x-beb-enum": "open"
+        }
+      },
+      "description": "Vehicle the estimate applies to."
+    },
+    "trip_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
+      "description": "Trip being worked."
+    },
+    "stop_ref": {
+      "$ref": "https://schemas.blume.systems/common/asset_ref.json",
+      "properties": {
+        "class": {
+          "enum": [
+            "stop"
+          ],
+          "x-beb-enum": "open"
+        }
+      },
+      "description": "Stop the estimate was taken at, where it was."
+    },
+    "passenger_count": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Estimated passengers aboard."
+    },
+    "capacity": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Rated capacity of the vehicle."
+    },
+    "load_pct": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Estimated load as a percentage of capacity."
+    },
+    "provenance": {
+      "$ref": "https://schemas.blume.systems/common/provenance.json",
+      "required": [
+        "confidence"
+      ],
+      "description": "How the fact was inferred. `confidence` is required: this event is produced by inference, and consumers MUST NOT treat it as measured."
+    }
+  },
+  "required": [
+    "asset_ref",
+    "passenger_count",
+    "provenance"
+  ]
+}

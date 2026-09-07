@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.blume.systems/traffic/controller-fault-raised/1.0.0.json",
+  "title": "ControllerFaultRaised",
+  "description": "A controller self-reported a fault. Raised once per fault occurrence; a persisting fault is not re-raised until it clears and recurs.",
+  "type": "object",
+  "properties": {
+    "asset_ref": {
+      "$ref": "https://schemas.blume.systems/common/asset_ref.json",
+      "properties": {
+        "class": {
+          "enum": [
+            "controller"
+          ],
+          "x-beb-enum": "open"
+        }
+      },
+      "description": "Faulting controller."
+    },
+    "fault_code": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
+      "description": "Vendor fault code."
+    },
+    "fault_class": {
+      "type": "string",
+      "enum": [
+        "lamp",
+        "detector",
+        "comms",
+        "cabinet",
+        "config",
+        "power",
+        "timing"
+      ],
+      "x-beb-enum": "open",
+      "description": "Normalised fault category. Consumers MUST ignore unknown values."
+    },
+    "severity": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ],
+      "x-beb-enum": "open",
+      "description": "Operational severity. Consumers MUST ignore unknown values."
+    },
+    "first_seen_at": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{3}Z$",
+      "description": "When the fault was first observed."
+    },
+    "detail": {
+      "type": "string",
+      "maxLength": 512,
+      "description": "Vendor fault text, unparsed."
+    },
+    "provenance": {
+      "$ref": "https://schemas.blume.systems/common/provenance.json",
+      "description": "How the fact was produced. Required on every event."
+    }
+  },
+  "required": [
+    "asset_ref",
+    "fault_code",
+    "fault_class",
+    "severity",
+    "first_seen_at",
+    "provenance"
+  ]
+}

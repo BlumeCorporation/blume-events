@@ -1,0 +1,91 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.blume.systems/traffic/incident-declared/1.0.0.json",
+  "title": "IncidentDeclared",
+  "description": "An incident affecting the carriageway was declared. Declared by an operator or by an automated source; `reported_by` distinguishes them and analytics-sourced declarations carry confidence in provenance.",
+  "type": "object",
+  "properties": {
+    "incident_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
+      "description": "Incident identifier, stable across declare and clear."
+    },
+    "kind": {
+      "type": "string",
+      "enum": [
+        "collision",
+        "breakdown",
+        "obstruction",
+        "flooding",
+        "signal-fault",
+        "roadworks",
+        "protest",
+        "spillage"
+      ],
+      "x-beb-enum": "open",
+      "description": "What kind of incident. Consumers MUST ignore unknown values."
+    },
+    "severity": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ],
+      "x-beb-enum": "open",
+      "description": "Operational severity. Consumers MUST ignore unknown values."
+    },
+    "geo": {
+      "$ref": "https://schemas.blume.systems/common/geo.json#/$defs/precise"
+    },
+    "asset_ref": {
+      "$ref": "https://schemas.blume.systems/common/asset_ref.json",
+      "properties": {
+        "class": {
+          "enum": [
+            "signal",
+            "controller"
+          ],
+          "x-beb-enum": "open"
+        }
+      },
+      "description": "Nearest signalled asset, where one applies."
+    },
+    "lanes_blocked": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Number of lanes blocked."
+    },
+    "reported_by": {
+      "type": "string",
+      "enum": [
+        "operator",
+        "detector",
+        "public",
+        "partner-agency",
+        "analytics"
+      ],
+      "x-beb-enum": "open",
+      "description": "Source of the declaration. Consumers MUST ignore unknown values."
+    },
+    "declared_at": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{3}Z$",
+      "description": "When the incident was declared."
+    },
+    "provenance": {
+      "$ref": "https://schemas.blume.systems/common/provenance.json",
+      "description": "How the fact was produced. Required on every event."
+    }
+  },
+  "required": [
+    "incident_id",
+    "kind",
+    "severity",
+    "geo",
+    "reported_by",
+    "declared_at",
+    "provenance"
+  ]
+}

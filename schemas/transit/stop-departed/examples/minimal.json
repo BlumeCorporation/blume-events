@@ -1,0 +1,32 @@
+{
+  "specversion": "1.0",
+  "id": "49BHT3Q9KTH3RYA2V1AHR0JWXC",
+  "source": "//blume.systems/mcr/transit/vehicle/BUS-4471",
+  "type": "systems.blume.transit.stop-departed.v1",
+  "time": "2026-09-07T14:03:41.000Z",
+  "datacontenttype": "application/json",
+  "dataschema": "https://schemas.blume.systems/transit/stop-departed/1.0.0.json",
+  "blumetenant": "mcr",
+  "blumeretention": "operational",
+  "blumetrace": "00-da3061e312e36765dd336b3484ade867-5ee0b9751a9ce417-01",
+  "blumeseq": 15865,
+  "data": {
+    "asset_ref": {
+      "class": "vehicle",
+      "id": "BUS-4471",
+      "tenant": "mcr"
+    },
+    "stop_ref": {
+      "class": "stop",
+      "id": "S-00912",
+      "tenant": "mcr"
+    },
+    "trip_id": "T-142-0743",
+    "departed_at": "2026-09-07T14:03:41.000Z",
+    "provenance": {
+      "producer": "transit-core/1.0.0",
+      "node": "site-mcr-depot-01",
+      "observed_at": "2026-09-07T14:03:41.220Z"
+    }
+  }
+}

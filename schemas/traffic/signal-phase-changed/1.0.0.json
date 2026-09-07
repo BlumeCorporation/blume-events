@@ -1,0 +1,96 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.blume.systems/traffic/signal-phase-changed/1.0.0.json",
+  "title": "SignalPhaseChanged",
+  "description": "A signal group at an intersection transitioned between phases. Emitted by the controller on every transition, including transitions the plan did not schedule.",
+  "type": "object",
+  "properties": {
+    "asset_ref": {
+      "$ref": "https://schemas.blume.systems/common/asset_ref.json",
+      "properties": {
+        "class": {
+          "enum": [
+            "signal",
+            "controller"
+          ],
+          "x-beb-enum": "open"
+        }
+      },
+      "description": "The signal or controller that changed phase."
+    },
+    "intersection_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
+      "description": "Intersection the signal group belongs to."
+    },
+    "approach": {
+      "type": "string",
+      "enum": [
+        "NB",
+        "SB",
+        "EB",
+        "WB",
+        "NE",
+        "NW",
+        "SE",
+        "SW"
+      ],
+      "x-beb-enum": "open",
+      "description": "Cardinal approach to the intersection. Consumers MUST ignore unknown values."
+    },
+    "phase_from": {
+      "type": "string",
+      "enum": [
+        "green",
+        "amber",
+        "red",
+        "red-amber",
+        "flashing-amber",
+        "dark"
+      ],
+      "x-beb-enum": "open",
+      "description": "Phase before the transition. Consumers MUST ignore unknown values."
+    },
+    "phase_to": {
+      "type": "string",
+      "enum": [
+        "green",
+        "amber",
+        "red",
+        "red-amber",
+        "flashing-amber",
+        "dark"
+      ],
+      "x-beb-enum": "open",
+      "description": "Phase after the transition. Consumers MUST ignore unknown values."
+    },
+    "dwell_ms": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Time held in `phase_from` before the transition, milliseconds."
+    },
+    "plan_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
+      "description": "Timing plan in force. Absent when the controller is running fallback."
+    },
+    "actuated": {
+      "type": "boolean",
+      "description": "True if the transition was demand-actuated rather than fixed-time."
+    },
+    "provenance": {
+      "$ref": "https://schemas.blume.systems/common/provenance.json",
+      "description": "How the fact was produced. Required on every event."
+    }
+  },
+  "required": [
+    "asset_ref",
+    "intersection_id",
+    "approach",
+    "phase_from",
+    "phase_to",
+    "dwell_ms",
+    "actuated",
+    "provenance"
+  ]
+}

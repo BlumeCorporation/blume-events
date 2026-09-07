@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.blume.systems/transit/journey-completed/1.0.0.json",
+  "title": "JourneyCompleted",
+  "description": "A traveller's multi-leg journey was determined to have ended. Subject-linked because the legs must be attributed to one traveller to settle a capped fare. Inferred: journey end is decided by a timeout heuristic, not observed, so it carries confidence. The analytical view is od-flow-aggregated, which carries no subject reference.",
+  "type": "object",
+  "properties": {
+    "subject_ref": {
+      "$ref": "https://schemas.blume.systems/common/subject_ref.json",
+      "description": "Pairwise pseudonym of the traveller, issued by identity-gateway for the `transit` domain. Required to attribute the legs to one traveller for fare settlement."
+    },
+    "journey_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
+      "description": "Journey identifier, scoped to the traveller and the epoch."
+    },
+    "origin_stop": {
+      "$ref": "https://schemas.blume.systems/common/asset_ref.json",
+      "properties": {
+        "class": {
+          "enum": [
+            "stop"
+          ],
+          "x-beb-enum": "open"
+        }
+      },
+      "description": "First boarding stop of the journey."
+    },
+    "destination_stop": {
+      "$ref": "https://schemas.blume.systems/common/asset_ref.json",
+      "properties": {
+        "class": {
+          "enum": [
+            "stop"
+          ],
+          "x-beb-enum": "open"
+        }
+      },
+      "description": "Last alighting stop of the journey."
+    },
+    "started_at": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{3}Z$",
+      "description": "First validation of the journey."
+    },
+    "completed_at": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{3}Z$",
+      "description": "When the journey was determined to have ended."
+    },
+    "leg_count": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Number of legs in the journey."
+    },
+    "fare_total_minor": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Total fare charged in minor currency units."
+    },
+    "currency": {
+      "type": "string",
+      "pattern": "^[A-Z]{3}$",
+      "description": "ISO 4217 currency code."
+    },
+    "provenance": {
+      "$ref": "https://schemas.blume.systems/common/provenance.json",
+      "required": [
+        "confidence"
+      ],
+      "description": "How the fact was inferred. `confidence` is required: this event is produced by inference, and consumers MUST NOT treat it as measured."
+    }
+  },
+  "required": [
+    "subject_ref",
+    "journey_id",
+    "started_at",
+    "completed_at",
+    "provenance"
+  ]
+}

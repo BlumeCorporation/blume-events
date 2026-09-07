@@ -1,0 +1,24 @@
+{
+  "specversion": "1.0",
+  "id": "1RE498RD3B2X19GE6ZTF82H4BH",
+  "source": "//blume.systems/mcr/telemetry/substation/SS-MCR-0742",
+  "type": "systems.blume.telemetry.outage-declared.v1",
+  "time": "2026-09-07T13:58:44.000Z",
+  "datacontenttype": "application/json",
+  "dataschema": "https://schemas.blume.systems/telemetry/outage-declared/1.0.0.json",
+  "blumetenant": "mcr",
+  "blumeretention": "operational",
+  "blumetrace": "00-728a58ff3d5d8090f72cda9bc989ea2d-63c18c018fdca866-01",
+  "blumeseq": 12506,
+  "data": {
+    "outage_id": "OUT-2026-09-07-0031",
+    "utility": "electricity",
+    "cause": "fault",
+    "started_at": "2026-09-07T13:58:44.000Z",
+    "provenance": {
+      "producer": "utility-telemetry/1.0.0",
+      "node": "core-mcr-01",
+      "observed_at": "2026-09-07T13:58:47.000Z"
+    }
+  }
+}

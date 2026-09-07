@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.blume.systems/common/track_ref.json",
+  "title": "TrackRef",
+  "description": "A visual track, scoped to exactly one stream and one wall-clock UTC hour. This is the `vision` domain's substitute for a subject reference: vision carries no `subject_ref`, because a pseudonym is only obtainable if the producer can ask the gateway who a person is, and it can only ask if it holds a persistent biometric template - which is the root identifier under another name, accumulating in the one domain the pseudonymisation construction exists to keep it out of.\n\n`track_id` is a random 64-bit value. It MUST NOT be reused, MUST NOT be shared between streams, and MUST NOT cross the window boundary. A person walking through 14:59:59 into 15:00:00 receives two unrelated tracks. That truncation is the bound, not a defect: a rolling one-hour lifetime would track better and prove less, and any analysis needing continuity across the seam is an analysis this system declines to support.\n\nBanned in `analytical` retention - an hour-scoped per-person handle in a 90-day store reconstructs exactly what the scoping prevents. Permitted in `evidential`, which `footage-sealed` requires.",
+  "type": "object",
+  "properties": {
+    "stream_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{0,63}$",
+      "description": "Registered stream the track belongs to. A track is meaningless outside it."
+    },
+    "track_id": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{16}$",
+      "description": "Random 64-bit track identifier, lowercase hex. Never reused, never carried across a window."
+    },
+    "window": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}Z$",
+      "description": "Wall-clock UTC hour bucket the track lives in, e.g. \"2026-09-07T14Z\"."
+    }
+  },
+  "required": ["stream_id", "track_id", "window"],
+  "additionalProperties": false
+}

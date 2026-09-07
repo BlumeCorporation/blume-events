@@ -1,0 +1,31 @@
+{
+  "specversion": "1.0",
+  "id": "6AFQ2YB86GDCH09QYYRETG903D",
+  "source": "//blume.systems/mcr/vision/camera/CAM-0742-03",
+  "type": "systems.blume.vision.footage-sealed.v1",
+  "time": "2026-09-07T16:02:00.000Z",
+  "datacontenttype": "application/json",
+  "dataschema": "https://schemas.blume.systems/vision/footage-sealed/1.0.0.json",
+  "blumetenant": "mcr",
+  "blumeretention": "evidential",
+  "blumetrace": "00-2b140b85cb347fff593999336313bea5-87046c1032d6e3ee-01",
+  "blumeseq": 76661,
+  "data": {
+    "asset_ref": {
+      "class": "camera",
+      "id": "CAM-0742-03",
+      "tenant": "mcr"
+    },
+    "stream_id": "cam-mcr-0742-03",
+    "seal_id": "SEAL-2026-0044",
+    "window_start": "2026-09-07T13:50:00.000Z",
+    "window_end": "2026-09-07T14:20:00.000Z",
+    "legal_basis_ref": "court-order/MCR-CC-2026-1187",
+    "sealed_at": "2026-09-07T16:02:00.000Z",
+    "provenance": {
+      "producer": "mca-ingest/1.0.0",
+      "node": "core-mcr-01",
+      "observed_at": "2026-09-07T16:02:00.310Z"
+    }
+  }
+}

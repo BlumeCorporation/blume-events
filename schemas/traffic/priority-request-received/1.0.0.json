@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.blume.systems/traffic/priority-request-received/1.0.0.json",
+  "title": "PriorityRequestReceived",
+  "description": "A priority request was presented at a signalled crossing or junction. Carries the entitlement class and no subject reference: honouring the request means extending a green, which needs no per-person state. Recording who crossed which road when, for seven days, in order to lengthen a phase would buy a surveillance capability with no operational return. Where abuse must be controlled, the controller rate-limits on local presence and emits nothing.",
+  "type": "object",
+  "properties": {
+    "asset_ref": {
+      "$ref": "https://schemas.blume.systems/common/asset_ref.json",
+      "properties": {
+        "class": {
+          "enum": [
+            "signal",
+            "controller"
+          ],
+          "x-beb-enum": "open"
+        }
+      },
+      "description": "Crossing or junction the request was presented at."
+    },
+    "entitlement_class": {
+      "type": "string",
+      "enum": [
+        "extended-crossing",
+        "transit-priority",
+        "emergency-preemption"
+      ],
+      "x-beb-enum": "open",
+      "description": "Class of entitlement presented. Not an identity. Consumers MUST ignore unknown values."
+    },
+    "request_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
+      "description": "Per-request random identifier, used only to pair a request with its grant. Not stable across requests and not derivable from the presenter."
+    },
+    "granted": {
+      "type": "boolean",
+      "description": "Whether the controller honoured the request."
+    },
+    "extension_ms": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Additional green time granted, milliseconds. Zero when not granted."
+    },
+    "requested_at": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{3}Z$",
+      "description": "When the request was presented."
+    },
+    "provenance": {
+      "$ref": "https://schemas.blume.systems/common/provenance.json",
+      "description": "How the fact was produced. Required on every event."
+    }
+  },
+  "required": [
+    "asset_ref",
+    "entitlement_class",
+    "granted",
+    "requested_at",
+    "provenance"
+  ]
+}

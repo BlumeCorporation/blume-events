@@ -1,0 +1,88 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.blume.systems/identity/correlation-performed/1.0.0.json",
+  "title": "CorrelationPerformed",
+  "description": "A cross-domain correlation was performed through the resolution endpoint. Audit class, seven years, append-only, and therefore carries no pseudonym: the pids correlated are recorded separately by correlation-detail-recorded under evidential retention and access logging. Emitted before the result is returned. There is no configuration in which this is silent and there is no bulk mode.",
+  "type": "object",
+  "properties": {
+    "correlation_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
+      "description": "Correlation identifier. The join to the evidential detail record, resolvable to a person only while that record survives."
+    },
+    "domain_a": {
+      "type": "string",
+      "enum": [
+        "transit",
+        "identity"
+      ],
+      "x-beb-enum": "open",
+      "description": "First domain in the correlation. Only domains that carry pseudonyms can appear: traffic and telemetry are anonymous and vision uses track_ref. Consumers MUST ignore unknown values."
+    },
+    "domain_b": {
+      "type": "string",
+      "enum": [
+        "transit",
+        "identity"
+      ],
+      "x-beb-enum": "open",
+      "description": "Second domain in the correlation. Only domains that carry pseudonyms can appear: traffic and telemetry are anonymous and vision uses track_ref. Consumers MUST ignore unknown values."
+    },
+    "purpose_code": {
+      "type": "string",
+      "pattern": "^[A-Z][A-Z0-9-]{2,31}$",
+      "description": "Registered purpose code the action was bound to."
+    },
+    "principal_a": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9._-]{1,63}$",
+      "description": "First authorising principal."
+    },
+    "principal_b": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9._-]{1,63}$",
+      "description": "Second authorising principal. MUST differ from principal_a."
+    },
+    "legal_basis_ref": {
+      "type": "string",
+      "maxLength": 256,
+      "description": "Reference to the legal basis for the action."
+    },
+    "expires_at": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{3}Z$",
+      "description": "When the authorisation for this correlation expires."
+    },
+    "outcome": {
+      "type": "string",
+      "enum": [
+        "matched",
+        "no-match",
+        "refused"
+      ],
+      "x-beb-enum": "open",
+      "description": "Result of the correlation. Consumers MUST ignore unknown values."
+    },
+    "performed_at": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{3}Z$",
+      "description": "When the correlation was performed."
+    },
+    "provenance": {
+      "$ref": "https://schemas.blume.systems/common/provenance.json",
+      "description": "How the fact was produced. Required on every event."
+    }
+  },
+  "required": [
+    "correlation_id",
+    "domain_a",
+    "domain_b",
+    "purpose_code",
+    "principal_a",
+    "principal_b",
+    "legal_basis_ref",
+    "expires_at",
+    "performed_at",
+    "provenance"
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "specversion": "1.0",
+  "id": "0MJZ5BA3GBBQ3EDK6Y3P79Q477",
+  "source": "//blume.systems/mcr/identity/gateway/GW-MCR-ID-01",
+  "type": "systems.blume.identity.erasure-completed.v1",
+  "time": "2026-09-07T09:14:22.000Z",
+  "datacontenttype": "application/json",
+  "dataschema": "https://schemas.blume.systems/identity/erasure-completed/1.0.0.json",
+  "blumetenant": "mcr",
+  "blumeretention": "evidential",
+  "blumetrace": "00-50c5c4fc0765de69c40f583eb06e3d16-72152151c7b9c150-01",
+  "blumeseq": 25424,
+  "data": {
+    "erasure_id": "ERA-2026-09-07-0021",
+    "subject_ref": {
+      "pid": "sub:identity:e3:FRMJEMN2BWVARVZK",
+      "epoch": 3
+    },
+    "completed_at": "2026-09-07T09:14:22.000Z",
+    "keys_destroyed": 6,
+    "attestation": {
+      "digest_alg": "sha-256",
+      "digest": "c41d8f0a2b7e6539d0148ab3ce9207f61b45de88a3072cc5194ef60b7d2a3841",
+      "signer": "kms.mcr.gov"
+    },
+    "provenance": {
+      "producer": "identity-gateway/1.0.0",
+      "node": "core-mcr-id-01",
+      "observed_at": "2026-09-07T09:14:22.700Z"
+    }
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "specversion": "1.0",
+  "id": "118HBX8EAW4N5TM7QRAWMJMF7V",
+  "source": "//blume.systems/mcr/traffic/controller/A41-0271",
+  "type": "systems.blume.traffic.signal-plan-activated.v1",
+  "subject": "asset:controller:A41-0271",
+  "time": "2026-09-07T07:00:00.000Z",
+  "datacontenttype": "application/json",
+  "dataschema": "https://schemas.blume.systems/traffic/signal-plan-activated/1.0.0.json",
+  "blumetenant": "mcr",
+  "blumeretention": "operational",
+  "blumetrace": "00-47defb9eb2d4c42571f3a12600bd56c0-bc8cc98759afaa1a-01",
+  "blumeseq": 74879,
+  "data": {
+    "asset_ref": {
+      "class": "controller",
+      "id": "A41-0271",
+      "tenant": "mcr"
+    },
+    "plan_id": "peak-am-v7",
+    "previous_plan_id": "offpeak-v3",
+    "reason": "scheduled",
+    "effective_at": "2026-09-07T07:00:00.000Z",
+    "provenance": {
+      "producer": "signal-broker/1.0.0",
+      "node": "site-mcr-north-02",
+      "observed_at": "2026-09-07T07:00:00.031Z",
+      "method": "scheduler"
+    }
+  }
+}

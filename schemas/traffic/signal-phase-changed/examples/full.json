@@ -1,0 +1,34 @@
+{
+  "specversion": "1.0",
+  "id": "6W0QSDSSJQF6EYNNV9BNQVRNK6",
+  "source": "//blume.systems/mcr/traffic/controller/A41-0271",
+  "type": "systems.blume.traffic.signal-phase-changed.v1",
+  "subject": "asset:signal:A41-0271",
+  "time": "2026-09-07T14:02:11.417Z",
+  "datacontenttype": "application/json",
+  "dataschema": "https://schemas.blume.systems/traffic/signal-phase-changed/1.0.0.json",
+  "blumetenant": "mcr",
+  "blumeretention": "operational",
+  "blumetrace": "00-8f30967ca8c4db0ea864c2e1629a2adf-b53c5a956acff8ae-01",
+  "blumeseq": 20513,
+  "data": {
+    "asset_ref": {
+      "class": "signal",
+      "id": "A41-0271",
+      "tenant": "mcr"
+    },
+    "intersection_id": "A41-0271",
+    "approach": "NB",
+    "phase_from": "green",
+    "phase_to": "amber",
+    "dwell_ms": 42000,
+    "plan_id": "peak-am-v7",
+    "actuated": true,
+    "provenance": {
+      "producer": "signal-broker/1.0.0",
+      "node": "site-mcr-north-02",
+      "observed_at": "2026-09-07T14:02:11.912Z",
+      "method": "controller-poll"
+    }
+  }
+}

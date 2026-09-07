@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.blume.systems/vision/object-classified/1.0.0.json",
+  "title": "ObjectClassified",
+  "description": "A tracked object in a registered stream was assigned a class by on-node analytics. Inferred; carries confidence.",
+  "type": "object",
+  "properties": {
+    "asset_ref": {
+      "$ref": "https://schemas.blume.systems/common/asset_ref.json",
+      "properties": {
+        "class": {
+          "enum": [
+            "camera"
+          ],
+          "x-beb-enum": "open"
+        }
+      },
+      "description": "Camera that produced the classification."
+    },
+    "track_ref": {
+      "$ref": "https://schemas.blume.systems/common/track_ref.json",
+      "description": "Track being classified. Scoped to one stream and one wall-clock UTC hour; not a person reference."
+    },
+    "object_class": {
+      "type": "string",
+      "enum": [
+        "person",
+        "cycle",
+        "motorcycle",
+        "car",
+        "taxi",
+        "van",
+        "bus",
+        "lgv",
+        "hgv",
+        "unknown"
+      ],
+      "x-beb-enum": "open",
+      "description": "Assigned object class. Consumers MUST ignore unknown values."
+    },
+    "previous_class": {
+      "type": "string",
+      "enum": [
+        "person",
+        "cycle",
+        "motorcycle",
+        "car",
+        "taxi",
+        "van",
+        "bus",
+        "lgv",
+        "hgv",
+        "unknown"
+      ],
+      "x-beb-enum": "open",
+      "description": "Class previously assigned to this track, where it changed. Consumers MUST ignore unknown values."
+    },
+    "classified_at": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{3}Z$",
+      "description": "When the classification was made."
+    },
+    "provenance": {
+      "$ref": "https://schemas.blume.systems/common/provenance.json",
+      "required": [
+        "confidence"
+      ],
+      "description": "How the fact was inferred. `confidence` is required: this event is produced by inference, and consumers MUST NOT treat it as measured."
+    }
+  },
+  "required": [
+    "asset_ref",
+    "track_ref",
+    "object_class",
+    "classified_at",
+    "provenance"
+  ]
+}

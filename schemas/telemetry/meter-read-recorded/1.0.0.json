@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.blume.systems/telemetry/meter-read-recorded/1.0.0.json",
+  "title": "MeterReadRecorded",
+  "description": "A revenue or interval meter reported a register read. Measured. Domestic reads at interval granularity are personal data even without a subject reference, which is why they never reach analytical retention in this form.",
+  "type": "object",
+  "properties": {
+    "asset_ref": {
+      "$ref": "https://schemas.blume.systems/common/asset_ref.json",
+      "properties": {
+        "class": {
+          "enum": [
+            "meter"
+          ],
+          "x-beb-enum": "open"
+        }
+      },
+      "description": "Meter that produced the read."
+    },
+    "utility": {
+      "type": "string",
+      "enum": [
+        "electricity",
+        "gas",
+        "water",
+        "heat"
+      ],
+      "x-beb-enum": "open",
+      "description": "Utility network. Consumers MUST ignore unknown values."
+    },
+    "register": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
+      "description": "Register within the meter, e.g. \"import\", \"export\", \"rate-1\"."
+    },
+    "reading": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Cumulative register value in `unit`."
+    },
+    "unit": {
+      "type": "string",
+      "enum": [
+        "kWh",
+        "m3",
+        "MJ",
+        "L"
+      ],
+      "x-beb-enum": "open",
+      "description": "Unit of `reading`. Consumers MUST ignore unknown values."
+    },
+    "interval_s": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Nominal interval between reads, seconds."
+    },
+    "quality": {
+      "type": "string",
+      "enum": [
+        "measured",
+        "estimated",
+        "substituted",
+        "suspect"
+      ],
+      "x-beb-enum": "open",
+      "description": "Read quality as reported by the head-end. Consumers MUST ignore unknown values."
+    },
+    "provenance": {
+      "$ref": "https://schemas.blume.systems/common/provenance.json",
+      "description": "How the fact was produced. Required on every event."
+    }
+  },
+  "required": [
+    "asset_ref",
+    "utility",
+    "reading",
+    "unit",
+    "interval_s",
+    "quality",
+    "provenance"
+  ]
+}

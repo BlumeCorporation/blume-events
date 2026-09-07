@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.blume.systems/identity/erasure-requested/1.0.0.json",
+  "title": "ErasureRequested",
+  "description": "Erasure was requested for a subject. Event logs are append-only, so erasure is performed by destroying the per-subject data key rather than by rewriting the log. Evidential rather than audit, because it names the subject.",
+  "type": "object",
+  "properties": {
+    "erasure_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
+      "description": "Erasure identifier. The join to the audit attestation."
+    },
+    "subject_ref": {
+      "$ref": "https://schemas.blume.systems/common/subject_ref.json",
+      "description": "Pairwise pseudonym of the data subject. Subject whose data keys are to be destroyed."
+    },
+    "basis": {
+      "type": "string",
+      "enum": [
+        "data-subject-request",
+        "retention-expiry",
+        "court-order",
+        "contract-end"
+      ],
+      "x-beb-enum": "open",
+      "description": "Basis for the erasure. Consumers MUST ignore unknown values."
+    },
+    "scope": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "transit",
+          "identity"
+        ],
+        "x-beb-enum": "open",
+        "description": "Domain in scope. Only domains that carry pseudonyms can appear: traffic and telemetry are anonymous and vision uses track_ref. Consumers MUST ignore unknown values."
+      },
+      "minItems": 1,
+      "description": "Domains the erasure covers. Absent means every domain."
+    },
+    "requested_at": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{3}Z$",
+      "description": "When erasure was requested."
+    },
+    "provenance": {
+      "$ref": "https://schemas.blume.systems/common/provenance.json",
+      "description": "How the fact was produced. Required on every event."
+    }
+  },
+  "required": [
+    "erasure_id",
+    "subject_ref",
+    "basis",
+    "requested_at",
+    "provenance"
+  ]
+}

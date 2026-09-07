@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.blume.systems/telemetry/outage-declared/1.0.0.json",
+  "title": "OutageDeclared",
+  "description": "A supply outage was declared on a utility network. Affected extent is reported as grid cells, never as meter identifiers.",
+  "type": "object",
+  "properties": {
+    "outage_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
+      "description": "Outage identifier, stable across declare and restore."
+    },
+    "utility": {
+      "type": "string",
+      "enum": [
+        "electricity",
+        "gas",
+        "water",
+        "heat"
+      ],
+      "x-beb-enum": "open",
+      "description": "Utility network. Consumers MUST ignore unknown values."
+    },
+    "cause": {
+      "type": "string",
+      "enum": [
+        "fault",
+        "planned",
+        "third-party",
+        "weather",
+        "overload",
+        "unknown"
+      ],
+      "x-beb-enum": "open",
+      "description": "Cause as understood at declaration time. Consumers MUST ignore unknown values."
+    },
+    "asset_ref": {
+      "$ref": "https://schemas.blume.systems/common/asset_ref.json",
+      "properties": {
+        "class": {
+          "enum": [
+            "substation"
+          ],
+          "x-beb-enum": "open"
+        }
+      },
+      "description": "Substation or feeder at the head of the outage."
+    },
+    "affected_cells": {
+      "type": "array",
+      "items": {
+        "$ref": "https://schemas.blume.systems/common/geo.json#/$defs/cell_id"
+      },
+      "minItems": 1,
+      "description": "Grid cells losing supply."
+    },
+    "estimated_customers": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Estimated customer connections affected."
+    },
+    "started_at": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{3}Z$",
+      "description": "When supply was lost."
+    },
+    "provenance": {
+      "$ref": "https://schemas.blume.systems/common/provenance.json",
+      "description": "How the fact was produced. Required on every event."
+    }
+  },
+  "required": [
+    "outage_id",
+    "utility",
+    "cause",
+    "started_at",
+    "provenance"
+  ]
+}

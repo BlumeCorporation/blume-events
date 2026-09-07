@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.blume.systems/common/sealed.json",
+  "title": "Sealed",
+  "description": "A `data` field classified as subject-linked, encrypted at publish time with a per-subject data key wrapped by K_tenant_root. On erasure the gateway destroys the data key; the ciphertext remains in the append-only log and is permanently unrecoverable. A reference to this type IS the subject-linked classification marker for a field - there is no separate annotation.\n\n`key_id` is an opaque handle with no derivable relation to the subject. The gateway alone holds the key_id-to-subject mapping. It MUST NOT embed a pseudonym: a sealed blob travels wherever the event travels, and a pid beside the ciphertext it protects defeats the sealing.\n\nAdditional authenticated data is the RFC 8785 (JCS) serialisation of {\"blumetenant\", \"id\", \"path\", \"type\"} where `path` is the JSON Pointer of this field within the event. A blob lifted from one event and pasted into another therefore fails authentication rather than decrypting cleanly into the wrong context.\n\nDecoding yields exactly three outcomes, and SDKs MUST distinguish them: Opened, Shredded (the gateway confirmed key destruction - terminal, drop the record), and Unavailable (the key could not be fetched or the caller is not authorised - transient, nak and retry). Collapsing Shredded and Unavailable makes an authorisation failure look like an erasure. An undecryptable payload is a normal condition, not an error.",
+  "type": "object",
+  "properties": {
+    "alg": {
+      "type": "string",
+      "enum": ["AES-256-GCM"],
+      "x-beb-enum": "open",
+      "description": "Content encryption algorithm. Consumers MUST ignore unknown values."
+    },
+    "key_id": {
+      "type": "string",
+      "pattern": "^dk_[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+      "description": "Opaque data key handle. Carries no derivable relation to the subject."
+    },
+    "epoch": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991,
+      "description": "Pseudonym epoch the data key was derived under."
+    },
+    "ct": {
+      "type": "string",
+      "pattern": "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$",
+      "minLength": 24,
+      "description": "Base64 ciphertext with the appended 16-byte GCM authentication tag."
+    },
+    "iv": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9+/]{16}$",
+      "description": "Base64 of the 12-byte GCM initialisation vector. Never reused under one key."
+    }
+  },
+  "required": ["alg", "key_id", "epoch", "ct", "iv"],
+  "additionalProperties": false
+}

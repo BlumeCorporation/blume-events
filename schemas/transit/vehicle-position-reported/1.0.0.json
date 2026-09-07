@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.blume.systems/transit/vehicle-position-reported/1.0.0.json",
+  "title": "VehiclePositionReported",
+  "description": "A vehicle reported its position on a trip. Vehicle-scoped and anonymous: nothing about honouring this event requires knowing who is aboard.",
+  "type": "object",
+  "properties": {
+    "asset_ref": {
+      "$ref": "https://schemas.blume.systems/common/asset_ref.json",
+      "properties": {
+        "class": {
+          "enum": [
+            "vehicle"
+          ],
+          "x-beb-enum": "open"
+        }
+      },
+      "description": "Reporting vehicle."
+    },
+    "route_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
+      "description": "Route the vehicle is working."
+    },
+    "trip_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
+      "description": "Scheduled trip the vehicle is working."
+    },
+    "geo": {
+      "$ref": "https://schemas.blume.systems/common/geo.json#/$defs/precise"
+    },
+    "bearing_deg": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 360,
+      "description": "Heading, degrees clockwise from true north."
+    },
+    "speed_kph": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Ground speed, kilometres per hour."
+    },
+    "odometer_m": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Vehicle odometer, metres."
+    },
+    "provenance": {
+      "$ref": "https://schemas.blume.systems/common/provenance.json",
+      "description": "How the fact was produced. Required on every event."
+    }
+  },
+  "required": [
+    "asset_ref",
+    "geo",
+    "provenance"
+  ]
+}

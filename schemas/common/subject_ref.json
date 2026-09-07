@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.blume.systems/common/subject_ref.json",
+  "title": "SubjectRef",
+  "description": "The only permitted way to reference a natural person on the bus. `pid` is a gateway-issued pairwise pseudonym as defined in SPEC section 6; it is never a raw identifier and is never constructible outside `identity-gateway`. Only `transit` and `identity` may carry subject references: `traffic` and `telemetry` are anonymous domains and `vision` uses `track_ref` instead, so the domain token is restricted accordingly and a `sub:vision:` pseudonym fails validation here as well as in `beb-lint`.",
+  "type": "object",
+  "properties": {
+    "pid": {
+      "type": "string",
+      "pattern": "^sub:(transit|identity):e[0-9]+:[A-Z2-7]{16}$",
+      "description": "Pairwise pseudonym: \"sub:\" domain \":e\" epoch \":\" base32(HMAC-SHA256(K_domain_epoch, root_subject_id)[0..10])."
+    },
+    "epoch": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991,
+      "description": "Pseudonym epoch. MUST equal the epoch encoded in `pid`; JSON Schema cannot express the cross-field equality, so `beb-lint` and both SDKs enforce it."
+    }
+  },
+  "required": ["pid", "epoch"],
+  "additionalProperties": false
+}

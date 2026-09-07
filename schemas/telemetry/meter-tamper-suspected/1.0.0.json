@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.blume.systems/telemetry/meter-tamper-suspected/1.0.0.json",
+  "title": "MeterTamperSuspected",
+  "description": "On-node analysis suspects interference with a meter. Inferred, so it carries confidence and MUST NOT be treated as a finding of fact. Evidential retention: it may become the basis of a prosecution and is read-logged.",
+  "type": "object",
+  "properties": {
+    "asset_ref": {
+      "$ref": "https://schemas.blume.systems/common/asset_ref.json",
+      "properties": {
+        "class": {
+          "enum": [
+            "meter"
+          ],
+          "x-beb-enum": "open"
+        }
+      },
+      "description": "Meter under suspicion."
+    },
+    "indicators": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "magnetic-field",
+          "reverse-flow",
+          "seal-broken",
+          "consumption-anomaly",
+          "comms-spoof",
+          "clock-drift"
+        ],
+        "x-beb-enum": "open",
+        "description": "Individual tamper indicator. Consumers MUST ignore unknown values."
+      },
+      "minItems": 1,
+      "description": "Indicators that fired."
+    },
+    "score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Composite tamper score in [0,1]. Distinct from provenance confidence, which describes the reliability of the inference itself."
+    },
+    "first_seen_at": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{3}Z$",
+      "description": "When the indicators first fired."
+    },
+    "provenance": {
+      "$ref": "https://schemas.blume.systems/common/provenance.json",
+      "required": [
+        "confidence"
+      ],
+      "description": "How the fact was inferred. `confidence` is required: this event is produced by inference, and consumers MUST NOT treat it as measured."
+    }
+  },
+  "required": [
+    "asset_ref",
+    "indicators",
+    "provenance"
+  ]
+}

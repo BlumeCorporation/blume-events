@@ -1,0 +1,32 @@
+{
+  "specversion": "1.0",
+  "id": "29T54HTQPYPSZQC1HC13ABC719",
+  "source": "//blume.systems/mcr/identity/gateway/GW-MCR-ID-01",
+  "type": "systems.blume.identity.correlation-performed.v1",
+  "subject": "asset:gateway:GW-MCR-ID-01",
+  "time": "2026-09-07T16:40:00.000Z",
+  "datacontenttype": "application/json",
+  "dataschema": "https://schemas.blume.systems/identity/correlation-performed/1.0.0.json",
+  "blumetenant": "mcr",
+  "blumeretention": "audit",
+  "blumetrace": "00-f694042f0c789f56d4f703207fe660ab-b3631b70d2f28e48-01",
+  "blumeseq": 18011,
+  "data": {
+    "correlation_id": "COR-2026-09-07-0007",
+    "domain_a": "transit",
+    "domain_b": "identity",
+    "purpose_code": "SAFEGUARDING",
+    "principal_a": "dpo.mcr.gov",
+    "principal_b": "head-of-transit.mcr.gov",
+    "legal_basis_ref": "court-order/MCR-CC-2026-1187",
+    "expires_at": "2026-09-14T00:00:00.000Z",
+    "outcome": "matched",
+    "performed_at": "2026-09-07T16:40:00.000Z",
+    "provenance": {
+      "producer": "identity-gateway/1.0.0",
+      "node": "core-mcr-id-01",
+      "observed_at": "2026-09-07T16:40:00.180Z",
+      "method": "correlate-v1"
+    }
+  }
+}

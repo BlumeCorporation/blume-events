@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.blume.systems/common/asset_ref.json",
+  "title": "AssetRef",
+  "description": "A reference to a physical or logical asset owned by a tenant. Asset classes are registered centrally; the enum is open, so consumers MUST ignore unknown values rather than treat them as an error.",
+  "type": "object",
+  "properties": {
+    "class": {
+      "type": "string",
+      "enum": ["signal", "camera", "meter", "substation", "vehicle", "stop", "gateway", "controller"],
+      "x-beb-enum": "open",
+      "description": "Registered asset class. Consumers MUST ignore unknown values."
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
+      "description": "Tenant-scoped asset identifier, unique within (tenant, class)."
+    },
+    "tenant": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]{1,11}$",
+      "description": "Deployment identifier. Duplicates the envelope `blumetenant` so the reference is self-describing off-bus."
+    }
+  },
+  "required": ["class", "id", "tenant"],
+  "additionalProperties": false
+}

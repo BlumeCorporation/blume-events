@@ -1,0 +1,35 @@
+{
+  "specversion": "1.0",
+  "id": "532XZMN064NZS664FBNK446SBQ",
+  "source": "//blume.systems/mcr/telemetry/substation/SS-MCR-0742",
+  "type": "systems.blume.telemetry.consumption-aggregated.v1",
+  "time": "2026-09-07T13:00:00.000Z",
+  "datacontenttype": "application/json",
+  "dataschema": "https://schemas.blume.systems/telemetry/consumption-aggregated/1.0.0.json",
+  "blumetenant": "mcr",
+  "blumeretention": "analytical",
+  "blumetrace": "00-c5badf598fb6d0c64bf55f4344b7e2f2-730f1b97b53c5165-01",
+  "blumeseq": 16025,
+  "data": {
+    "geo": {
+      "cell": "MCR-0742-19"
+    },
+    "utility": "electricity",
+    "asset_ref": {
+      "class": "substation",
+      "id": "SS-MCR-0742",
+      "tenant": "mcr"
+    },
+    "period_start": "2026-09-07T13:00:00.000Z",
+    "period_end": "2026-09-07T14:00:00.000Z",
+    "total": 918.4,
+    "unit": "kWh",
+    "meter_count": 214,
+    "provenance": {
+      "producer": "utility-telemetry/1.0.0",
+      "node": "core-mcr-01",
+      "observed_at": "2026-09-07T14:01:00.905Z",
+      "method": "batch-rollup"
+    }
+  }
+}

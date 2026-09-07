@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.blume.systems/traffic/detector-demand-reported/1.0.0.json",
+  "title": "DetectorDemandReported",
+  "description": "A loop or radar detector reported demand on an approach over a sampling window. Measured, not inferred: the detector reports occupancy directly.",
+  "type": "object",
+  "properties": {
+    "asset_ref": {
+      "$ref": "https://schemas.blume.systems/common/asset_ref.json",
+      "properties": {
+        "class": {
+          "enum": [
+            "controller",
+            "signal"
+          ],
+          "x-beb-enum": "open"
+        }
+      },
+      "description": "Controller owning the detector."
+    },
+    "detector_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
+      "description": "Detector identifier, unique within the controller."
+    },
+    "approach": {
+      "type": "string",
+      "enum": [
+        "NB",
+        "SB",
+        "EB",
+        "WB",
+        "NE",
+        "NW",
+        "SE",
+        "SW"
+      ],
+      "x-beb-enum": "open",
+      "description": "Cardinal approach to the intersection. Consumers MUST ignore unknown values."
+    },
+    "occupancy_pct": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "Fraction of the window the detector was occupied, percent."
+    },
+    "volume_vph": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Flow across the detector, vehicles per hour, extrapolated from the window."
+    },
+    "window_s": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Sampling window length, seconds."
+    },
+    "provenance": {
+      "$ref": "https://schemas.blume.systems/common/provenance.json",
+      "description": "How the fact was produced. Required on every event."
+    }
+  },
+  "required": [
+    "asset_ref",
+    "detector_id",
+    "approach",
+    "occupancy_pct",
+    "window_s",
+    "provenance"
+  ]
+}

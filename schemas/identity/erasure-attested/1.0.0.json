@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.blume.systems/identity/erasure-attested/1.0.0.json",
+  "title": "ErasureAttested",
+  "description": "Durable proof that an erasure was performed. Audit class, seven years, no erasure path, and no subject reference. Evidential retention is per tenant policy, so the erasure record naming the subject can itself expire; proof that the erasure happened has to outlive it. The erasure_id is the join, and it resolves to a person only while the evidential record survives - which is the correct decay.",
+  "type": "object",
+  "properties": {
+    "erasure_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
+      "description": "Erasure being attested. The join to the evidential record."
+    },
+    "outcome": {
+      "type": "string",
+      "enum": [
+        "completed",
+        "partial",
+        "failed"
+      ],
+      "x-beb-enum": "open",
+      "description": "Outcome of the erasure. Consumers MUST ignore unknown values."
+    },
+    "keys_destroyed": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Number of data keys destroyed."
+    },
+    "attested_at": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{3}Z$",
+      "description": "When the attestation was made."
+    },
+    "principal": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9._-]{1,63}$",
+      "description": "Principal attesting the erasure."
+    },
+    "provenance": {
+      "$ref": "https://schemas.blume.systems/common/provenance.json",
+      "description": "How the fact was produced. Required on every event."
+    }
+  },
+  "required": [
+    "erasure_id",
+    "outcome",
+    "attested_at",
+    "principal",
+    "provenance"
+  ]
+}

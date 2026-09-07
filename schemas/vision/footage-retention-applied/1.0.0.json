@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.blume.systems/vision/footage-retention-applied/1.0.0.json",
+  "title": "FootageRetentionApplied",
+  "description": "A retention policy was applied to a window of stored footage. Audit class: it records what happened to the material, and carries neither a track nor a subject so that the seven-year append-only store holds no personal data.",
+  "type": "object",
+  "properties": {
+    "asset_ref": {
+      "$ref": "https://schemas.blume.systems/common/asset_ref.json",
+      "properties": {
+        "class": {
+          "enum": [
+            "camera"
+          ],
+          "x-beb-enum": "open"
+        }
+      },
+      "description": "Camera whose footage the policy was applied to."
+    },
+    "stream_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{0,63}$",
+      "description": "Registered stream identifier."
+    },
+    "policy_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
+      "description": "Retention policy applied."
+    },
+    "action": {
+      "type": "string",
+      "enum": [
+        "retained",
+        "expired",
+        "purged",
+        "extended",
+        "exported"
+      ],
+      "x-beb-enum": "open",
+      "description": "What the policy did to the window. Consumers MUST ignore unknown values."
+    },
+    "window_start": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{3}Z$",
+      "description": "Start of the footage window, inclusive."
+    },
+    "window_end": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{3}Z$",
+      "description": "End of the footage window, exclusive."
+    },
+    "bytes": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Size of the affected material, bytes."
+    },
+    "applied_at": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{3}Z$",
+      "description": "When the policy was applied."
+    },
+    "provenance": {
+      "$ref": "https://schemas.blume.systems/common/provenance.json",
+      "description": "How the fact was produced. Required on every event."
+    }
+  },
+  "required": [
+    "asset_ref",
+    "stream_id",
+    "policy_id",
+    "action",
+    "window_start",
+    "window_end",
+    "applied_at",
+    "provenance"
+  ]
+}

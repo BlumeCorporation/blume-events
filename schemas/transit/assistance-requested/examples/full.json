@@ -1,0 +1,46 @@
+{
+  "specversion": "1.0",
+  "id": "6NEY8Y37TXNT29558JS8EB4SVC",
+  "source": "//blume.systems/mcr/transit/vehicle/BUS-4471",
+  "type": "systems.blume.transit.assistance-requested.v1",
+  "subject": "asset:stop:S-00912",
+  "time": "2026-09-07T13:55:00.000Z",
+  "datacontenttype": "application/json",
+  "dataschema": "https://schemas.blume.systems/transit/assistance-requested/1.0.0.json",
+  "blumetenant": "mcr",
+  "blumeretention": "operational",
+  "blumetrace": "00-27b974cbe73d65160eb47a71c8860604-c669036fa9e82e8e-01",
+  "blumeseq": 51449,
+  "data": {
+    "subject_ref": {
+      "pid": "sub:transit:e3:QGZ4TQGPWMJWLLGO",
+      "epoch": 3
+    },
+    "stop_ref": {
+      "class": "stop",
+      "id": "S-00912",
+      "tenant": "mcr"
+    },
+    "trip_id": "T-142-0743",
+    "assistance_type": "ramp",
+    "needs": {
+      "alg": "AES-256-GCM",
+      "key_id": "dk_3MC62DC65S22J50DFA2XYM3CJ5",
+      "epoch": 3,
+      "ct": "8LDVSkEOvvcPNRKtcV21Hy92SFf/sm2C7G/IiVnM9ouAyiZUGMhh6pwwvF+pq1lq",
+      "iv": "V2x+8DTeKb01UBap"
+    },
+    "requested_at": "2026-09-07T13:55:00.000Z",
+    "asset_ref": {
+      "class": "vehicle",
+      "id": "BUS-4471",
+      "tenant": "mcr"
+    },
+    "provenance": {
+      "producer": "transit-core/1.0.0",
+      "node": "core-mcr-01",
+      "observed_at": "2026-09-07T13:55:00.260Z",
+      "method": "passenger-app"
+    }
+  }
+}

@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.blume.systems/transit/assistance-requested/1.0.0.json",
+  "title": "AssistanceRequested",
+  "description": "A traveller requested boarding or journey assistance. Subject-linked because staff must retrieve a registered needs profile to honour it. The profile itself is sealed: `assistance_type` is enough to dispatch, and the detail is health information that no consumer of the operational stream needs in clear.",
+  "type": "object",
+  "properties": {
+    "subject_ref": {
+      "$ref": "https://schemas.blume.systems/common/subject_ref.json",
+      "description": "Pairwise pseudonym of the traveller, issued by identity-gateway for the `transit` domain. Required to retrieve the registered needs profile."
+    },
+    "stop_ref": {
+      "$ref": "https://schemas.blume.systems/common/asset_ref.json",
+      "properties": {
+        "class": {
+          "enum": [
+            "stop"
+          ],
+          "x-beb-enum": "open"
+        }
+      },
+      "description": "Stop assistance was requested at."
+    },
+    "trip_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
+      "description": "Trip assistance is requested for."
+    },
+    "assistance_type": {
+      "type": "string",
+      "enum": [
+        "ramp",
+        "wheelchair-space",
+        "guide",
+        "boarding-help",
+        "audio-announcement",
+        "priority-seat"
+      ],
+      "x-beb-enum": "open",
+      "description": "Assistance requested. Sufficient on its own to dispatch. Consumers MUST ignore unknown values."
+    },
+    "needs": {
+      "$ref": "https://schemas.blume.systems/common/sealed.json",
+      "description": "Registered needs detail, sealed under a per-subject data key. Decodes to Opened, Shredded, or Unavailable; an undecryptable payload is a normal condition, not an error."
+    },
+    "requested_at": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{3}Z$",
+      "description": "When assistance was requested."
+    },
+    "asset_ref": {
+      "$ref": "https://schemas.blume.systems/common/asset_ref.json",
+      "properties": {
+        "class": {
+          "enum": [
+            "vehicle"
+          ],
+          "x-beb-enum": "open"
+        }
+      },
+      "description": "Vehicle assigned to honour the request."
+    },
+    "provenance": {
+      "$ref": "https://schemas.blume.systems/common/provenance.json",
+      "description": "How the fact was produced. Required on every event."
+    }
+  },
+  "required": [
+    "subject_ref",
+    "stop_ref",
+    "assistance_type",
+    "requested_at",
+    "provenance"
+  ]
+}

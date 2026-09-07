@@ -1,0 +1,529 @@
+# blume-events catalog
+#
+# Every registered event, one entry each. The machine-readable index and the
+# input to codegen. `beb-lint` requires that every entry resolves to a schema on
+# disk, that the major token in `type` equals the major of the schema semantic
+# version, that `subject_linked` agrees with the schema's transitive $ref graph,
+# that `retention` is consistent with that graph, and that `inferred: true`
+# implies provenance.confidence is required at the event's own reference site.
+#
+# Domains in the order of SPEC section 1. Generated code is derived from this
+# file and from the schemas it names; neither is hand-edited downstream.
+
+# ---------------------------------------------------------------- traffic
+- type: systems.blume.traffic.controller-fault-raised.v1
+  domain: traffic
+  schema: traffic/controller-fault-raised/1.0.0.json
+  retention: operational
+  subject_linked: false
+  inferred: false
+  description: >
+    A controller self-reported a fault. Raised once per fault occurrence;
+    a persisting fault is not re-raised until it clears and recurs.
+  producers: [signal-broker]
+
+- type: systems.blume.traffic.detector-demand-reported.v1
+  domain: traffic
+  schema: traffic/detector-demand-reported/1.0.0.json
+  retention: operational
+  subject_linked: false
+  inferred: false
+  description: >
+    A loop or radar detector reported demand on an approach over a
+    sampling window. Measured, not inferred: the detector reports
+    occupancy directly.
+  producers: [signal-broker]
+
+- type: systems.blume.traffic.incident-cleared.v1
+  domain: traffic
+  schema: traffic/incident-cleared/1.0.0.json
+  retention: operational
+  subject_linked: false
+  inferred: false
+  description: >
+    A previously declared incident was cleared. Terminal for the
+    `incident_id`.
+  producers: [signal-broker]
+
+- type: systems.blume.traffic.incident-declared.v1
+  domain: traffic
+  schema: traffic/incident-declared/1.0.0.json
+  retention: operational
+  subject_linked: false
+  inferred: false
+  description: >
+    An incident affecting the carriageway was declared. Declared by an
+    operator or by an automated source; `reported_by` distinguishes them
+    and analytics-sourced declarations carry confidence in provenance.
+  producers: [signal-broker]
+
+- type: systems.blume.traffic.priority-request-received.v1
+  domain: traffic
+  schema: traffic/priority-request-received/1.0.0.json
+  retention: operational
+  subject_linked: false
+  inferred: false
+  description: >
+    A priority request was presented at a signalled crossing or junction.
+    Carries the entitlement class and no subject reference: honouring the
+    request means extending a green, which needs no per-person state.
+    Recording who crossed which road when, for seven days, in order to
+    lengthen a phase would buy a surveillance capability with no
+    operational return. Where abuse must be controlled, the controller
+    rate-limits on local presence and emits nothing.
+  producers: [signal-broker]
+
+- type: systems.blume.traffic.signal-phase-changed.v1
+  domain: traffic
+  schema: traffic/signal-phase-changed/1.0.0.json
+  retention: operational
+  subject_linked: false
+  inferred: false
+  description: >
+    A signal group at an intersection transitioned between phases. Emitted
+    by the controller on every transition, including transitions the plan
+    did not schedule.
+  producers: [signal-broker]
+
+- type: systems.blume.traffic.signal-plan-activated.v1
+  domain: traffic
+  schema: traffic/signal-plan-activated/1.0.0.json
+  retention: operational
+  subject_linked: false
+  inferred: false
+  description: >
+    A controller began running a different timing plan. Covers scheduled
+    changes, operator overrides, adaptive selection, and falls back.
+  producers: [signal-broker]
+
+# ---------------------------------------------------------------- telemetry
+- type: systems.blume.telemetry.consumption-aggregated.v1
+  domain: telemetry
+  schema: telemetry/consumption-aggregated/1.0.0.json
+  retention: analytical
+  subject_linked: false
+  inferred: false
+  description: >
+    Total consumption over a grid cell and a period. The analytical
+    counterpart to meter-read-recorded, per the rule that a producer
+    needing both views emits two events. Keys on `cell`, never on a meter:
+    an aggregate over a handful of meters is a household read wearing a
+    hat, which is why `meter_count` has a floor.
+  producers: [utility-telemetry]
+
+- type: systems.blume.telemetry.meter-read-recorded.v1
+  domain: telemetry
+  schema: telemetry/meter-read-recorded/1.0.0.json
+  retention: operational
+  subject_linked: false
+  inferred: false
+  description: >
+    A revenue or interval meter reported a register read. Measured.
+    Domestic reads at interval granularity are personal data even without
+    a subject reference, which is why they never reach analytical
+    retention in this form.
+  producers: [utility-telemetry]
+
+- type: systems.blume.telemetry.meter-tamper-suspected.v1
+  domain: telemetry
+  schema: telemetry/meter-tamper-suspected/1.0.0.json
+  retention: evidential
+  subject_linked: false
+  inferred: true
+  description: >
+    On-node analysis suspects interference with a meter. Inferred, so it
+    carries confidence and MUST NOT be treated as a finding of fact.
+    Evidential retention: it may become the basis of a prosecution and is
+    read-logged.
+  producers: [utility-telemetry]
+
+- type: systems.blume.telemetry.outage-declared.v1
+  domain: telemetry
+  schema: telemetry/outage-declared/1.0.0.json
+  retention: operational
+  subject_linked: false
+  inferred: false
+  description: >
+    A supply outage was declared on a utility network. Affected extent is
+    reported as grid cells, never as meter identifiers.
+  producers: [utility-telemetry]
+
+- type: systems.blume.telemetry.outage-restored.v1
+  domain: telemetry
+  schema: telemetry/outage-restored/1.0.0.json
+  retention: operational
+  subject_linked: false
+  inferred: false
+  description: >
+    Supply was restored for a previously declared outage. Terminal for the
+    `outage_id`.
+  producers: [utility-telemetry]
+
+- type: systems.blume.telemetry.pressure-sampled.v1
+  domain: telemetry
+  schema: telemetry/pressure-sampled/1.0.0.json
+  retention: operational
+  subject_linked: false
+  inferred: false
+  description: >
+    A water or gas network sensor reported a pressure sample.
+  producers: [utility-telemetry]
+
+- type: systems.blume.telemetry.substation-load-sampled.v1
+  domain: telemetry
+  schema: telemetry/substation-load-sampled/1.0.0.json
+  retention: operational
+  subject_linked: false
+  inferred: false
+  description: >
+    A distribution substation reported an electrical load sample.
+  producers: [utility-telemetry]
+
+# ---------------------------------------------------------------- transit
+- type: systems.blume.transit.assistance-requested.v1
+  domain: transit
+  schema: transit/assistance-requested/1.0.0.json
+  retention: operational
+  subject_linked: true
+  inferred: false
+  description: >
+    A traveller requested boarding or journey assistance. Subject-linked
+    because staff must retrieve a registered needs profile to honour it.
+    The profile itself is sealed: `assistance_type` is enough to dispatch,
+    and the detail is health information that no consumer of the
+    operational stream needs in clear.
+  producers: [transit-core]
+
+- type: systems.blume.transit.entitlement-checked.v1
+  domain: transit
+  schema: transit/entitlement-checked/1.0.0.json
+  retention: operational
+  subject_linked: true
+  inferred: false
+  description: >
+    A concessionary or staff entitlement was checked against the register.
+    Subject-linked because the entitlement is held by a person and the
+    check is a lookup of whether this person holds it - the class alone
+    answers nothing.
+  producers: [transit-core]
+
+- type: systems.blume.transit.fare-validated.v1
+  domain: transit
+  schema: transit/fare-validated/1.0.0.json
+  retention: operational
+  subject_linked: true
+  inferred: false
+  description: >
+    A fare product was presented and validated. Subject-linked because a
+    fare cap is a sum over that person's journeys: settling it requires
+    per-person state, and an entitlement class alone cannot express it.
+  producers: [transit-core]
+
+- type: systems.blume.transit.headway-deviated.v1
+  domain: transit
+  schema: transit/headway-deviated/1.0.0.json
+  retention: operational
+  subject_linked: false
+  inferred: false
+  description: >
+    Observed headway on a route diverged materially from schedule at a
+    stop. Bunching and gapping are reported as the same event with
+    opposite direction.
+  producers: [transit-core]
+
+- type: systems.blume.transit.journey-completed.v1
+  domain: transit
+  schema: transit/journey-completed/1.0.0.json
+  retention: operational
+  subject_linked: true
+  inferred: true
+  description: >
+    A traveller's multi-leg journey was determined to have ended. Subject-
+    linked because the legs must be attributed to one traveller to settle
+    a capped fare. Inferred: journey end is decided by a timeout
+    heuristic, not observed, so it carries confidence. The analytical view
+    is od-flow-aggregated, which carries no subject reference.
+  producers: [transit-core]
+
+- type: systems.blume.transit.load-estimated.v1
+  domain: transit
+  schema: transit/load-estimated/1.0.0.json
+  retention: operational
+  subject_linked: false
+  inferred: true
+  description: >
+    Estimated passenger load aboard a vehicle. Inferred from APC or weight
+    sensing, so confidence is required and consumers MUST NOT treat the
+    count as measured.
+  producers: [transit-core]
+
+- type: systems.blume.transit.od-flow-aggregated.v1
+  domain: transit
+  schema: transit/od-flow-aggregated/1.0.0.json
+  retention: analytical
+  subject_linked: false
+  inferred: false
+  description: >
+    Journey counts between two grid cells over a period. The analytical
+    counterpart to journey-completed: linkage is performed inside transit-
+    core before publication and does not survive into the aggregate.
+    Coarse geo only, and a floor on `journeys` so a flow cannot describe
+    one traveller.
+  producers: [transit-core]
+
+- type: systems.blume.transit.stop-arrived.v1
+  domain: transit
+  schema: transit/stop-arrived/1.0.0.json
+  retention: operational
+  subject_linked: false
+  inferred: false
+  description: >
+    A vehicle arrived at a scheduled stop.
+  producers: [transit-core]
+
+- type: systems.blume.transit.stop-departed.v1
+  domain: transit
+  schema: transit/stop-departed/1.0.0.json
+  retention: operational
+  subject_linked: false
+  inferred: false
+  description: >
+    A vehicle departed a scheduled stop.
+  producers: [transit-core]
+
+- type: systems.blume.transit.trip-cancelled.v1
+  domain: transit
+  schema: transit/trip-cancelled/1.0.0.json
+  retention: operational
+  subject_linked: false
+  inferred: false
+  description: >
+    A scheduled trip will not run. Anonymous: affected travellers are
+    notified by the passenger app from the route and time, not from a list
+    of who was aboard.
+  producers: [transit-core]
+
+- type: systems.blume.transit.vehicle-position-reported.v1
+  domain: transit
+  schema: transit/vehicle-position-reported/1.0.0.json
+  retention: operational
+  subject_linked: false
+  inferred: false
+  description: >
+    A vehicle reported its position on a trip. Vehicle-scoped and
+    anonymous: nothing about honouring this event requires knowing who is
+    aboard.
+  producers: [transit-core]
+
+# ---------------------------------------------------------------- vision
+- type: systems.blume.vision.count-aggregated.v1
+  domain: vision
+  schema: vision/count-aggregated/1.0.0.json
+  retention: analytical
+  subject_linked: false
+  inferred: false
+  description: >
+    Objects of a class counted in a grid cell over a period. The
+    analytical view of vision. Carries no track_ref: an hour-scoped per-
+    person handle in a 90-day store reconstructs exactly what the hour
+    scoping prevents. Coarse geo only, and buckets below the floor are
+    suppressed rather than published.
+  producers: [mca-ingest]
+
+- type: systems.blume.vision.footage-retention-applied.v1
+  domain: vision
+  schema: vision/footage-retention-applied/1.0.0.json
+  retention: audit
+  subject_linked: false
+  inferred: false
+  description: >
+    A retention policy was applied to a window of stored footage. Audit
+    class: it records what happened to the material, and carries neither a
+    track nor a subject so that the seven-year append-only store holds no
+    personal data.
+  producers: [mca-ingest]
+
+- type: systems.blume.vision.footage-sealed.v1
+  domain: vision
+  schema: vision/footage-sealed/1.0.0.json
+  retention: evidential
+  subject_linked: false
+  inferred: false
+  description: >
+    A window of footage was placed under legal hold. Evidential retention,
+    read logged. This is the path a court order takes: it reaches the
+    footage store under a legal basis, not the bus and not the correlation
+    endpoint. May carry a track_ref, which analytical retention may not.
+  producers: [mca-ingest]
+
+- type: systems.blume.vision.object-classified.v1
+  domain: vision
+  schema: vision/object-classified/1.0.0.json
+  retention: operational
+  subject_linked: false
+  inferred: true
+  description: >
+    A tracked object in a registered stream was assigned a class by on-
+    node analytics. Inferred; carries confidence.
+  producers: [mca-ingest]
+
+- type: systems.blume.vision.object-detected.v1
+  domain: vision
+  schema: vision/object-detected/1.0.0.json
+  retention: operational
+  subject_linked: false
+  inferred: true
+  description: >
+    On-node analytics detected an object in a registered stream and opened
+    or continued a track. Inferred, so confidence is required. The track
+    is the only handle on the object and it dies at the hour boundary.
+  producers: [mca-ingest]
+
+- type: systems.blume.vision.stream-health-changed.v1
+  domain: vision
+  schema: vision/stream-health-changed/1.0.0.json
+  retention: operational
+  subject_linked: false
+  inferred: false
+  description: >
+    A registered camera stream changed health state. Carries no track and
+    no subject: this is an asset fact.
+  producers: [mca-ingest]
+
+# ---------------------------------------------------------------- identity
+- type: systems.blume.identity.authentication-evaluated.v1
+  domain: identity
+  schema: identity/authentication-evaluated/1.0.0.json
+  retention: operational
+  subject_linked: true
+  inferred: false
+  description: >
+    An authentication attempt was evaluated. Carries a subject reference
+    only when the principal was recognised: a failure against an unknown
+    principal has no subject to name, which is why `subject_ref` is
+    optional here. No network or device identifiers: they would re-
+    identify across the pseudonym boundary and the operational stream does
+    not need them to be useful.
+  producers: [identity-gateway]
+
+- type: systems.blume.identity.consent-granted.v1
+  domain: identity
+  schema: identity/consent-granted/1.0.0.json
+  retention: evidential
+  subject_linked: true
+  inferred: false
+  description: >
+    A subject granted consent for a purpose. Evidential rather than
+    operational: a consent record has to outlive a seven-day window to be
+    evidence of anything.
+  producers: [identity-gateway]
+
+- type: systems.blume.identity.consent-withdrawn.v1
+  domain: identity
+  schema: identity/consent-withdrawn/1.0.0.json
+  retention: evidential
+  subject_linked: true
+  inferred: false
+  description: >
+    A previously granted consent was withdrawn or lapsed. Terminal for the
+    `consent_id`. Withdrawal does not by itself trigger erasure; that is a
+    separate request with its own basis.
+  producers: [identity-gateway]
+
+- type: systems.blume.identity.correlation-detail-recorded.v1
+  domain: identity
+  schema: identity/correlation-detail-recorded/1.0.0.json
+  retention: evidential
+  subject_linked: true
+  inferred: false
+  description: >
+    The pseudonyms joined by a correlation. Evidential retention, read
+    logged, and separated from the audit record so that the seven-year
+    store holds proof the correlation happened without holding whom it was
+    about.
+  producers: [identity-gateway]
+
+- type: systems.blume.identity.correlation-performed.v1
+  domain: identity
+  schema: identity/correlation-performed/1.0.0.json
+  retention: audit
+  subject_linked: false
+  inferred: false
+  description: >
+    A cross-domain correlation was performed through the resolution
+    endpoint. Audit class, seven years, append-only, and therefore carries
+    no pseudonym: the pids correlated are recorded separately by
+    correlation-detail-recorded under evidential retention and access
+    logging. Emitted before the result is returned. There is no
+    configuration in which this is silent and there is no bulk mode.
+  producers: [identity-gateway]
+
+- type: systems.blume.identity.erasure-attested.v1
+  domain: identity
+  schema: identity/erasure-attested/1.0.0.json
+  retention: audit
+  subject_linked: false
+  inferred: false
+  description: >
+    Durable proof that an erasure was performed. Audit class, seven years,
+    no erasure path, and no subject reference. Evidential retention is per
+    tenant policy, so the erasure record naming the subject can itself
+    expire; proof that the erasure happened has to outlive it. The
+    erasure_id is the join, and it resolves to a person only while the
+    evidential record survives - which is the correct decay.
+  producers: [identity-gateway]
+
+- type: systems.blume.identity.erasure-completed.v1
+  domain: identity
+  schema: identity/erasure-completed/1.0.0.json
+  retention: evidential
+  subject_linked: true
+  inferred: false
+  description: >
+    The data keys for a subject were destroyed. Ciphertext remains in the
+    log and is permanently unrecoverable; systems MUST handle
+    undecryptable payloads as a normal condition rather than an error.
+  producers: [identity-gateway]
+
+- type: systems.blume.identity.erasure-requested.v1
+  domain: identity
+  schema: identity/erasure-requested/1.0.0.json
+  retention: evidential
+  subject_linked: true
+  inferred: false
+  description: >
+    Erasure was requested for a subject. Event logs are append-only, so
+    erasure is performed by destroying the per-subject data key rather
+    than by rewriting the log. Evidential rather than audit, because it
+    names the subject.
+  producers: [identity-gateway]
+
+- type: systems.blume.identity.pseudonym-epoch-rotated.v1
+  domain: identity
+  schema: identity/pseudonym-epoch-rotated/1.0.0.json
+  retention: audit
+  subject_linked: false
+  inferred: false
+  description: >
+    The pseudonym epoch advanced for a tenant and domain. Pseudonyms from
+    different epochs are unlinkable by the same argument that makes
+    domains unlinkable, which caps the window over which any one domain
+    can build a longitudinal profile. Systems MUST NOT attempt to bridge
+    epochs locally. Carries no pseudonym.
+  producers: [identity-gateway]
+
+- type: systems.blume.identity.pseudonym-issued.v1
+  domain: identity
+  schema: identity/pseudonym-issued/1.0.0.json
+  retention: operational
+  subject_linked: true
+  inferred: false
+  description: >
+    The gateway issued a pairwise pseudonym for a subject in a domain.
+    Carries exactly one pseudonym and the domain it was issued for. Note
+    that the unlinkability property in section 6 is a property of the
+    construction only so long as issuances for one root subject across two
+    domains are not emitted in correlatable proximity on this stream; the
+    gateway is responsible for that, and no schema constraint can enforce
+    it.
+  producers: [identity-gateway]

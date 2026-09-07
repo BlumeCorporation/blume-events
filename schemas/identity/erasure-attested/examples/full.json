@@ -1,0 +1,27 @@
+{
+  "specversion": "1.0",
+  "id": "15PV54JJ2PYAMBBG5JRKBWR3MY",
+  "source": "//blume.systems/mcr/identity/gateway/GW-MCR-ID-01",
+  "type": "systems.blume.identity.erasure-attested.v1",
+  "subject": "asset:gateway:GW-MCR-ID-01",
+  "time": "2026-09-07T09:14:23.000Z",
+  "datacontenttype": "application/json",
+  "dataschema": "https://schemas.blume.systems/identity/erasure-attested/1.0.0.json",
+  "blumetenant": "mcr",
+  "blumeretention": "audit",
+  "blumetrace": "00-e117f119b3289e7e0422e0e72c09086d-8a3c3546f2a3aeb4-01",
+  "blumeseq": 24673,
+  "data": {
+    "erasure_id": "ERA-2026-09-07-0021",
+    "outcome": "completed",
+    "keys_destroyed": 6,
+    "attested_at": "2026-09-07T09:14:23.000Z",
+    "principal": "kms.mcr.gov",
+    "provenance": {
+      "producer": "identity-gateway/1.0.0",
+      "node": "core-mcr-id-01",
+      "observed_at": "2026-09-07T09:14:23.050Z",
+      "method": "kms-destroy"
+    }
+  }
+}

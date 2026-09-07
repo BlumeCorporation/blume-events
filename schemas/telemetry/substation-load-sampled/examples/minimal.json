@@ -1,0 +1,27 @@
+{
+  "specversion": "1.0",
+  "id": "7F2AJFBYCEAE644EF6MAW6M574",
+  "source": "//blume.systems/mcr/telemetry/substation/SS-MCR-0742",
+  "type": "systems.blume.telemetry.substation-load-sampled.v1",
+  "time": "2026-09-07T14:00:05.000Z",
+  "datacontenttype": "application/json",
+  "dataschema": "https://schemas.blume.systems/telemetry/substation-load-sampled/1.0.0.json",
+  "blumetenant": "mcr",
+  "blumeretention": "operational",
+  "blumetrace": "00-1e4c056c759126ec6d77615a81ecaf78-408eb268822bc542-01",
+  "blumeseq": 22642,
+  "data": {
+    "asset_ref": {
+      "class": "substation",
+      "id": "SS-MCR-0742",
+      "tenant": "mcr"
+    },
+    "phase": "aggregate",
+    "load_kw": 412.75,
+    "provenance": {
+      "producer": "utility-telemetry/1.0.0",
+      "node": "site-mcr-east-01",
+      "observed_at": "2026-09-07T14:00:05.000Z"
+    }
+  }
+}

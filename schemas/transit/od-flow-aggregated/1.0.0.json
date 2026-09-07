@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.blume.systems/transit/od-flow-aggregated/1.0.0.json",
+  "title": "OdFlowAggregated",
+  "description": "Journey counts between two grid cells over a period. The analytical counterpart to journey-completed: linkage is performed inside transit-core before publication and does not survive into the aggregate. Coarse geo only, and a floor on `journeys` so a flow cannot describe one traveller.",
+  "type": "object",
+  "properties": {
+    "origin_cell": {
+      "$ref": "https://schemas.blume.systems/common/geo.json#/$defs/cell_id"
+    },
+    "destination_cell": {
+      "$ref": "https://schemas.blume.systems/common/geo.json#/$defs/cell_id"
+    },
+    "period_start": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{3}Z$",
+      "description": "Start of the aggregation period, inclusive."
+    },
+    "period_end": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{3}Z$",
+      "description": "End of the aggregation period, exclusive."
+    },
+    "journeys": {
+      "type": "integer",
+      "minimum": 5,
+      "description": "Journeys observed between the two cells. Floored at 5 so an origin-destination pair cannot describe a single traveller."
+    },
+    "median_duration_s": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Median journey duration, seconds."
+    },
+    "mode": {
+      "type": "string",
+      "enum": [
+        "bus",
+        "tram",
+        "rail",
+        "multi"
+      ],
+      "x-beb-enum": "open",
+      "description": "Predominant mode of the flow. Consumers MUST ignore unknown values."
+    },
+    "provenance": {
+      "$ref": "https://schemas.blume.systems/common/provenance.json",
+      "description": "How the fact was produced. Required on every event."
+    }
+  },
+  "required": [
+    "origin_cell",
+    "destination_cell",
+    "period_start",
+    "period_end",
+    "journeys",
+    "provenance"
+  ]
+}

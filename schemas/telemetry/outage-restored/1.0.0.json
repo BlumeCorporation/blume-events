@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.blume.systems/telemetry/outage-restored/1.0.0.json",
+  "title": "OutageRestored",
+  "description": "Supply was restored for a previously declared outage. Terminal for the `outage_id`.",
+  "type": "object",
+  "properties": {
+    "outage_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
+      "description": "Outage being restored. Matches a prior outage-declared."
+    },
+    "restored_at": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{3}Z$",
+      "description": "When supply was restored."
+    },
+    "duration_s": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Seconds of lost supply."
+    },
+    "affected_customers": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Confirmed customer connections affected."
+    },
+    "method": {
+      "type": "string",
+      "enum": [
+        "auto-reclose",
+        "switching",
+        "repair",
+        "external",
+        "unknown"
+      ],
+      "x-beb-enum": "open",
+      "description": "How supply was restored. Consumers MUST ignore unknown values."
+    },
+    "provenance": {
+      "$ref": "https://schemas.blume.systems/common/provenance.json",
+      "description": "How the fact was produced. Required on every event."
+    }
+  },
+  "required": [
+    "outage_id",
+    "restored_at",
+    "provenance"
+  ]
+}

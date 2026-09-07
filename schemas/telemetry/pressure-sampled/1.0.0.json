@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.blume.systems/telemetry/pressure-sampled/1.0.0.json",
+  "title": "PressureSampled",
+  "description": "A water or gas network sensor reported a pressure sample.",
+  "type": "object",
+  "properties": {
+    "asset_ref": {
+      "$ref": "https://schemas.blume.systems/common/asset_ref.json",
+      "properties": {
+        "class": {
+          "enum": [
+            "meter",
+            "gateway"
+          ],
+          "x-beb-enum": "open"
+        }
+      },
+      "description": "Sensor or gateway that produced the sample."
+    },
+    "network": {
+      "type": "string",
+      "enum": [
+        "water",
+        "gas"
+      ],
+      "x-beb-enum": "open",
+      "description": "Network sampled. Consumers MUST ignore unknown values."
+    },
+    "pressure_kpa": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Gauge pressure, kilopascals."
+    },
+    "flow_lps": {
+      "type": "number",
+      "description": "Flow at the sensor, litres per second."
+    },
+    "temperature_c": {
+      "type": "number",
+      "description": "Fluid temperature, degrees Celsius."
+    },
+    "geo": {
+      "$ref": "https://schemas.blume.systems/common/geo.json#/$defs/precise"
+    },
+    "provenance": {
+      "$ref": "https://schemas.blume.systems/common/provenance.json",
+      "description": "How the fact was produced. Required on every event."
+    }
+  },
+  "required": [
+    "asset_ref",
+    "network",
+    "pressure_kpa",
+    "provenance"
+  ]
+}

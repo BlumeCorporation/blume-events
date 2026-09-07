@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.blume.systems/common/geo.json",
+  "title": "Geo",
+  "description": "A WGS84 position. `cell` is the municipal grid reference, coarse enough (approximately 250 m) to remain usable in analytical retention after exact coordinates are stripped. The root schema accepts either form; analytical schemas MUST reference `#/$defs/coarse` so that precise coordinates are structurally impossible rather than merely discouraged.",
+  "type": "object",
+  "anyOf": [
+    { "$ref": "#/$defs/precise" },
+    { "$ref": "#/$defs/coarse" }
+  ],
+  "$defs": {
+    "precise": {
+      "title": "Precise position",
+      "type": "object",
+      "properties": {
+        "lat": { "type": "number", "minimum": -90, "maximum": 90, "description": "WGS84 latitude in decimal degrees." },
+        "lon": { "type": "number", "minimum": -180, "maximum": 180, "description": "WGS84 longitude in decimal degrees." },
+        "accuracy_m": { "type": "number", "minimum": 0, "description": "Horizontal accuracy radius in metres, 68% confidence." },
+        "cell": { "$ref": "#/$defs/cell_id" }
+      },
+      "required": ["lat", "lon"],
+      "additionalProperties": false
+    },
+    "coarse": {
+      "title": "Coarse position",
+      "description": "Municipal grid cell only. Precise coordinates are not representable in this form.",
+      "type": "object",
+      "properties": {
+        "cell": { "$ref": "#/$defs/cell_id" }
+      },
+      "required": ["cell"],
+      "additionalProperties": false
+    },
+    "cell_id": {
+      "type": "string",
+      "pattern": "^[A-Z]{2,4}-[0-9]{4}-[0-9]{2}$",
+      "description": "Municipal grid reference, approximately 250 m on a side."
+    }
+  }
+}

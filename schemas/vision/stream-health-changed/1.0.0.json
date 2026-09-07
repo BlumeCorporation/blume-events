@@ -1,0 +1,88 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.blume.systems/vision/stream-health-changed/1.0.0.json",
+  "title": "StreamHealthChanged",
+  "description": "A registered camera stream changed health state. Carries no track and no subject: this is an asset fact.",
+  "type": "object",
+  "properties": {
+    "asset_ref": {
+      "$ref": "https://schemas.blume.systems/common/asset_ref.json",
+      "properties": {
+        "class": {
+          "enum": [
+            "camera"
+          ],
+          "x-beb-enum": "open"
+        }
+      },
+      "description": "Camera the stream belongs to."
+    },
+    "stream_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{0,63}$",
+      "description": "Registered stream identifier."
+    },
+    "state_from": {
+      "type": "string",
+      "enum": [
+        "healthy",
+        "degraded",
+        "offline",
+        "unauthenticated"
+      ],
+      "x-beb-enum": "open",
+      "description": "State before the change. Consumers MUST ignore unknown values."
+    },
+    "state_to": {
+      "type": "string",
+      "enum": [
+        "healthy",
+        "degraded",
+        "offline",
+        "unauthenticated"
+      ],
+      "x-beb-enum": "open",
+      "description": "State after the change. Consumers MUST ignore unknown values."
+    },
+    "reason": {
+      "type": "string",
+      "enum": [
+        "link-loss",
+        "frame-drop",
+        "cert-expired",
+        "ntp-drift",
+        "restart",
+        "bandwidth",
+        "unknown"
+      ],
+      "x-beb-enum": "open",
+      "description": "Why the state changed. Consumers MUST ignore unknown values."
+    },
+    "fps": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Observed frame rate."
+    },
+    "bitrate_kbps": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Observed bitrate, kilobits per second."
+    },
+    "changed_at": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{3}Z$",
+      "description": "When the state change was observed."
+    },
+    "provenance": {
+      "$ref": "https://schemas.blume.systems/common/provenance.json",
+      "description": "How the fact was produced. Required on every event."
+    }
+  },
+  "required": [
+    "asset_ref",
+    "stream_id",
+    "state_to",
+    "changed_at",
+    "provenance"
+  ]
+}

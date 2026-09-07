@@ -1,0 +1,31 @@
+{
+  "specversion": "1.0",
+  "id": "20A4Y2T9800984KHBFNRHTBPCN",
+  "source": "//blume.systems/mcr/vision/camera/CAM-0742-03",
+  "type": "systems.blume.vision.footage-retention-applied.v1",
+  "time": "2026-09-07T03:00:00.000Z",
+  "datacontenttype": "application/json",
+  "dataschema": "https://schemas.blume.systems/vision/footage-retention-applied/1.0.0.json",
+  "blumetenant": "mcr",
+  "blumeretention": "audit",
+  "blumetrace": "00-1341ba75b82433f179df2f403517614f-6ea56cca55e943f1-01",
+  "blumeseq": 21296,
+  "data": {
+    "asset_ref": {
+      "class": "camera",
+      "id": "CAM-0742-03",
+      "tenant": "mcr"
+    },
+    "stream_id": "cam-mcr-0742-03",
+    "policy_id": "P-STD-31D",
+    "action": "purged",
+    "window_start": "2026-08-07T00:00:00.000Z",
+    "window_end": "2026-08-08T00:00:00.000Z",
+    "applied_at": "2026-09-07T03:00:00.000Z",
+    "provenance": {
+      "producer": "mca-ingest/1.0.0",
+      "node": "site-mcr-north-02",
+      "observed_at": "2026-09-07T03:00:00.900Z"
+    }
+  }
+}

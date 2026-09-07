@@ -1,0 +1,84 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.blume.systems/vision/object-detected/1.0.0.json",
+  "title": "ObjectDetected",
+  "description": "On-node analytics detected an object in a registered stream and opened or continued a track. Inferred, so confidence is required. The track is the only handle on the object and it dies at the hour boundary.",
+  "type": "object",
+  "properties": {
+    "asset_ref": {
+      "$ref": "https://schemas.blume.systems/common/asset_ref.json",
+      "properties": {
+        "class": {
+          "enum": [
+            "camera"
+          ],
+          "x-beb-enum": "open"
+        }
+      },
+      "description": "Camera that produced the detection."
+    },
+    "track_ref": {
+      "$ref": "https://schemas.blume.systems/common/track_ref.json",
+      "description": "Track the detection belongs to. Scoped to one stream and one wall-clock UTC hour; not a person reference."
+    },
+    "bbox": {
+      "type": "object",
+      "description": "Bounding box in normalised frame coordinates, origin top-left.",
+      "properties": {
+        "x": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Left edge as a fraction of frame width."
+        },
+        "y": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Top edge as a fraction of frame height."
+        },
+        "w": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Width as a fraction of frame width."
+        },
+        "h": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Height as a fraction of frame height."
+        }
+      },
+      "required": [
+        "x",
+        "y",
+        "w",
+        "h"
+      ],
+      "additionalProperties": false
+    },
+    "geo": {
+      "$ref": "https://schemas.blume.systems/common/geo.json#/$defs/precise"
+    },
+    "detected_at": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{3}Z$",
+      "description": "When the detection was made."
+    },
+    "provenance": {
+      "$ref": "https://schemas.blume.systems/common/provenance.json",
+      "required": [
+        "confidence"
+      ],
+      "description": "How the fact was inferred. `confidence` is required: this event is produced by inference, and consumers MUST NOT treat it as measured."
+    }
+  },
+  "required": [
+    "asset_ref",
+    "track_ref",
+    "bbox",
+    "detected_at",
+    "provenance"
+  ]
+}

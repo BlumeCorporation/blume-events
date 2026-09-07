@@ -1,0 +1,27 @@
+{
+  "specversion": "1.0",
+  "id": "34QM11RP49WMR76Z3ZJ295H61Q",
+  "source": "//blume.systems/mcr/vision/camera/CAM-0742-03",
+  "type": "systems.blume.vision.count-aggregated.v1",
+  "time": "2026-09-07T14:00:00.000Z",
+  "datacontenttype": "application/json",
+  "dataschema": "https://schemas.blume.systems/vision/count-aggregated/1.0.0.json",
+  "blumetenant": "mcr",
+  "blumeretention": "analytical",
+  "blumetrace": "00-1d407c8c3070cf2d163455999e933430-a4696b8c83a79912-01",
+  "blumeseq": 15716,
+  "data": {
+    "geo": {
+      "cell": "MCR-0742-19"
+    },
+    "object_class": "person",
+    "count": 1842,
+    "period_start": "2026-09-07T14:00:00.000Z",
+    "period_end": "2026-09-07T15:00:00.000Z",
+    "provenance": {
+      "producer": "mca-ingest/1.0.0",
+      "node": "core-mcr-01",
+      "observed_at": "2026-09-07T15:01:00.000Z"
+    }
+  }
+}

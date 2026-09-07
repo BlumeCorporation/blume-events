@@ -1,0 +1,29 @@
+{
+  "specversion": "1.0",
+  "id": "6ZW1QSRGE5W2N2VZ92HFY505SF",
+  "source": "//blume.systems/mcr/transit/vehicle/BUS-4471",
+  "type": "systems.blume.transit.vehicle-position-reported.v1",
+  "time": "2026-09-07T14:02:00.000Z",
+  "datacontenttype": "application/json",
+  "dataschema": "https://schemas.blume.systems/transit/vehicle-position-reported/1.0.0.json",
+  "blumetenant": "mcr",
+  "blumeretention": "operational",
+  "blumetrace": "00-7f6da85495d9b82c24ca17b2422a2e9d-e4151c71b93724ca-01",
+  "blumeseq": 34508,
+  "data": {
+    "asset_ref": {
+      "class": "vehicle",
+      "id": "BUS-4471",
+      "tenant": "mcr"
+    },
+    "geo": {
+      "lat": 53.6112,
+      "lon": -2.1503
+    },
+    "provenance": {
+      "producer": "transit-core/1.0.0",
+      "node": "site-mcr-depot-01",
+      "observed_at": "2026-09-07T14:02:00.000Z"
+    }
+  }
+}

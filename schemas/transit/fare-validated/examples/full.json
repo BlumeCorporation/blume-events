@@ -1,0 +1,42 @@
+{
+  "specversion": "1.0",
+  "id": "7TEDYCQZ7VJX4V9P04N8M4J02N",
+  "source": "//blume.systems/mcr/transit/vehicle/BUS-4471",
+  "type": "systems.blume.transit.fare-validated.v1",
+  "subject": "asset:vehicle:BUS-4471",
+  "time": "2026-09-07T14:03:20.000Z",
+  "datacontenttype": "application/json",
+  "dataschema": "https://schemas.blume.systems/transit/fare-validated/1.0.0.json",
+  "blumetenant": "mcr",
+  "blumeretention": "operational",
+  "blumetrace": "00-ab300b2fe6743c23a070e5dd0fcf2077-757d26628c433780-01",
+  "blumeseq": 29357,
+  "data": {
+    "subject_ref": {
+      "pid": "sub:transit:e3:FB2OA2F3DVYCLNHU",
+      "epoch": 3
+    },
+    "asset_ref": {
+      "class": "vehicle",
+      "id": "BUS-4471",
+      "tenant": "mcr"
+    },
+    "stop_ref": {
+      "class": "stop",
+      "id": "S-00912",
+      "tenant": "mcr"
+    },
+    "product": "contactless",
+    "result": "accepted",
+    "fare_minor": 210,
+    "currency": "GBP",
+    "cap_reached": false,
+    "validated_at": "2026-09-07T14:03:20.000Z",
+    "provenance": {
+      "producer": "transit-core/1.0.0",
+      "node": "site-mcr-depot-01",
+      "observed_at": "2026-09-07T14:03:20.410Z",
+      "method": "emv-validator"
+    }
+  }
+}
