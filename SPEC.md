@@ -465,7 +465,7 @@ distinguish all three:
 | `Unavailable` | Key could not be fetched, or the caller is not authorised | Transient. `nak` and retry. |
 
 Collapsing `Shredded` into `Unavailable` makes an authorisation failure look like
-an erasure, which is the shape of bug that silently deletes data.
+an erasure.
 
 ### Where erasure records live
 
