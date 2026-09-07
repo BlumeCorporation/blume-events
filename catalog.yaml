@@ -87,7 +87,7 @@
 
 - type: systems.blume.traffic.signal-plan-activated.v1
   domain: traffic
-  schema: traffic/signal-plan-activated/1.0.0.json
+  schema: traffic/signal-plan-activated/1.1.0.json
   retention: operational
   subject_linked: false
   inferred: false
@@ -512,18 +512,22 @@
     epochs locally. Carries no pseudonym.
   producers: [identity-gateway]
 
-- type: systems.blume.identity.pseudonym-issued.v1
+- type: systems.blume.identity.pseudonym-issuance-recorded.v1
   domain: identity
-  schema: identity/pseudonym-issued/1.0.0.json
-  retention: operational
-  subject_linked: true
+  schema: identity/pseudonym-issuance-recorded/1.0.0.json
+  retention: audit
+  subject_linked: false
   inferred: false
   description: >
-    The gateway issued a pairwise pseudonym for a subject in a domain.
-    Carries exactly one pseudonym and the domain it was issued for. Note
-    that the unlinkability property in section 6 is a property of the
-    construction only so long as issuances for one root subject across two
-    domains are not emitted in correlatable proximity on this stream; the
-    gateway is responsible for that, and no schema constraint can enforce
-    it.
+    Hourly count of pseudonyms issued for a domain and epoch. An
+    aggregate, and it carries no subject reference and no issuance
+    identifier. A per-issuance event would leave a timing channel even
+    after stripping the pseudonym: in a small tenant at low volume, two
+    issuance events for different domains seconds apart are one person
+    with high probability. That is weaker than a join, but section 6 makes
+    unlinkability a property of the construction, and a channel whose
+    strength depends on how busy the council is would demote it to a
+    policy. Per-issuance audit stays in the gateway's own internal log,
+    where it has a reader; nothing without a bus consumer belongs on the
+    bus.
   producers: [identity-gateway]

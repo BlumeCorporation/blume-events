@@ -1,0 +1,386 @@
+# beb-lint rule fixtures.
+#
+# Each case mutates the real corpus and names the rule that must fire. Mutating
+# the real schemas rather than a synthetic miniature is deliberate: it proves the
+# rule fires on the tree that ships, and a rule that stops matching reality fails
+# here rather than passing against a fixture nobody maintains.
+#
+# `expect` is matched as a substring of the finding message.
+
+# ---------------------------------------------------------------- resolution
+- name: catalog-entry-does-not-resolve
+  rule: R03
+  why: A catalog entry naming a schema that is not on disk is the failure that
+    makes every other guarantee unverifiable.
+  mutations:
+    - file: catalog.yaml
+      op: text_replace
+      old: "  schema: traffic/incident-cleared/1.0.0.json"
+      new: "  schema: traffic/incident-resolved/1.0.0.json"
+  expect: does not resolve to a document on disk
+
+- name: unresolvable-ref
+  rule: R02
+  why: A $ref that would need a network fetch is a $ref that does not resolve
+    from the repository, and the registry is a static artifact.
+  mutations:
+    - file: schemas/transit/fare-validated/1.0.0.json
+      op: json_set
+      pointer: /properties/subject_ref/$ref
+      value: '"https://schemas.blume.systems/common/person_ref.json"'
+  expect: does not compile
+
+- name: schema-major-disagrees-with-type-major
+  rule: R04
+  why: SPEC section 9 treats "a major version" and "a new subject" as the same
+    event only if they are the same number.
+  mutations:
+    - file: catalog.yaml
+      op: text_replace
+      old: "  schema: traffic/signal-phase-changed/1.0.0.json"
+      new: "  schema: traffic/signal-phase-changed/2.0.0.json"
+  expect: does not equal schema major
+
+# ---------------------------------------------------------------- privacy
+- name: subject-ref-in-vision
+  rule: R07
+  why: A pseudonym is only obtainable if mca-ingest can ask the gateway who a
+    person is, and it can only ask if it holds a persistent biometric template.
+  mutations:
+    - file: schemas/vision/object-classified/1.0.0.json
+      op: json_set
+      pointer: /properties/subject_ref
+      value: '{"$ref": "https://schemas.blume.systems/common/subject_ref.json"}'
+  expect: subject_ref is banned in domain vision
+
+- name: subject-ref-in-traffic
+  rule: R07
+  why: A controller does not need to know who presented the fob to give them
+    longer to cross.
+  mutations:
+    - file: schemas/traffic/priority-request-received/1.0.0.json
+      op: json_set
+      pointer: /properties/subject_ref
+      value: '{"$ref": "https://schemas.blume.systems/common/subject_ref.json"}'
+  expect: subject_ref is banned in domain traffic
+
+- name: subject-ref-in-analytical
+  rule: R08
+  why: A pseudonym is personal data; pseudonymisation is not anonymisation.
+  mutations:
+    - file: catalog.yaml
+      op: text_replace
+      old: "  schema: transit/fare-validated/1.0.0.json\n  retention: operational"
+      new: "  schema: transit/fare-validated/1.0.0.json\n  retention: analytical"
+  expect: subject_ref is banned in retention class analytical
+
+- name: subject-ref-in-audit
+  rule: R08
+  why: The seven-year append-only store holds no personal data, and a pseudonym
+    is personal data. Distinct rule path from the analytical case.
+  mutations:
+    - file: schemas/identity/erasure-attested/1.0.0.json
+      op: json_set
+      pointer: /properties/subject_ref
+      value: '{"$ref": "https://schemas.blume.systems/common/subject_ref.json"}'
+  expect: subject_ref is banned in retention class audit
+
+- name: track-ref-in-analytical
+  rule: R09
+  why: An hour-scoped per-person handle in a 90-day store reconstructs exactly
+    what the hour scoping prevents.
+  mutations:
+    - file: schemas/vision/count-aggregated/1.0.0.json
+      op: json_set
+      pointer: /properties/track_ref
+      value: '{"$ref": "https://schemas.blume.systems/common/track_ref.json"}'
+  expect: track_ref is banned in analytical retention
+
+- name: meter-asset-ref-in-analytical-telemetry
+  rule: R13
+  why: A 30-minute domestic read keyed by meter identifier is personal data
+    whether or not it carries a pseudonym.
+  mutations:
+    - file: schemas/telemetry/consumption-aggregated/1.0.0.json
+      op: json_set
+      pointer: /properties/asset_ref/properties/class/enum
+      value: '["substation", "meter"]'
+  expect: admits an asset_ref of class meter
+
+- name: precise-geo-in-analytical
+  rule: R14
+  why: Analytical retention strips exact coordinates; referencing the precise
+    form makes the stripping a convention rather than a property.
+  mutations:
+    - file: schemas/vision/count-aggregated/1.0.0.json
+      op: json_set
+      pointer: /properties/geo/$ref
+      value: '"https://schemas.blume.systems/common/geo.json#/$defs/precise"'
+  expect: use geo.json#/$defs/coarse
+
+- name: subject-linked-flag-disagrees-with-graph
+  rule: R06
+  why: The catalog flag records intent; the $ref graph records fact. Lint
+    believes the graph.
+  mutations:
+    - file: catalog.yaml
+      op: text_replace
+      old: "  schema: transit/fare-validated/1.0.0.json\n  retention: operational\n  subject_linked: true"
+      new: "  schema: transit/fare-validated/1.0.0.json\n  retention: operational\n  subject_linked: false"
+  expect: subject_linked is false but subject_ref in the $ref graph is true
+
+# ---------------------------------------------------------------- schema shape
+- name: closed-event-data-schema
+  rule: R15
+  why: A closed data schema makes a pinned consumer reject a compliant additive
+    change, which breaks the backward-compatibility promise in section 9.
+  mutations:
+    - file: schemas/transit/stop-arrived/1.0.0.json
+      op: json_set
+      pointer: /additionalProperties
+      value: "false"
+  expect: adding an optional field would then break a pinned consumer
+
+- name: open-common-type
+  rule: R16
+  why: The inverse of the case above, and the half that protects section 6 - an
+    open subject_ref lets a raw identifier ride alongside the pseudonym.
+  mutations:
+    - file: schemas/common/sealed.json
+      op: json_delete
+      pointer: /additionalProperties
+  expect: "must set additionalProperties: false"
+
+- name: enum-without-open-marker
+  rule: R17
+  why: An additive enum change is compatible only because consumers ignore
+    unknown values, which is a promise a bare enum keyword contradicts.
+  mutations:
+    - file: schemas/traffic/signal-plan-activated/1.1.0.json
+      op: json_delete
+      pointer: /properties/reason/x-beb-enum
+  expect: has no x-beb-enum marker
+
+- name: provenance-not-required
+  rule: R11
+  why: provenance is required on every event in every domain, so observed_at is
+    always available and has no second location.
+  mutations:
+    - file: schemas/traffic/incident-cleared/1.0.0.json
+      op: json_set
+      pointer: /required
+      value: '["incident_id", "cleared_at", "resolution"]'
+  expect: does not require provenance
+
+- name: inferred-without-required-confidence
+  rule: R12
+  why: Consumers must not treat an inferred event as a measured one, and cannot
+    tell the difference unless confidence is present.
+  mutations:
+    - file: catalog.yaml
+      op: text_replace
+      old: "  schema: transit/stop-arrived/1.0.0.json\n  retention: operational\n  subject_linked: false\n  inferred: false"
+      new: "  schema: transit/stop-arrived/1.0.0.json\n  retention: operational\n  subject_linked: false\n  inferred: true"
+  expect: "inferred is true but provenance requires confidence: false"
+
+# ---------------------------------------------------------------- narrowing
+- name: reference-site-reopens-closed-type
+  rule: R18
+  why: A reference site narrows a common type and never widens one; re-opening a
+    closed type at the reference site restores the smuggling channel.
+  mutations:
+    - file: schemas/transit/fare-validated/1.0.0.json
+      op: json_set
+      pointer: /properties/subject_ref/additionalProperties
+      value: "true"
+  expect: may not appear beside a $ref
+
+- name: reference-site-adds-property
+  rule: R18
+  why: Adding a member to a closed common type at the reference site is the same
+    hole with a different spelling.
+  mutations:
+    - file: schemas/transit/fare-validated/1.0.0.json
+      op: json_set
+      pointer: /properties/subject_ref/properties
+      value: '{"legacy_id": {"type": "string"}}'
+  expect: cannot add members to a closed type
+
+# ---------------------------------------------------------------- aggregates
+- name: aggregate-declares-endpoint-pair
+  rule: R20
+  why: A k-floor protects each figure and not the arithmetic between them.
+    Author-chosen endpoints permit two overlapping windows whose difference is
+    a below-floor bucket.
+  mutations:
+    - file: schemas/vision/count-aggregated/1.0.0.json
+      op: json_set
+      pointer: /properties/period_start
+      value: '{"type": "string", "description": "Start of the period."}'
+  expect: endpoints permit the overlap the bucket prevents
+
+- name: aggregate-marks-suppression
+  rule: R20
+  why: A suppressed bucket and an empty bucket must be indistinguishable, which
+    means absence, not a marker.
+  mutations:
+    - file: schemas/transit/od-flow-aggregated/1.0.0.json
+      op: json_set
+      pointer: /properties/suppressed
+      value: '{"type": "boolean", "description": "Bucket fell below the floor."}'
+  expect: a suppressed bucket is absent, not marked
+
+- name: aggregate-count-below-k-floor
+  rule: R20
+  why: A count of one in a cell and an hour describes a person.
+  mutations:
+    - file: schemas/telemetry/consumption-aggregated/1.0.0.json
+      op: json_set
+      pointer: /properties/meter_count/minimum
+      value: "1"
+  expect: must set minimum >= 5
+
+- name: analytical-event-is-not-an-aggregate
+  rule: R19
+  why: Every analytical event is an aggregate and declares itself one, so the
+    window and supersession rules have something to attach to.
+  mutations:
+    - file: schemas/transit/od-flow-aggregated/1.0.0.json
+      op: json_delete
+      pointer: /x-beb-aggregate
+  expect: must declare x-beb-aggregate
+
+# ---------------------------------------------------------------- examples
+- name: non-minimal-minimal-example
+  rule: R22
+  why: A minimal example that carries an optional member stops demonstrating
+    which members are actually required.
+  mutations:
+    - file: schemas/vision/stream-health-changed/examples/minimal.json
+      op: json_set
+      pointer: /data/fps
+      value: "12.0"
+  expect: a minimal example is minimal
+
+- name: example-violates-own-schema
+  rule: R21
+  why: An example that does not validate is documentation of something the
+    schema forbids.
+  mutations:
+    - file: schemas/telemetry/consumption-aggregated/examples/full.json
+      op: json_set
+      pointer: /data/meter_count
+      value: "1"
+  expect: data does not validate
+
+- name: envelope-retention-disagrees-with-catalog
+  rule: R21
+  why: Section 7 rejects a schema whose examples use a class inconsistent with
+    its field classifications, which is why examples are whole envelopes.
+  mutations:
+    - file: schemas/identity/erasure-attested/examples/full.json
+      op: json_set
+      pointer: /blumeretention
+      value: '"operational"'
+  expect: does not match catalog retention
+
+- name: unregistered-envelope-extension
+  rule: R21
+  why: Publishers must not define additional extension attributes without
+    registry approval, so the envelope is closed.
+  mutations:
+    - file: schemas/traffic/incident-declared/examples/full.json
+      op: json_set
+      pointer: /blumepriority
+      value: '"high"'
+  expect: does not validate against the envelope
+
+- name: all-zeros-trace-id
+  rule: R21
+  why: W3C forbids an all-zero trace id. The pattern uses `not` clauses because
+    RE2 has no lookahead; nothing else proves they fire.
+  mutations:
+    - file: schemas/traffic/incident-declared/examples/full.json
+      op: json_set
+      pointer: /blumetrace
+      value: '"00-00000000000000000000000000000000-00f067aa0ba902b7-01"'
+  expect: does not validate against the envelope
+
+- name: all-zeros-parent-id
+  rule: R21
+  why: The second `not` clause, which the trace-id case does not exercise.
+  mutations:
+    - file: schemas/traffic/incident-declared/examples/full.json
+      op: json_set
+      pointer: /blumetrace
+      value: '"00-4bf92f3577b34da6a3ce929d0e0e4736-0000000000000000-01"'
+  expect: does not validate against the envelope
+
+- name: raw-identifier-in-pid
+  rule: R21
+  why: The pid grammar is the schema-layer half of making a raw identifier
+    unrepresentable where a pseudonym belongs.
+  mutations:
+    - file: schemas/transit/journey-completed/examples/full.json
+      op: json_set
+      pointer: /data/subject_ref/pid
+      value: '"alice.smith@mcr.gov"'
+  expect: data does not validate
+
+- name: pid-with-excluded-base32-digits
+  rule: R21
+  why: RFC 4648 base32 excludes 0, 1, 8 and 9. The v1.0 spec example contained
+    9 and 1, so this is the erratum as a standing case.
+  mutations:
+    - file: schemas/transit/journey-completed/examples/full.json
+      op: json_set
+      pointer: /data/subject_ref/pid
+      value: '"sub:transit:e3:7F3QK2ND9MXA4B1P"'
+  expect: data does not validate
+
+- name: vision-domain-pseudonym
+  rule: R21
+  why: vision cannot hold a pseudonym, so the domain token in the pid grammar
+    names only the two domains that can.
+  mutations:
+    - file: schemas/transit/journey-completed/examples/full.json
+      op: json_set
+      pointer: /data/subject_ref/pid
+      value: '"sub:vision:e3:AAAAAAAAAAAAAAAA"'
+  expect: data does not validate
+
+- name: smuggled-member-beside-pseudonym
+  rule: R21
+  why: The reason subject_ref is closed. An extra member beside the pid is an
+    exfiltration channel for the identifier the pseudonym replaces.
+  mutations:
+    - file: schemas/transit/fare-validated/examples/full.json
+      op: json_set
+      pointer: /data/subject_ref/legacy_id
+      value: '"4471-alice"'
+  expect: data does not validate
+
+- name: root-identifier-field-in-example
+  rule: R23
+  why: SPEC section 12 - no golden event in any domain contains a field matching
+    a known root-identifier pattern.
+  mutations:
+    - file: schemas/transit/fare-validated/examples/full.json
+      op: json_set
+      pointer: /data/passenger_email
+      value: '"x@example.invalid"'
+  expect: matches a root-identifier pattern
+
+- name: superseded-version-must-still-resolve
+  rule: R02
+  why: Structural rules run against the catalogued version only, because a
+    published schema cannot be edited and a rule tightened today must not fail
+    one that was correct when it shipped. Resolution is the exception - a
+    dataschema URI that resolved once resolves forever, so a superseded version
+    with a dangling $ref is still a build error.
+  mutations:
+    - file: schemas/traffic/signal-plan-activated/1.0.0.json
+      op: json_set
+      pointer: /properties/asset_ref/$ref
+      value: '"https://schemas.blume.systems/common/device_ref.json"'
+  expect: does not compile

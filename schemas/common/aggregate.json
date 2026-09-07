@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.blume.systems/common/aggregate.json",
+  "title": "Aggregate",
+  "description": "The window and identity of an aggregate figure. Carried by every event in the `analytical` class and by the aggregate events in `audit`.\n\nThe window is a bucket identifier, not a start and end pair. Two buckets either denote the same period or disjoint periods; overlap is unrepresentable rather than merely discouraged. This matters because a k-anonymity floor protects each published figure and does nothing about the arithmetic between them: aggregates over 14:00-15:00 and 14:00-14:30, both above the floor, subtract to a 14:30-15:00 bucket that may hold one person. A schema that let an author choose the endpoints would be a differencing oracle with a floor bolted on.\n\nA corrected figure is republished with the same `aggregate_id` and a higher `revision`. The earlier figure is not withdrawn: both remaining visible is the price of not offering the same differencing channel through revision history. Consumers take the highest revision for an `aggregate_id`.\n\nBuckets below the k-floor are suppressed entirely. A suppressed bucket and an empty bucket are indistinguishable, which means absence - never a zero, a null, or a marker field. There is deliberately nowhere in this type to record that suppression occurred.",
+  "type": "object",
+  "properties": {
+    "aggregate_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
+      "description": "Deterministic over the aggregate type, its key dimensions, and its window. Stable across corrections, which is what makes supersession by revision work."
+    },
+    "window": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}(T[0-9]{2})?Z$",
+      "description": "Bucket identifier. The hour form \"2026-09-07T14Z\" for a PT1H aggregate, the day form \"2026-09-07Z\" for a P1D aggregate. MUST match the duration declared in the schema's `x-beb-aggregate.window`, which `beb-lint` checks."
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991,
+      "description": "0 for the original figure, incrementing for each correction. Consumers take the highest revision seen for an `aggregate_id`."
+    }
+  },
+  "required": ["aggregate_id", "window", "revision"],
+  "additionalProperties": false
+}

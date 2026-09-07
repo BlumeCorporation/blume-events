@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.blume.systems/identity/pseudonym-issuance-recorded/1.0.0.json",
+  "title": "PseudonymIssuanceRecorded",
+  "description": "Hourly count of pseudonyms issued for a domain and epoch. An aggregate, and it carries no subject reference and no issuance identifier. A per-issuance event would leave a timing channel even after stripping the pseudonym: in a small tenant at low volume, two issuance events for different domains seconds apart are one person with high probability. That is weaker than a join, but section 6 makes unlinkability a property of the construction, and a channel whose strength depends on how busy the council is would demote it to a policy. Per-issuance audit stays in the gateway's own internal log, where it has a reader; nothing without a bus consumer belongs on the bus.",
+  "type": "object",
+  "properties": {
+    "domain": {
+      "type": "string",
+      "enum": [
+        "transit",
+        "identity"
+      ],
+      "x-beb-enum": "open",
+      "description": "Domain the pseudonyms were issued for. Only domains that carry pseudonyms can appear: traffic and telemetry are anonymous and vision uses track_ref. Consumers MUST ignore unknown values."
+    },
+    "epoch": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Epoch the pseudonyms were derived under."
+    },
+    "count": {
+      "type": "integer",
+      "minimum": 5,
+      "description": "Pseudonyms issued in the window. Floored at 5; a smaller bucket is suppressed entirely rather than published as zero, so that a suppressed bucket and an empty one are indistinguishable."
+    },
+    "reason": {
+      "type": "string",
+      "enum": [
+        "new-subject",
+        "epoch-rotation",
+        "re-issuance"
+      ],
+      "x-beb-enum": "open",
+      "description": "Restricts the bucket to one issuance reason. Absent means all reasons. Consumers MUST ignore unknown values."
+    },
+    "aggregate": {
+      "$ref": "https://schemas.blume.systems/common/aggregate.json",
+      "description": "Bucket, identity and revision of this figure."
+    },
+    "provenance": {
+      "$ref": "https://schemas.blume.systems/common/provenance.json",
+      "description": "How the fact was produced. Required on every event."
+    }
+  },
+  "required": [
+    "domain",
+    "epoch",
+    "count",
+    "aggregate",
+    "provenance"
+  ],
+  "x-beb-aggregate": {
+    "window": "PT1H",
+    "count_field": "count",
+    "k_floor": 5
+  }
+}

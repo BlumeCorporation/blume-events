@@ -18,6 +18,14 @@ Substantive:
   personal data. §7.
 - `envelope`, `sealed` and `track_ref` join the common types. §5.
 - Canonical JSON is RFC 8785, and enums are open with an explicit marker. §9.
+- Aggregates name a disjoint bucket rather than a start and an end, so a
+  k-anonymity floor cannot be defeated by differencing. `aggregate` joins the
+  common types. §5, §7.
+- Common types are effectively immutable: they accept additive-optional changes
+  only, and a narrowing need creates a new type rather than a coordinated major
+  bump across every event that references the old one. §9.
+- `identity.pseudonym-issued` is replaced by `identity.pseudonym-issuance-recorded`,
+  an hourly `audit` aggregate. §6.
 
 Errata against v1.0:
 
@@ -187,8 +195,8 @@ there is no second location for it.
 ## 5. Common types
 
 Defined once in `schemas/common/`, referenced by `$ref` from every domain schema.
-Domain schemas MUST NOT redefine these shapes. Seven files: `envelope`, `geo`,
-`asset_ref`, `subject_ref`, `provenance`, `sealed`, `track_ref`.
+Domain schemas MUST NOT redefine these shapes. Eight files: `envelope`, `geo`,
+`asset_ref`, `subject_ref`, `provenance`, `sealed`, `track_ref`, `aggregate`.
 
 A domain schema MAY narrow a common type at its own reference site — restricting
 `asset_ref.class` to `substation`, or adding `confidence` to the required set of
@@ -307,6 +315,42 @@ Banned in `analytical` retention — an hour-scoped per-person handle in a 90-da
 store reconstructs exactly what the scoping prevents. Permitted in `evidential`,
 which `footage-sealed` requires.
 
+### `aggregate.json`
+
+```json
+{ "aggregate_id": "cnt-MCR-0742-19-person", "window": "2026-09-07T14Z", "revision": 0 }
+```
+
+Carried by every `analytical` event and by the aggregate events in `audit`.
+
+**The window is a bucket, not a pair of endpoints.** Two buckets denote either the
+same period or disjoint periods; overlap is unrepresentable. This is what makes
+the k-anonymity floor in §7 mean anything. A floor protects each published
+figure and says nothing about the arithmetic between them: aggregates over
+14:00–15:00 and 14:00–14:30, both comfortably above the floor, subtract to a
+14:30–15:00 bucket that may contain one person. A schema that let a producer
+choose its own endpoints would be a differencing oracle with a floor bolted on.
+
+A corrected figure is republished with the same `aggregate_id` and a higher
+`revision`; consumers take the highest revision seen. The earlier figure is not
+withdrawn. Both remaining visible is the price of not reopening the same
+differencing channel through revision history.
+
+Buckets below the floor are suppressed entirely. A suppressed bucket and an empty
+bucket MUST be indistinguishable, which means absence — never a zero, a null, or
+a marker field. There is deliberately nowhere in this type to record that
+suppression occurred.
+
+Each aggregate schema declares its bucket duration:
+
+```json
+"x-beb-aggregate": { "window": "PT1H", "count_field": "count", "k_floor": 5 }
+```
+
+`beb-lint` checks that the named count field requires a minimum of at least the
+floor, that the schema declares no endpoint pair, that it declares no suppression
+marker, and that every example's bucket matches the declared duration.
+
 ### `envelope.json`
 
 The §4 envelope as a schema, so that it is checkable rather than merely
@@ -404,6 +448,20 @@ domain can build a longitudinal profile. Rotation is announced on
 `identity.pseudonym-epoch-rotated.v1`; systems MUST NOT attempt to bridge epochs
 locally.
 
+### Issuance is not announced per subject
+
+The gateway publishes `identity.pseudonym-issuance-recorded.v1`: an hourly count
+by domain and epoch, `audit` class, carrying no pseudonym and no issuance
+identifier.
+
+A per-issuance event would defeat the construction above even with the pseudonym
+stripped. In a small tenant at low volume, two issuance events for different
+domains seconds apart are one person with high probability. That is weaker than a
+join, but this section makes unlinkability a property of the construction, and a
+channel whose strength depends on how busy the council is would demote it to a
+policy. Per-issuance audit stays in the gateway's own internal log, where it has
+a reader. Nothing without a bus consumer belongs on the bus.
+
 ### Resolution
 
 Cross-domain correlation is possible, deliberately, through one endpoint:
@@ -493,6 +551,9 @@ Two further structural rules follow from the same reasoning, both enforced by
 - An `analytical` schema MUST reference `geo.json#/$defs/coarse` rather than the
   root or `#/$defs/precise`, so that exact coordinates are unrepresentable rather
   than merely stripped by convention.
+- Every published aggregate figure MUST be over at least **k = 5** contributors,
+  and every `analytical` event MUST carry `aggregate` (§5) so that its window is
+  a disjoint bucket. A count of one in a cell and an hour describes a person.
 
 ---
 
@@ -534,6 +595,49 @@ permanently. The registry is a static artifact built from the repo, so a
 `dataschema` URI that resolved once resolves forever, and `beb-lint` has the
 previous version to diff against without reaching into git history.
 
+### Closed common types, open event schemas
+
+`schemas/common/*.json` set `additionalProperties: false`. Event data schemas
+deliberately do not. The asymmetry reads as an oversight to anyone meeting the
+schemas cold, so the reasoning is recorded here.
+
+Closing an event schema would make a consumer pinned to `1.0.0` reject a valid
+`1.1.0` event that added an optional field — which contradicts the first rule in
+this section outright. Opening `subject_ref.json` would let a raw identifier ride
+along beside the pseudonym that replaced it, which is the hole §6 exists to
+close. Closed where the value shape *is* the contract; open where evolution is
+the contract. `beb-lint` enforces both directions, so neither can drift into the
+other.
+
+### Narrowing
+
+A **reference site** may narrow a common type and may never widen one. An event
+schema writing `properties: { class: { enum: ["substation"] } }` beside a `$ref`
+to `asset_ref.json` narrows that type for that event alone; compatibility is
+assessed against the previous version of that event, and no other event is
+affected.
+
+"Widen" is not decidable in general, so `beb-lint` enforces an allow-list: only
+keywords that cannot widen may appear beside a `$ref` to a common type, and any
+property named at a reference site MUST already exist in the type referenced. An
+`allOf` that re-opens a closed type or adds a member to one is a build error
+regardless of whether it is otherwise compatible.
+
+**A common type itself may not narrow at all.** Narrowing `geo.json` is breaking
+for every event that references it, which under this section means a major bump
+and a new subject for all of them at once. A 41-event fan-out major is not a
+migration any operator survives, and offering it as a supported path guarantees
+someone attempts it. Common types therefore accept additive-optional changes
+only.
+
+A genuinely necessary narrowing creates a **new common type** — `geo2.json` —
+and events migrate to it individually, each as an ordinary major bump of one
+event, at their own pace. The cost is a permanent `geo.json` in the tree. The
+benefit is that no change to a shared type can ever require a coordinated release
+across every producing repository. This makes the common types close to immutable
+in practice, which is the correct incentive: they are the part of this repository
+that is expensive to get wrong.
+
 ### Open enums
 
 An additive enum change is compatible only because consumers ignore unknown
@@ -547,6 +651,11 @@ requires the marker on every enum. `beb-gen` emits an `Unknown` variant for ever
 open enum in both languages, and consumer-side validation in the SDKs relaxes the
 `enum` constraint on them. The strict form is retained for producers, so a
 misspelled value still fails a contract test.
+
+The `Unknown` variant MUST retain the original string and re-emit it verbatim on
+encode. A decoder that reads `"adaptive-fallback"` as `Unknown` and writes it
+back out as `"unknown"` is not byte-identical, and §12's round-trip requirement
+fails on it. `conformance/golden/unknown-enum-value.json` pins this.
 
 ### Canonical JSON
 
@@ -591,7 +700,7 @@ blume-events/
 ├── catalog.yaml              # every registered event, one entry each
 ├── schemas/
 │   ├── common/               # envelope, geo, asset_ref, subject_ref,
-│   │                         #   provenance, sealed, track_ref
+│   │                         #   provenance, sealed, track_ref, aggregate
 │   ├── traffic/
 │   ├── telemetry/
 │   ├── transit/

@@ -1,0 +1,28 @@
+{
+  "specversion": "1.0",
+  "id": "05BTEMMNHP3TNF0SXV5G4JA61W",
+  "source": "//blume.systems/mcr/identity/gateway/GW-MCR-ID-01",
+  "type": "systems.blume.identity.pseudonym-issuance-recorded.v1",
+  "time": "2026-07-01T00:00:00.000Z",
+  "datacontenttype": "application/json",
+  "dataschema": "https://schemas.blume.systems/identity/pseudonym-issuance-recorded/1.0.0.json",
+  "blumetenant": "mcr",
+  "blumeretention": "audit",
+  "blumetrace": "00-c183c8209c6cba592d15bcdb5a1e2b09-53f5370bf71fe9e4-01",
+  "blumeseq": 67477,
+  "data": {
+    "domain": "transit",
+    "epoch": 3,
+    "count": 1842,
+    "aggregate": {
+      "aggregate_id": "psi-transit-e3",
+      "window": "2026-07-01T00Z",
+      "revision": 0
+    },
+    "provenance": {
+      "producer": "identity-gateway/1.0.0",
+      "node": "core-mcr-id-01",
+      "observed_at": "2026-07-01T01:05:00.000Z"
+    }
+  }
+}

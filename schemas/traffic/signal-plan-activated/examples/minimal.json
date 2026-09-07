@@ -5,7 +5,7 @@
   "type": "systems.blume.traffic.signal-plan-activated.v1",
   "time": "2026-09-07T07:00:00.000Z",
   "datacontenttype": "application/json",
-  "dataschema": "https://schemas.blume.systems/traffic/signal-plan-activated/1.0.0.json",
+  "dataschema": "https://schemas.blume.systems/traffic/signal-plan-activated/1.1.0.json",
   "blumetenant": "mcr",
   "blumeretention": "operational",
   "blumetrace": "00-b796938bf4da7024ecdc40b9e63ba30a-a01728ea9f8489a4-01",

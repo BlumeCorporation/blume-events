@@ -16,8 +16,11 @@
     },
     "object_class": "person",
     "count": 1842,
-    "period_start": "2026-09-07T14:00:00.000Z",
-    "period_end": "2026-09-07T15:00:00.000Z",
+    "aggregate": {
+      "aggregate_id": "cnt-MCR-0742-19-person",
+      "window": "2026-09-07T14Z",
+      "revision": 0
+    },
     "provenance": {
       "producer": "mca-ingest/1.0.0",
       "node": "core-mcr-01",

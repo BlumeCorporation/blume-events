@@ -20,8 +20,11 @@
       "id": "SS-MCR-0742",
       "tenant": "mcr"
     },
-    "period_start": "2026-09-07T13:00:00.000Z",
-    "period_end": "2026-09-07T14:00:00.000Z",
+    "aggregate": {
+      "aggregate_id": "cons-MCR-0742-19-elec",
+      "window": "2026-09-07T13Z",
+      "revision": 1
+    },
     "total": 918.4,
     "unit": "kWh",
     "meter_count": 214,

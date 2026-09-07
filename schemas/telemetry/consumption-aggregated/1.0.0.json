@@ -31,15 +31,9 @@
       },
       "description": "Feeding substation. Class is narrowed to exclude `meter`: a meter identifier in a 90-day store re-identifies a household."
     },
-    "period_start": {
-      "type": "string",
-      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{3}Z$",
-      "description": "Start of the aggregation period, inclusive."
-    },
-    "period_end": {
-      "type": "string",
-      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{3}Z$",
-      "description": "End of the aggregation period, exclusive."
+    "aggregate": {
+      "$ref": "https://schemas.blume.systems/common/aggregate.json",
+      "description": "Bucket, identity and revision of this figure."
     },
     "total": {
       "type": "number",
@@ -70,11 +64,15 @@
   "required": [
     "geo",
     "utility",
-    "period_start",
-    "period_end",
+    "aggregate",
     "total",
     "unit",
     "meter_count",
     "provenance"
-  ]
+  ],
+  "x-beb-aggregate": {
+    "window": "PT1H",
+    "count_field": "meter_count",
+    "k_floor": 5
+  }
 }

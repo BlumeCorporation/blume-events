@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.blume.systems/traffic/signal-plan-activated/1.1.0.json",
+  "title": "SignalPlanActivated",
+  "description": "A controller began running a different timing plan. Covers scheduled changes, operator overrides, adaptive selection, and falls back. Version 1.1.0 adds one value to `reason`, which is the additive enum change SPEC section 9 permits.",
+  "type": "object",
+  "properties": {
+    "asset_ref": {
+      "$ref": "https://schemas.blume.systems/common/asset_ref.json",
+      "properties": {
+        "class": {
+          "enum": [
+            "controller"
+          ],
+          "x-beb-enum": "open"
+        }
+      },
+      "description": "Controller whose plan changed."
+    },
+    "plan_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
+      "description": "Timing plan now in force."
+    },
+    "previous_plan_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
+      "description": "Plan that was in force. Absent on cold start."
+    },
+    "reason": {
+      "type": "string",
+      "enum": [
+        "scheduled",
+        "operator",
+        "adaptive",
+        "fallback",
+        "recovery",
+        "adaptive-fallback"
+      ],
+      "x-beb-enum": "open",
+      "description": "Why the plan changed. Consumers MUST ignore unknown values. 1.1.0 adds \"adaptive-fallback\", the case where adaptive selection itself failed and the controller fell back; 1.0.0 reported it as \"fallback\" and lost the distinction."
+    },
+    "effective_at": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{3}Z$",
+      "description": "When the new plan took effect."
+    },
+    "provenance": {
+      "$ref": "https://schemas.blume.systems/common/provenance.json",
+      "description": "How the fact was produced. Required on every event."
+    }
+  },
+  "required": [
+    "asset_ref",
+    "plan_id",
+    "reason",
+    "effective_at",
+    "provenance"
+  ]
+}

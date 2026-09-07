@@ -1,0 +1,19 @@
+# Golden corpus manifest.
+#
+# Every SDK runs these end to end and MUST round-trip each one byte-identically
+# after RFC 8785 canonical ordering. `asserts` names the property the case
+# exists to pin, so that a failure points at a behaviour rather than at a diff.
+#
+# The corpus is filled out in M5. These cases are here early because they pin
+# behaviour that has to be built correctly in M3 and M4; discovering them as a
+# mysterious conformance failure later is the outcome they exist to prevent.
+
+- file: unknown-enum-value.json
+  type: systems.blume.traffic.signal-plan-activated.v1
+  asserts: open-enum-round-trip
+  note: >
+    data.reason carries "adaptive-fallback", added to the enum in schema 1.1.0.
+    A consumer pinned to 1.0.0 MUST decode it to the Unknown variant, MUST NOT
+    treat it as an error, and MUST re-emit the original string verbatim. A
+    decoder that renders Unknown as the literal "unknown" on encode produces a
+    byte difference here and fails.

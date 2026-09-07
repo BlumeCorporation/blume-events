@@ -3,7 +3,7 @@
   "id": "3VMS0GBKTHM3VR3TQ1R1CW5Q0R",
   "source": "//blume.systems/mcr/transit/gateway/GW-MCR-TRANSIT-01",
   "type": "systems.blume.transit.od-flow-aggregated.v1",
-  "time": "2026-09-07T07:00:00.000Z",
+  "time": "2026-09-07T08:00:00.000Z",
   "datacontenttype": "application/json",
   "dataschema": "https://schemas.blume.systems/transit/od-flow-aggregated/1.0.0.json",
   "blumetenant": "mcr",
@@ -13,15 +13,18 @@
   "data": {
     "origin_cell": "MCR-0742-19",
     "destination_cell": "MCR-0755-04",
-    "period_start": "2026-09-07T07:00:00.000Z",
-    "period_end": "2026-09-07T10:00:00.000Z",
-    "journeys": 1284,
+    "aggregate": {
+      "aggregate_id": "od-MCR-0742-19-MCR-0755-04",
+      "window": "2026-09-07T08Z",
+      "revision": 0
+    },
+    "journeys": 428,
     "median_duration_s": 1420,
     "mode": "bus",
     "provenance": {
       "producer": "transit-core/1.0.0",
       "node": "core-mcr-01",
-      "observed_at": "2026-09-07T10:05:00.771Z",
+      "observed_at": "2026-09-07T09:05:00.771Z",
       "method": "batch-rollup"
     }
   }

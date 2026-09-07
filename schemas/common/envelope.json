@@ -74,7 +74,7 @@
           }
         }
       ],
-      "description": "W3C traceparent. Version 00; all-zero trace and span identifiers are invalid. Expressed with `not` rather than a lookahead so the pattern compiles under RE2, which is what the Go validator uses."
+      "description": "W3C traceparent. Version 00; all-zero trace and span identifiers are invalid. The two `not` clauses express that, rather than a negative lookahead, because the Go validator compiles patterns with RE2 and RE2 has no lookahead. Do not simplify this back to `(?!0{32})`: it will not compile, and the failure reads like a library bug rather than a schema error."
     },
     "blumeseq": {
       "type": "integer",
