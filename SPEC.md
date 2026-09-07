@@ -90,12 +90,12 @@ beb.<env>.<tenant>.<domain>.<event-name>.<major>
 | `major` | `v1`, `v2` — major schema version only |
 
 ```
-beb.prod.mcr.traffic.signal-phase-changed.v1
-beb.prod.mcr.vision.object-classified.v1
-beb.prod.mcr.identity.pseudonym-epoch-rotated.v1
+beb.prod.xmpl.traffic.signal-phase-changed.v1
+beb.prod.xmpl.vision.object-classified.v1
+beb.prod.xmpl.identity.pseudonym-epoch-rotated.v1
 ```
 
-Consumers subscribe with wildcards: `beb.prod.mcr.traffic.>` for a whole domain,
+Consumers subscribe with wildcards: `beb.prod.xmpl.traffic.>` for a whole domain,
 `beb.prod.*.telemetry.outage-declared.v1` for one event across tenants where the
 consumer holds multi-tenant authorisation.
 
@@ -113,13 +113,13 @@ NOT define additional extensions without registry approval.
 {
   "specversion": "1.0",
   "id": "01K4ZQ9F2X8H3N7VBM0T6Y5RJD",
-  "source": "//blume.systems/mcr/traffic/controller/A41-0271",
+  "source": "//blume.systems/xmpl/traffic/controller/A41-0271",
   "type": "systems.blume.traffic.signal-phase-changed.v1",
   "subject": "asset:signal:A41-0271",
   "time": "2026-09-07T14:02:11.417Z",
   "datacontenttype": "application/json",
   "dataschema": "https://schemas.blume.systems/traffic/signal-phase-changed/1.4.0.json",
-  "blumetenant": "mcr",
+  "blumetenant": "xmpl",
   "blumeretention": "operational",
   "blumetrace": "00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01",
   "blumeseq": 88213,
@@ -133,7 +133,7 @@ NOT define additional extensions without registry approval.
     "actuated": true,
     "provenance": {
       "producer": "signal-broker/1.0.0",
-      "node": "site-mcr-north-02",
+      "node": "site-xmpl-north-02",
       "observed_at": "2026-09-07T14:02:11.912Z"
     }
   }
@@ -184,7 +184,7 @@ break every consumer pinned to an older minor, and §9 promises the opposite.
   "lat": 53.6097,
   "lon": -2.1561,
   "accuracy_m": 4.5,
-  "cell": "MCR-0742-19"
+  "cell": "XMPL-0742-19"
 }
 ```
 
@@ -194,7 +194,7 @@ usable in analytical retention where exact coordinates are stripped.
 ### `asset_ref.json`
 
 ```json
-{ "class": "signal", "id": "A41-0271", "tenant": "mcr" }
+{ "class": "signal", "id": "A41-0271", "tenant": "xmpl" }
 ```
 
 Asset classes are registered centrally: `signal`, `camera`, `meter`,
@@ -219,7 +219,7 @@ JSON Schema cannot express that equality, so the SDKs and `beb-lint` enforce it.
 ```json
 {
   "producer": "mca-ingest/2.11.3",
-  "node": "site-mcr-north-02",
+  "node": "site-xmpl-north-02",
   "observed_at": "2026-09-07T14:02:11.912Z",
   "confidence": 0.94,
   "method": "onvif-analytics"
@@ -265,7 +265,7 @@ rather than decrypting cleanly into the wrong context.
 ### `track_ref.json`
 
 ```json
-{ "stream_id": "cam-mcr-0742-03", "track_id": "9f2c1a7be4d05836", "window": "2026-09-07T14Z" }
+{ "stream_id": "cam-xmpl-0742-03", "track_id": "9f2c1a7be4d05836", "window": "2026-09-07T14Z" }
 ```
 
 A visual track, scoped to exactly one stream and one wall-clock UTC hour. The
@@ -286,7 +286,7 @@ which `footage-sealed` requires.
 ### `aggregate.json`
 
 ```json
-{ "aggregate_id": "cnt-MCR-0742-19-person", "window": "2026-09-07T14Z", "revision": 0 }
+{ "aggregate_id": "cnt-XMPL-0742-19-person", "window": "2026-09-07T14Z", "revision": 0 }
 ```
 
 Carried by every `analytical` event and by the aggregate events in `audit`.
@@ -651,7 +651,7 @@ there for 14 days.
   by the tenant CA, 90-day lifetime, automated renewal.
 - **Authorisation** — NATS accounts per `<env>.<tenant>`. Within an account, each
   service holds a JWT with explicit publish and subscribe subject permissions.
-  `signal-broker` can publish `beb.prod.mcr.traffic.>` and nothing else. A
+  `signal-broker` can publish `beb.prod.xmpl.traffic.>` and nothing else. A
   compromised traffic controller cannot forge a vision detection.
 - **Cross-tenant** — no account trusts another. Multi-tenant consumers hold
   separate credentials per tenant and join outside the bus.
@@ -716,7 +716,7 @@ Go and Rust are first-class and generated from the same schemas. Rust:
 use blume_events::{Bus, vision::ObjectClassified};
 
 let bus = Bus::connect("nats://bus.blume.systems:4222")
-    .tenant("mcr")
+    .tenant("xmpl")
     .credentials(creds)
     .await?;
 

@@ -1,21 +1,21 @@
 {
   "specversion": "1.0",
   "id": "42DYAPA6A3F4QAEDBQHABC0P1H",
-  "source": "//blume.systems/mcr/telemetry/gateway/GW-MCR-E-14",
+  "source": "//blume.systems/xmpl/telemetry/gateway/GW-XMPL-E-14",
   "type": "systems.blume.telemetry.pressure-sampled.v1",
-  "subject": "asset:gateway:GW-MCR-E-14",
+  "subject": "asset:gateway:GW-XMPL-E-14",
   "time": "2026-09-07T14:00:10.077Z",
   "datacontenttype": "application/json",
   "dataschema": "https://schemas.blume.systems/telemetry/pressure-sampled/1.0.0.json",
-  "blumetenant": "mcr",
+  "blumetenant": "xmpl",
   "blumeretention": "operational",
   "blumetrace": "00-21b11217b2ffeee802a3d9a6ccc86971-cd86a497013b6a74-01",
   "blumeseq": 59354,
   "data": {
     "asset_ref": {
       "class": "gateway",
-      "id": "GW-MCR-E-14",
-      "tenant": "mcr"
+      "id": "GW-XMPL-E-14",
+      "tenant": "xmpl"
     },
     "network": "water",
     "pressure_kpa": 341.2,
@@ -25,11 +25,11 @@
       "lat": 53.6104,
       "lon": -2.1588,
       "accuracy_m": 8.0,
-      "cell": "MCR-0742-19"
+      "cell": "XMPL-0742-19"
     },
     "provenance": {
       "producer": "utility-telemetry/1.0.0",
-      "node": "site-mcr-east-01",
+      "node": "site-xmpl-east-01",
       "observed_at": "2026-09-07T14:00:10.077Z",
       "method": "modbus-poll"
     }

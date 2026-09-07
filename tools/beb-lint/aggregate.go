@@ -251,6 +251,41 @@ func (l *linter) checkExampleFields() {
 			}
 		}
 		scan(m["data"], "/data")
+
+		// R26: examples name the documentation tenant and no other. The rule
+		// covers the tenant token, which is the contractual identifier; it
+		// cannot tell that a node name or a grid cell encodes a real place, so
+		// those still need a human eye.
+		if t, ok := m["blumetenant"].(string); ok && t != documentationTenant {
+			l.add("R26", rel, "blumetenant is %q; examples name the documentation tenant %q", t, documentationTenant)
+		}
+		if src, ok := m["source"].(string); ok && !strings.Contains(src, "/"+documentationTenant+"/") {
+			l.add("R26", rel, "source names a tenant other than %q", documentationTenant)
+		}
+		var tenants func(any, string)
+		tenants = func(n any, path string) {
+			switch v := n.(type) {
+			case map[string]any:
+				keys := make([]string, 0, len(v))
+				for k := range v {
+					keys = append(keys, k)
+				}
+				sort.Strings(keys)
+				for _, k := range keys {
+					if k == "tenant" {
+						if t, ok := v[k].(string); ok && t != documentationTenant {
+							l.add("R26", rel, "tenant %q at %s; examples name the documentation tenant %q", t, path+"/"+k, documentationTenant)
+						}
+					}
+					tenants(v[k], path+"/"+k)
+				}
+			case []any:
+				for i, val := range v {
+					tenants(val, fmt.Sprintf("%s/%d", path, i))
+				}
+			}
+		}
+		tenants(m["data"], "/data")
 		return nil
 	})
 }

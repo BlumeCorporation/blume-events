@@ -1,13 +1,13 @@
 {
   "specversion": "1.0",
   "id": "5NAC6W0HVXTTXRTFCPB0FX2FVY",
-  "source": "//blume.systems/mcr/traffic/controller/A41-0271",
+  "source": "//blume.systems/xmpl/traffic/controller/A41-0271",
   "type": "systems.blume.traffic.controller-fault-raised.v1",
   "subject": "asset:controller:A41-0271",
   "time": "2026-09-07T09:41:03.000Z",
   "datacontenttype": "application/json",
   "dataschema": "https://schemas.blume.systems/traffic/controller-fault-raised/1.0.0.json",
-  "blumetenant": "mcr",
+  "blumetenant": "xmpl",
   "blumeretention": "operational",
   "blumetrace": "00-63a176aebdaaa29c86bca1190f92314c-887036b080b3f567-01",
   "blumeseq": 67219,
@@ -15,7 +15,7 @@
     "asset_ref": {
       "class": "controller",
       "id": "A41-0271",
-      "tenant": "mcr"
+      "tenant": "xmpl"
     },
     "fault_code": "F-217",
     "fault_class": "lamp",
@@ -24,7 +24,7 @@
     "detail": "NB green aspect 2 drawing 0.0A, expected 0.6A",
     "provenance": {
       "producer": "signal-broker/1.0.0",
-      "node": "site-mcr-north-02",
+      "node": "site-xmpl-north-02",
       "observed_at": "2026-09-07T09:41:03.660Z",
       "method": "controller-poll"
     }

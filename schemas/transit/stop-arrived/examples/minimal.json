@@ -1,12 +1,12 @@
 {
   "specversion": "1.0",
   "id": "6ZZGBQ63T2Y7N0V7K6A1BRYS8H",
-  "source": "//blume.systems/mcr/transit/vehicle/BUS-4471",
+  "source": "//blume.systems/xmpl/transit/vehicle/BUS-4471",
   "type": "systems.blume.transit.stop-arrived.v1",
   "time": "2026-09-07T14:03:12.000Z",
   "datacontenttype": "application/json",
   "dataschema": "https://schemas.blume.systems/transit/stop-arrived/1.0.0.json",
-  "blumetenant": "mcr",
+  "blumetenant": "xmpl",
   "blumeretention": "operational",
   "blumetrace": "00-6d5acb9303075bc88e02c13b59063f2b-b594d63b70b261bb-01",
   "blumeseq": 34188,
@@ -14,18 +14,18 @@
     "asset_ref": {
       "class": "vehicle",
       "id": "BUS-4471",
-      "tenant": "mcr"
+      "tenant": "xmpl"
     },
     "stop_ref": {
       "class": "stop",
       "id": "S-00912",
-      "tenant": "mcr"
+      "tenant": "xmpl"
     },
     "trip_id": "T-142-0743",
     "arrived_at": "2026-09-07T14:03:12.000Z",
     "provenance": {
       "producer": "transit-core/1.0.0",
-      "node": "site-mcr-depot-01",
+      "node": "site-xmpl-depot-01",
       "observed_at": "2026-09-07T14:03:12.140Z"
     }
   }

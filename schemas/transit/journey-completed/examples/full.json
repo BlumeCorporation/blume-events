@@ -1,12 +1,12 @@
 {
   "specversion": "1.0",
   "id": "056ZWSSBK5QBZRAFQ2HGJHRHHV",
-  "source": "//blume.systems/mcr/transit/gateway/GW-MCR-TRANSIT-01",
+  "source": "//blume.systems/xmpl/transit/gateway/GW-XMPL-TRANSIT-01",
   "type": "systems.blume.transit.journey-completed.v1",
   "time": "2026-09-07T14:41:02.000Z",
   "datacontenttype": "application/json",
   "dataschema": "https://schemas.blume.systems/transit/journey-completed/1.0.0.json",
-  "blumetenant": "mcr",
+  "blumetenant": "xmpl",
   "blumeretention": "operational",
   "blumetrace": "00-a88fa7f87d14692843bd2fb10581abe1-755213eb7c303f65-01",
   "blumeseq": 56152,
@@ -19,12 +19,12 @@
     "origin_stop": {
       "class": "stop",
       "id": "S-00912",
-      "tenant": "mcr"
+      "tenant": "xmpl"
     },
     "destination_stop": {
       "class": "stop",
       "id": "S-01044",
-      "tenant": "mcr"
+      "tenant": "xmpl"
     },
     "started_at": "2026-09-07T14:03:20.000Z",
     "completed_at": "2026-09-07T14:41:02.000Z",
@@ -33,7 +33,7 @@
     "currency": "GBP",
     "provenance": {
       "producer": "transit-core/1.0.0",
-      "node": "core-mcr-01",
+      "node": "core-xmpl-01",
       "observed_at": "2026-09-07T15:11:02.000Z",
       "confidence": 0.92,
       "method": "journey-stitch"

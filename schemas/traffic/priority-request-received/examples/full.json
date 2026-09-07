@@ -1,13 +1,13 @@
 {
   "specversion": "1.0",
   "id": "2FJX36RZCZ3HXEA1B6W1G8CV98",
-  "source": "//blume.systems/mcr/traffic/controller/A41-0271",
+  "source": "//blume.systems/xmpl/traffic/controller/A41-0271",
   "type": "systems.blume.traffic.priority-request-received.v1",
   "subject": "asset:signal:A41-0271",
   "time": "2026-09-07T14:01:58.000Z",
   "datacontenttype": "application/json",
   "dataschema": "https://schemas.blume.systems/traffic/priority-request-received/1.0.0.json",
-  "blumetenant": "mcr",
+  "blumetenant": "xmpl",
   "blumeretention": "operational",
   "blumetrace": "00-bc149573dc942e8f99ccb9f438c5783d-9963d1e3bb2f661e-01",
   "blumeseq": 63655,
@@ -15,7 +15,7 @@
     "asset_ref": {
       "class": "signal",
       "id": "A41-0271",
-      "tenant": "mcr"
+      "tenant": "xmpl"
     },
     "entitlement_class": "extended-crossing",
     "request_id": "rq-8f2c1a7b",
@@ -24,7 +24,7 @@
     "requested_at": "2026-09-07T14:01:58.000Z",
     "provenance": {
       "producer": "signal-broker/1.0.0",
-      "node": "site-mcr-north-02",
+      "node": "site-xmpl-north-02",
       "observed_at": "2026-09-07T14:01:58.090Z",
       "method": "fob-presence"
     }

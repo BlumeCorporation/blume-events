@@ -1,12 +1,12 @@
 {
   "specversion": "1.0",
   "id": "1QRY58YBEQ2MH3AR90QCR5YQ7P",
-  "source": "//blume.systems/mcr/telemetry/substation/SS-MCR-0742",
+  "source": "//blume.systems/xmpl/telemetry/substation/SS-XMPL-0742",
   "type": "systems.blume.telemetry.outage-restored.v1",
   "time": "2026-09-07T15:22:09.000Z",
   "datacontenttype": "application/json",
   "dataschema": "https://schemas.blume.systems/telemetry/outage-restored/1.0.0.json",
-  "blumetenant": "mcr",
+  "blumetenant": "xmpl",
   "blumeretention": "operational",
   "blumetrace": "00-35ab14fd70617579d937d3976f8e9db7-0eb5d8f2a55a836d-01",
   "blumeseq": 75530,
@@ -18,7 +18,7 @@
     "method": "switching",
     "provenance": {
       "producer": "utility-telemetry/1.0.0",
-      "node": "core-mcr-01",
+      "node": "core-xmpl-01",
       "observed_at": "2026-09-07T15:22:09.400Z",
       "method": "scada-alarm"
     }

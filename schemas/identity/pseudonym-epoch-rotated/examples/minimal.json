@@ -1,25 +1,25 @@
 {
   "specversion": "1.0",
   "id": "6YNAH4TXJ3V4QKMN5BKF9KANBY",
-  "source": "//blume.systems/mcr/identity/gateway/GW-MCR-ID-01",
+  "source": "//blume.systems/xmpl/identity/gateway/GW-XMPL-ID-01",
   "type": "systems.blume.identity.pseudonym-epoch-rotated.v1",
   "time": "2026-09-29T00:00:00.000Z",
   "datacontenttype": "application/json",
   "dataschema": "https://schemas.blume.systems/identity/pseudonym-epoch-rotated/1.0.0.json",
-  "blumetenant": "mcr",
+  "blumetenant": "xmpl",
   "blumeretention": "audit",
   "blumetrace": "00-ba61a4462e267efdc64fa16ec5c36b6b-699172f593a1308f-01",
   "blumeseq": 71536,
   "data": {
     "rotation_id": "ROT-2026-Q3-transit",
-    "tenant": "mcr",
+    "tenant": "xmpl",
     "domain": "transit",
     "epoch_from": 3,
     "epoch_to": 4,
     "effective_at": "2026-09-29T00:00:00.000Z",
     "provenance": {
       "producer": "identity-gateway/1.0.0",
-      "node": "core-mcr-id-01",
+      "node": "core-xmpl-id-01",
       "observed_at": "2026-09-29T00:00:00.640Z"
     }
   }

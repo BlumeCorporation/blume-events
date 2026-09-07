@@ -1,29 +1,29 @@
 {
   "specversion": "1.0",
   "id": "34QM11RP49WMR76Z3ZJ295H61Q",
-  "source": "//blume.systems/mcr/vision/camera/CAM-0742-03",
+  "source": "//blume.systems/xmpl/vision/camera/CAM-0742-03",
   "type": "systems.blume.vision.count-aggregated.v1",
   "time": "2026-09-07T14:00:00.000Z",
   "datacontenttype": "application/json",
   "dataschema": "https://schemas.blume.systems/vision/count-aggregated/1.0.0.json",
-  "blumetenant": "mcr",
+  "blumetenant": "xmpl",
   "blumeretention": "analytical",
   "blumetrace": "00-1d407c8c3070cf2d163455999e933430-a4696b8c83a79912-01",
   "blumeseq": 15716,
   "data": {
     "geo": {
-      "cell": "MCR-0742-19"
+      "cell": "XMPL-0742-19"
     },
     "object_class": "person",
     "count": 1842,
     "aggregate": {
-      "aggregate_id": "cnt-MCR-0742-19-person",
+      "aggregate_id": "cnt-XMPL-0742-19-person",
       "window": "2026-09-07T14Z",
       "revision": 0
     },
     "provenance": {
       "producer": "mca-ingest/1.0.0",
-      "node": "core-mcr-01",
+      "node": "core-xmpl-01",
       "observed_at": "2026-09-07T15:01:00.000Z"
     }
   }

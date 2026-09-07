@@ -1,13 +1,13 @@
 {
   "specversion": "1.0",
   "id": "6YVYDHE37RN15DPKJPKYTWX5RG",
-  "source": "//blume.systems/mcr/telemetry/meter/M-88213-4",
+  "source": "//blume.systems/xmpl/telemetry/meter/M-88213-4",
   "type": "systems.blume.telemetry.meter-read-recorded.v1",
   "subject": "asset:meter:M-88213-4",
   "time": "2026-09-07T14:00:00.412Z",
   "datacontenttype": "application/json",
   "dataschema": "https://schemas.blume.systems/telemetry/meter-read-recorded/1.0.0.json",
-  "blumetenant": "mcr",
+  "blumetenant": "xmpl",
   "blumeretention": "operational",
   "blumetrace": "00-35fb3fefea25d3c4d23d01713ba3f5ed-3426c896e0de6b0c-01",
   "blumeseq": 28475,
@@ -15,7 +15,7 @@
     "asset_ref": {
       "class": "meter",
       "id": "M-88213-4",
-      "tenant": "mcr"
+      "tenant": "xmpl"
     },
     "utility": "electricity",
     "register": "import",
@@ -25,7 +25,7 @@
     "quality": "measured",
     "provenance": {
       "producer": "utility-telemetry/1.0.0",
-      "node": "site-mcr-east-01",
+      "node": "site-xmpl-east-01",
       "observed_at": "2026-09-07T14:00:00.412Z",
       "method": "dlms-pull"
     }

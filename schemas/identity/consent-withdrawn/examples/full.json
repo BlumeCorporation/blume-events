@@ -1,13 +1,13 @@
 {
   "specversion": "1.0",
   "id": "7JP7BCC6QPEDJAJ7DN9MQH4B6X",
-  "source": "//blume.systems/mcr/identity/gateway/GW-MCR-ID-01",
+  "source": "//blume.systems/xmpl/identity/gateway/GW-XMPL-ID-01",
   "type": "systems.blume.identity.consent-withdrawn.v1",
-  "subject": "asset:gateway:GW-MCR-ID-01",
+  "subject": "asset:gateway:GW-XMPL-ID-01",
   "time": "2026-09-07T11:02:00.000Z",
   "datacontenttype": "application/json",
   "dataschema": "https://schemas.blume.systems/identity/consent-withdrawn/1.0.0.json",
-  "blumetenant": "mcr",
+  "blumetenant": "xmpl",
   "blumeretention": "evidential",
   "blumetrace": "00-32b1e5ea4f697245eca75dfd472cf105-ea3beb1d9473c45a-01",
   "blumeseq": 33730,
@@ -21,7 +21,7 @@
     "reason": "data-subject-request",
     "provenance": {
       "producer": "identity-gateway/1.0.0",
-      "node": "core-mcr-id-01",
+      "node": "core-xmpl-id-01",
       "observed_at": "2026-09-07T11:02:00.310Z",
       "method": "consent-portal"
     }

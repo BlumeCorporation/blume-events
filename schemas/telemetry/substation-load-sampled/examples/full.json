@@ -1,21 +1,21 @@
 {
   "specversion": "1.0",
   "id": "7E52PD6YXQ2MY4AEJZNT2Y602Z",
-  "source": "//blume.systems/mcr/telemetry/substation/SS-MCR-0742",
+  "source": "//blume.systems/xmpl/telemetry/substation/SS-XMPL-0742",
   "type": "systems.blume.telemetry.substation-load-sampled.v1",
-  "subject": "asset:substation:SS-MCR-0742",
+  "subject": "asset:substation:SS-XMPL-0742",
   "time": "2026-09-07T14:00:05.118Z",
   "datacontenttype": "application/json",
   "dataschema": "https://schemas.blume.systems/telemetry/substation-load-sampled/1.0.0.json",
-  "blumetenant": "mcr",
+  "blumetenant": "xmpl",
   "blumeretention": "operational",
   "blumetrace": "00-f43f4da5e66255f98d8777f3606f20df-d9cfffddc0557ae1-01",
   "blumeseq": 51265,
   "data": {
     "asset_ref": {
       "class": "substation",
-      "id": "SS-MCR-0742",
-      "tenant": "mcr"
+      "id": "SS-XMPL-0742",
+      "tenant": "xmpl"
     },
     "phase": "aggregate",
     "load_kw": 412.75,
@@ -25,7 +25,7 @@
     "frequency_hz": 49.98,
     "provenance": {
       "producer": "utility-telemetry/1.0.0",
-      "node": "site-mcr-east-01",
+      "node": "site-xmpl-east-01",
       "observed_at": "2026-09-07T14:00:05.118Z",
       "method": "modbus-poll"
     }

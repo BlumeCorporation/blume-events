@@ -1,13 +1,13 @@
 {
   "specversion": "1.0",
   "id": "0TNK8DVJEMSD0X1A5MSJNX1AH7",
-  "source": "//blume.systems/mcr/identity/gateway/GW-MCR-ID-01",
+  "source": "//blume.systems/xmpl/identity/gateway/GW-XMPL-ID-01",
   "type": "systems.blume.identity.oauth-grant-revoked.v1",
-  "subject": "asset:gateway:GW-MCR-ID-01",
+  "subject": "asset:gateway:GW-XMPL-ID-01",
   "time": "2026-09-07T11:02:00.410Z",
   "datacontenttype": "application/json",
   "dataschema": "https://schemas.blume.systems/identity/oauth-grant-revoked/1.0.0.json",
-  "blumetenant": "mcr",
+  "blumetenant": "xmpl",
   "blumeretention": "evidential",
   "blumetrace": "00-c86e7516ac9c1d39717079cea619d70e-2ac02399bcbd5a83-01",
   "blumeseq": 20120,
@@ -29,7 +29,7 @@
     "revoked_at": "2026-09-07T11:02:00.000Z",
     "provenance": {
       "producer": "identity-gateway/1.0.0",
-      "node": "core-mcr-id-01",
+      "node": "core-xmpl-id-01",
       "observed_at": "2026-09-07T11:02:00.410Z",
       "method": "consent-portal"
     }

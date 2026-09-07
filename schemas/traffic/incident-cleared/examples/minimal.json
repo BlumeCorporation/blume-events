@@ -1,12 +1,12 @@
 {
   "specversion": "1.0",
   "id": "1BB76PXAZXK35Z2512YF53BZYR",
-  "source": "//blume.systems/mcr/traffic/controller/A41-0271",
+  "source": "//blume.systems/xmpl/traffic/controller/A41-0271",
   "type": "systems.blume.traffic.incident-cleared.v1",
   "time": "2026-09-07T15:11:40.000Z",
   "datacontenttype": "application/json",
   "dataschema": "https://schemas.blume.systems/traffic/incident-cleared/1.0.0.json",
-  "blumetenant": "mcr",
+  "blumetenant": "xmpl",
   "blumeretention": "operational",
   "blumetrace": "00-97b182bc3496230f527202c8d1d8cfa6-04c7e8bf98c011a7-01",
   "blumeseq": 62632,
@@ -16,7 +16,7 @@
     "resolution": "resolved",
     "provenance": {
       "producer": "signal-broker/1.0.0",
-      "node": "core-mcr-01",
+      "node": "core-xmpl-01",
       "observed_at": "2026-09-07T15:11:40.220Z"
     }
   }

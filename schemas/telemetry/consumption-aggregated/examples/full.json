@@ -1,27 +1,27 @@
 {
   "specversion": "1.0",
   "id": "532XZMN064NZS664FBNK446SBQ",
-  "source": "//blume.systems/mcr/telemetry/substation/SS-MCR-0742",
+  "source": "//blume.systems/xmpl/telemetry/substation/SS-XMPL-0742",
   "type": "systems.blume.telemetry.consumption-aggregated.v1",
   "time": "2026-09-07T13:00:00.000Z",
   "datacontenttype": "application/json",
   "dataschema": "https://schemas.blume.systems/telemetry/consumption-aggregated/1.0.0.json",
-  "blumetenant": "mcr",
+  "blumetenant": "xmpl",
   "blumeretention": "analytical",
   "blumetrace": "00-c5badf598fb6d0c64bf55f4344b7e2f2-730f1b97b53c5165-01",
   "blumeseq": 16025,
   "data": {
     "geo": {
-      "cell": "MCR-0742-19"
+      "cell": "XMPL-0742-19"
     },
     "utility": "electricity",
     "asset_ref": {
       "class": "substation",
-      "id": "SS-MCR-0742",
-      "tenant": "mcr"
+      "id": "SS-XMPL-0742",
+      "tenant": "xmpl"
     },
     "aggregate": {
-      "aggregate_id": "cons-MCR-0742-19-elec",
+      "aggregate_id": "cons-XMPL-0742-19-elec",
       "window": "2026-09-07T13Z",
       "revision": 1
     },
@@ -30,7 +30,7 @@
     "meter_count": 214,
     "provenance": {
       "producer": "utility-telemetry/1.0.0",
-      "node": "core-mcr-01",
+      "node": "core-xmpl-01",
       "observed_at": "2026-09-07T14:01:00.905Z",
       "method": "batch-rollup"
     }

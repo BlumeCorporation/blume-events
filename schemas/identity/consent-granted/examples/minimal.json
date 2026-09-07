@@ -1,12 +1,12 @@
 {
   "specversion": "1.0",
   "id": "1VTN40B748ZSR7NK1GRQ71XWM7",
-  "source": "//blume.systems/mcr/identity/gateway/GW-MCR-ID-01",
+  "source": "//blume.systems/xmpl/identity/gateway/GW-XMPL-ID-01",
   "type": "systems.blume.identity.consent-granted.v1",
   "time": "2026-04-02T10:31:00.000Z",
   "datacontenttype": "application/json",
   "dataschema": "https://schemas.blume.systems/identity/consent-granted/1.0.0.json",
-  "blumetenant": "mcr",
+  "blumetenant": "xmpl",
   "blumeretention": "evidential",
   "blumetrace": "00-41762256b65c9f57ec9a36c14f516098-35283ceab6a5a94f-01",
   "blumeseq": 23985,
@@ -20,7 +20,7 @@
     "granted_at": "2026-04-02T10:31:00.000Z",
     "provenance": {
       "producer": "identity-gateway/1.0.0",
-      "node": "core-mcr-id-01",
+      "node": "core-xmpl-id-01",
       "observed_at": "2026-04-02T10:31:00.220Z"
     }
   }

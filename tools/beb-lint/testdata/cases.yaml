@@ -444,3 +444,27 @@
       pointer: /properties/subject_ref_prior
       value: '{"$ref": "https://schemas.blume.systems/common/subject_ref.json"}'
   expect: only the audited correlation record may carry more than one
+
+- name: example-names-a-real-tenant
+  rule: R26
+  why: This repository is public, so a real tenant identifier in a committed
+    example names a customer. `xmpl` is reserved for documentation the way
+    RFC 5737 reserves address ranges. The rule covers the tenant token; it cannot
+    tell that a node name or a grid cell encodes a real place.
+  mutations:
+    - file: schemas/traffic/signal-phase-changed/examples/full.json
+      op: json_set
+      pointer: /blumetenant
+      value: '"mcr"'
+  expect: examples name the documentation tenant
+
+- name: nested-asset-ref-names-a-real-tenant
+  rule: R26
+  why: The tenant token is duplicated inside every asset_ref, so the envelope
+    check alone is not sufficient.
+  mutations:
+    - file: schemas/transit/stop-arrived/examples/full.json
+      op: json_set
+      pointer: /data/asset_ref/tenant
+      value: '"mcr"'
+  expect: examples name the documentation tenant

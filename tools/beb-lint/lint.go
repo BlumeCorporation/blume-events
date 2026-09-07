@@ -31,6 +31,12 @@ const (
 	assetRefID   = commonPrefix + "asset_ref.json"
 	aggregateID  = commonPrefix + "aggregate.json"
 	geoID        = commonPrefix + "geo.json"
+
+	// documentationTenant is the only tenant an example may name. This
+	// repository is public, so a real tenant identifier in a committed example
+	// names a customer. Reserved the way RFC 5737 reserves address ranges for
+	// documentation.
+	documentationTenant = "xmpl"
 )
 
 // Finding is one rule violation. Rule is the stable identifier the table tests

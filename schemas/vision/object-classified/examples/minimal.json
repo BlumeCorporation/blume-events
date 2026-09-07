@@ -1,12 +1,12 @@
 {
   "specversion": "1.0",
   "id": "528H2XFEDB054MDK89YM5SWVY6",
-  "source": "//blume.systems/mcr/vision/camera/CAM-0742-03",
+  "source": "//blume.systems/xmpl/vision/camera/CAM-0742-03",
   "type": "systems.blume.vision.object-classified.v1",
   "time": "2026-09-07T14:02:11.000Z",
   "datacontenttype": "application/json",
   "dataschema": "https://schemas.blume.systems/vision/object-classified/1.0.0.json",
-  "blumetenant": "mcr",
+  "blumetenant": "xmpl",
   "blumeretention": "operational",
   "blumetrace": "00-504b60d3cc87b13f0d7dd1a495869983-979431848b1840dc-01",
   "blumeseq": 88413,
@@ -14,10 +14,10 @@
     "asset_ref": {
       "class": "camera",
       "id": "CAM-0742-03",
-      "tenant": "mcr"
+      "tenant": "xmpl"
     },
     "track_ref": {
-      "stream_id": "cam-mcr-0742-03",
+      "stream_id": "cam-xmpl-0742-03",
       "track_id": "9f2c1a7be4d05836",
       "window": "2026-09-07T14Z"
     },
@@ -25,7 +25,7 @@
     "classified_at": "2026-09-07T14:02:11.000Z",
     "provenance": {
       "producer": "mca-ingest/1.0.0",
-      "node": "site-mcr-north-02",
+      "node": "site-xmpl-north-02",
       "observed_at": "2026-09-07T14:02:11.417Z",
       "confidence": 0.94
     }

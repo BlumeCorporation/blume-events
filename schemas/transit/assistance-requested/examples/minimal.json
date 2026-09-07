@@ -1,12 +1,12 @@
 {
   "specversion": "1.0",
   "id": "0H10F7YCMH3Z8GMT9W1HA1BGPW",
-  "source": "//blume.systems/mcr/transit/vehicle/BUS-4471",
+  "source": "//blume.systems/xmpl/transit/vehicle/BUS-4471",
   "type": "systems.blume.transit.assistance-requested.v1",
   "time": "2026-09-07T13:55:00.000Z",
   "datacontenttype": "application/json",
   "dataschema": "https://schemas.blume.systems/transit/assistance-requested/1.0.0.json",
-  "blumetenant": "mcr",
+  "blumetenant": "xmpl",
   "blumeretention": "operational",
   "blumetrace": "00-a62a0b950e32a9c381f289af87b2fb7d-385d7a961e6c48eb-01",
   "blumeseq": 59090,
@@ -18,13 +18,13 @@
     "stop_ref": {
       "class": "stop",
       "id": "S-00912",
-      "tenant": "mcr"
+      "tenant": "xmpl"
     },
     "assistance_type": "ramp",
     "requested_at": "2026-09-07T13:55:00.000Z",
     "provenance": {
       "producer": "transit-core/1.0.0",
-      "node": "core-mcr-01",
+      "node": "core-xmpl-01",
       "observed_at": "2026-09-07T13:55:00.260Z"
     }
   }

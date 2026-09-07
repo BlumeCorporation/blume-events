@@ -1,13 +1,13 @@
 {
   "specversion": "1.0",
   "id": "7R7B4PWXDNB4AB7JDXQSPSJSD5",
-  "source": "//blume.systems/mcr/vision/camera/CAM-0742-03",
+  "source": "//blume.systems/xmpl/vision/camera/CAM-0742-03",
   "type": "systems.blume.vision.footage-retention-applied.v1",
   "subject": "asset:camera:CAM-0742-03",
   "time": "2026-09-07T03:00:00.000Z",
   "datacontenttype": "application/json",
   "dataschema": "https://schemas.blume.systems/vision/footage-retention-applied/1.0.0.json",
-  "blumetenant": "mcr",
+  "blumetenant": "xmpl",
   "blumeretention": "audit",
   "blumetrace": "00-5db46f300d65c9d738e7fe6a2ec4e086-429412ec4c196b46-01",
   "blumeseq": 80512,
@@ -15,9 +15,9 @@
     "asset_ref": {
       "class": "camera",
       "id": "CAM-0742-03",
-      "tenant": "mcr"
+      "tenant": "xmpl"
     },
-    "stream_id": "cam-mcr-0742-03",
+    "stream_id": "cam-xmpl-0742-03",
     "policy_id": "P-STD-31D",
     "action": "purged",
     "window_start": "2026-08-07T00:00:00.000Z",
@@ -26,7 +26,7 @@
     "applied_at": "2026-09-07T03:00:00.000Z",
     "provenance": {
       "producer": "mca-ingest/1.0.0",
-      "node": "site-mcr-north-02",
+      "node": "site-xmpl-north-02",
       "observed_at": "2026-09-07T03:00:00.900Z",
       "method": "retention-sweep"
     }

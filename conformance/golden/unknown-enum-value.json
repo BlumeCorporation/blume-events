@@ -1,13 +1,13 @@
 {
   "specversion": "1.0",
   "id": "01K4ZQAR7M2D5X8V0BNT3JH6WY",
-  "source": "//blume.systems/mcr/traffic/controller/A41-0271",
+  "source": "//blume.systems/xmpl/traffic/controller/A41-0271",
   "type": "systems.blume.traffic.signal-plan-activated.v1",
   "subject": "asset:controller:A41-0271",
   "time": "2026-09-07T07:00:00.000Z",
   "datacontenttype": "application/json",
   "dataschema": "https://schemas.blume.systems/traffic/signal-plan-activated/1.1.0.json",
-  "blumetenant": "mcr",
+  "blumetenant": "xmpl",
   "blumeretention": "operational",
   "blumetrace": "00-47defb9eb2d4c42571f3a12600bd56c0-bc8cc98759afaa1a-01",
   "blumeseq": 88317,
@@ -15,7 +15,7 @@
     "asset_ref": {
       "class": "controller",
       "id": "A41-0271",
-      "tenant": "mcr"
+      "tenant": "xmpl"
     },
     "plan_id": "peak-am-v7",
     "previous_plan_id": "offpeak-v3",
@@ -23,7 +23,7 @@
     "effective_at": "2026-09-07T07:00:00.000Z",
     "provenance": {
       "producer": "signal-broker/1.0.0",
-      "node": "site-mcr-north-02",
+      "node": "site-xmpl-north-02",
       "observed_at": "2026-09-07T07:00:00.031Z",
       "method": "adaptive-selector"
     }

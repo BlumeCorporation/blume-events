@@ -1,13 +1,13 @@
 {
   "specversion": "1.0",
   "id": "7G88Y0SMGKDJNV5PTKZK2QENW4",
-  "source": "//blume.systems/mcr/identity/gateway/GW-MCR-ID-01",
+  "source": "//blume.systems/xmpl/identity/gateway/GW-XMPL-ID-01",
   "type": "systems.blume.identity.authentication-aggregated.v1",
-  "subject": "asset:gateway:GW-MCR-ID-01",
+  "subject": "asset:gateway:GW-XMPL-ID-01",
   "time": "2026-09-07T08:00:00.000Z",
   "datacontenttype": "application/json",
   "dataschema": "https://schemas.blume.systems/identity/authentication-aggregated/1.0.0.json",
-  "blumetenant": "mcr",
+  "blumetenant": "xmpl",
   "blumeretention": "audit",
   "blumetrace": "00-4721419435c0b59251387ab88cafa4c3-273a119149123726-01",
   "blumeseq": 59548,
@@ -22,7 +22,7 @@
     },
     "provenance": {
       "producer": "identity-gateway/1.0.0",
-      "node": "core-mcr-id-01",
+      "node": "core-xmpl-id-01",
       "observed_at": "2026-09-07T09:05:00.640Z",
       "method": "batch-rollup"
     }

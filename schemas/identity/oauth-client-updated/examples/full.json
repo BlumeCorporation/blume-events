@@ -1,13 +1,13 @@
 {
   "specversion": "1.0",
   "id": "5YATS5DJMBNG3HMG82FH6ASKST",
-  "source": "//blume.systems/mcr/identity/gateway/GW-MCR-ID-01",
+  "source": "//blume.systems/xmpl/identity/gateway/GW-XMPL-ID-01",
   "type": "systems.blume.identity.oauth-client-updated.v1",
-  "subject": "asset:gateway:GW-MCR-ID-01",
+  "subject": "asset:gateway:GW-XMPL-ID-01",
   "time": "2026-08-01T11:04:00.140Z",
   "datacontenttype": "application/json",
   "dataschema": "https://schemas.blume.systems/identity/oauth-client-updated/1.0.0.json",
-  "blumetenant": "mcr",
+  "blumetenant": "xmpl",
   "blumeretention": "audit",
   "blumetrace": "00-8c60bfc1da73db875d4d0ec57e70b7bb-75efbe8b760d7bc5-01",
   "blumeseq": 45494,
@@ -17,11 +17,11 @@
       "redirect_uris",
       "jwks"
     ],
-    "principal": "platform.mcr.gov",
+    "principal": "platform.xmpl.gov",
     "updated_at": "2026-08-01T11:04:00.000Z",
     "provenance": {
       "producer": "identity-gateway/1.0.0",
-      "node": "core-mcr-id-01",
+      "node": "core-xmpl-id-01",
       "observed_at": "2026-08-01T11:04:00.140Z",
       "method": "registration-console"
     }

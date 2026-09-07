@@ -1,13 +1,13 @@
 {
   "specversion": "1.0",
   "id": "2FVKEDHMEET26P6SRCGSEAWVVD",
-  "source": "//blume.systems/mcr/transit/stop/S-00912",
+  "source": "//blume.systems/xmpl/transit/stop/S-00912",
   "type": "systems.blume.transit.headway-deviated.v1",
   "subject": "asset:stop:S-00912",
   "time": "2026-09-07T14:04:00.000Z",
   "datacontenttype": "application/json",
   "dataschema": "https://schemas.blume.systems/transit/headway-deviated/1.0.0.json",
-  "blumetenant": "mcr",
+  "blumetenant": "xmpl",
   "blumeretention": "operational",
   "blumetrace": "00-fd968726b3155d1f9dfdf62bc7175bdb-a74e4f7ea5c4e1ec-01",
   "blumeseq": 79642,
@@ -16,7 +16,7 @@
     "stop_ref": {
       "class": "stop",
       "id": "S-00912",
-      "tenant": "mcr"
+      "tenant": "xmpl"
     },
     "direction": "bunching",
     "scheduled_headway_s": 600,
@@ -25,7 +25,7 @@
     "observed_at_stop": "2026-09-07T14:04:00.000Z",
     "provenance": {
       "producer": "transit-core/1.0.0",
-      "node": "core-mcr-01",
+      "node": "core-xmpl-01",
       "observed_at": "2026-09-07T14:04:00.180Z",
       "method": "headway-monitor"
     }

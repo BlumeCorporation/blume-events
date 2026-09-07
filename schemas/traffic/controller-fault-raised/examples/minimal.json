@@ -1,12 +1,12 @@
 {
   "specversion": "1.0",
   "id": "71HMTPH3FA50FX69YDX6D6Z3K2",
-  "source": "//blume.systems/mcr/traffic/controller/A41-0271",
+  "source": "//blume.systems/xmpl/traffic/controller/A41-0271",
   "type": "systems.blume.traffic.controller-fault-raised.v1",
   "time": "2026-09-07T09:41:03.000Z",
   "datacontenttype": "application/json",
   "dataschema": "https://schemas.blume.systems/traffic/controller-fault-raised/1.0.0.json",
-  "blumetenant": "mcr",
+  "blumetenant": "xmpl",
   "blumeretention": "operational",
   "blumetrace": "00-1d2355e623d1577ec27c112723418d49-97aa6da5503c3fcd-01",
   "blumeseq": 50924,
@@ -14,7 +14,7 @@
     "asset_ref": {
       "class": "controller",
       "id": "A41-0271",
-      "tenant": "mcr"
+      "tenant": "xmpl"
     },
     "fault_code": "F-217",
     "fault_class": "lamp",
@@ -22,7 +22,7 @@
     "first_seen_at": "2026-09-07T09:41:03.000Z",
     "provenance": {
       "producer": "signal-broker/1.0.0",
-      "node": "site-mcr-north-02",
+      "node": "site-xmpl-north-02",
       "observed_at": "2026-09-07T09:41:03.660Z"
     }
   }

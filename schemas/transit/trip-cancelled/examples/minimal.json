@@ -1,12 +1,12 @@
 {
   "specversion": "1.0",
   "id": "4S338C74JAX0AS9QQY6V6SJDHV",
-  "source": "//blume.systems/mcr/transit/vehicle/BUS-4471",
+  "source": "//blume.systems/xmpl/transit/vehicle/BUS-4471",
   "type": "systems.blume.transit.trip-cancelled.v1",
   "time": "2026-09-07T14:10:00.000Z",
   "datacontenttype": "application/json",
   "dataschema": "https://schemas.blume.systems/transit/trip-cancelled/1.0.0.json",
-  "blumetenant": "mcr",
+  "blumetenant": "xmpl",
   "blumeretention": "operational",
   "blumetrace": "00-e6825d400b7876231814198c10e74b4e-48a7ebdc756bc584-01",
   "blumeseq": 67456,
@@ -17,7 +17,7 @@
     "cancelled_at": "2026-09-07T14:10:00.000Z",
     "provenance": {
       "producer": "transit-core/1.0.0",
-      "node": "core-mcr-01",
+      "node": "core-xmpl-01",
       "observed_at": "2026-09-07T14:10:00.500Z"
     }
   }

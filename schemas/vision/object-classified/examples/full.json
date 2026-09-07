@@ -1,13 +1,13 @@
 {
   "specversion": "1.0",
   "id": "6JV7YRQAKD529SBVW3JV6WSQDC",
-  "source": "//blume.systems/mcr/vision/camera/CAM-0742-03",
+  "source": "//blume.systems/xmpl/vision/camera/CAM-0742-03",
   "type": "systems.blume.vision.object-classified.v1",
   "subject": "asset:camera:CAM-0742-03",
   "time": "2026-09-07T14:02:11.000Z",
   "datacontenttype": "application/json",
   "dataschema": "https://schemas.blume.systems/vision/object-classified/1.0.0.json",
-  "blumetenant": "mcr",
+  "blumetenant": "xmpl",
   "blumeretention": "operational",
   "blumetrace": "00-22846b907644f28fde3b7096f76bee5a-ea6f3560e9217d0d-01",
   "blumeseq": 22675,
@@ -15,10 +15,10 @@
     "asset_ref": {
       "class": "camera",
       "id": "CAM-0742-03",
-      "tenant": "mcr"
+      "tenant": "xmpl"
     },
     "track_ref": {
-      "stream_id": "cam-mcr-0742-03",
+      "stream_id": "cam-xmpl-0742-03",
       "track_id": "9f2c1a7be4d05836",
       "window": "2026-09-07T14Z"
     },
@@ -27,7 +27,7 @@
     "classified_at": "2026-09-07T14:02:11.000Z",
     "provenance": {
       "producer": "mca-ingest/1.0.0",
-      "node": "site-mcr-north-02",
+      "node": "site-xmpl-north-02",
       "observed_at": "2026-09-07T14:02:11.912Z",
       "confidence": 0.94,
       "method": "onvif-analytics"

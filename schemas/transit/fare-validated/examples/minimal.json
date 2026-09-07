@@ -1,12 +1,12 @@
 {
   "specversion": "1.0",
   "id": "285D8XXP3ZTR7E8WX8NE0ZV9KW",
-  "source": "//blume.systems/mcr/transit/vehicle/BUS-4471",
+  "source": "//blume.systems/xmpl/transit/vehicle/BUS-4471",
   "type": "systems.blume.transit.fare-validated.v1",
   "time": "2026-09-07T14:03:20.000Z",
   "datacontenttype": "application/json",
   "dataschema": "https://schemas.blume.systems/transit/fare-validated/1.0.0.json",
-  "blumetenant": "mcr",
+  "blumetenant": "xmpl",
   "blumeretention": "operational",
   "blumetrace": "00-f0069174ed6f0c97f61ef3c669bd90c9-362edb1c51813fd6-01",
   "blumeseq": 70993,
@@ -20,7 +20,7 @@
     "validated_at": "2026-09-07T14:03:20.000Z",
     "provenance": {
       "producer": "transit-core/1.0.0",
-      "node": "site-mcr-depot-01",
+      "node": "site-xmpl-depot-01",
       "observed_at": "2026-09-07T14:03:20.410Z"
     }
   }

@@ -1,12 +1,12 @@
 {
   "specversion": "1.0",
   "id": "4XW30GF4588WVEWGW833A2C1B3",
-  "source": "//blume.systems/mcr/telemetry/substation/SS-MCR-0742",
+  "source": "//blume.systems/xmpl/telemetry/substation/SS-XMPL-0742",
   "type": "systems.blume.telemetry.outage-declared.v1",
   "time": "2026-09-07T13:58:44.000Z",
   "datacontenttype": "application/json",
   "dataschema": "https://schemas.blume.systems/telemetry/outage-declared/1.0.0.json",
-  "blumetenant": "mcr",
+  "blumetenant": "xmpl",
   "blumeretention": "operational",
   "blumetrace": "00-87d620cb8277666f6f84edb4ed4dfb06-60d201e2be250622-01",
   "blumeseq": 33991,
@@ -16,19 +16,19 @@
     "cause": "fault",
     "asset_ref": {
       "class": "substation",
-      "id": "SS-MCR-0742",
-      "tenant": "mcr"
+      "id": "SS-XMPL-0742",
+      "tenant": "xmpl"
     },
     "affected_cells": [
-      "MCR-0742-19",
-      "MCR-0742-20",
-      "MCR-0743-01"
+      "XMPL-0742-19",
+      "XMPL-0742-20",
+      "XMPL-0743-01"
     ],
     "estimated_customers": 1840,
     "started_at": "2026-09-07T13:58:44.000Z",
     "provenance": {
       "producer": "utility-telemetry/1.0.0",
-      "node": "core-mcr-01",
+      "node": "core-xmpl-01",
       "observed_at": "2026-09-07T13:58:47.212Z",
       "method": "scada-alarm"
     }

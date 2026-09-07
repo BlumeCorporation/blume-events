@@ -1,20 +1,20 @@
 {
   "specversion": "1.0",
   "id": "3VMS0GBKTHM3VR3TQ1R1CW5Q0R",
-  "source": "//blume.systems/mcr/transit/gateway/GW-MCR-TRANSIT-01",
+  "source": "//blume.systems/xmpl/transit/gateway/GW-XMPL-TRANSIT-01",
   "type": "systems.blume.transit.od-flow-aggregated.v1",
   "time": "2026-09-07T08:00:00.000Z",
   "datacontenttype": "application/json",
   "dataschema": "https://schemas.blume.systems/transit/od-flow-aggregated/1.0.0.json",
-  "blumetenant": "mcr",
+  "blumetenant": "xmpl",
   "blumeretention": "analytical",
   "blumetrace": "00-9827b77515c1f42ad7ebffd50ad489ff-4b625f32ca1a57c7-01",
   "blumeseq": 20686,
   "data": {
-    "origin_cell": "MCR-0742-19",
-    "destination_cell": "MCR-0755-04",
+    "origin_cell": "XMPL-0742-19",
+    "destination_cell": "XMPL-0755-04",
     "aggregate": {
-      "aggregate_id": "od-MCR-0742-19-MCR-0755-04",
+      "aggregate_id": "od-XMPL-0742-19-XMPL-0755-04",
       "window": "2026-09-07T08Z",
       "revision": 0
     },
@@ -23,7 +23,7 @@
     "mode": "bus",
     "provenance": {
       "producer": "transit-core/1.0.0",
-      "node": "core-mcr-01",
+      "node": "core-xmpl-01",
       "observed_at": "2026-09-07T09:05:00.771Z",
       "method": "batch-rollup"
     }

@@ -31,10 +31,13 @@ erode by accident.
    envelopes**, not bare payloads — the retention class lives on the envelope and
    the lint rules check it there. The minimal one carries required members only;
    `beb-lint` verifies that dropping any of them breaks validation.
-3. Add a `catalog.yaml` entry. `subject_linked` and `inferred` are checked
+3. Use the documentation tenant `xmpl` in both examples, never a real one. This
+   repository is public; `beb-lint` enforces the tenant token, but node names and
+   grid cells are free-form and still need a human eye.
+4. Add a `catalog.yaml` entry. `subject_linked` and `inferred` are checked
    against the schema, not taken on trust, so getting them wrong is a build error
    rather than a documentation defect.
-4. Run `go run ./tools/beb-lint -root .` and `go test ./tools/beb-lint/`.
+5. Run `go run ./tools/beb-lint -root .` and `go test ./tools/beb-lint/`.
 
 ## Changing an event
 
