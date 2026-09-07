@@ -88,6 +88,9 @@ go run ./tools/beb-lint -root .    # check the tree
 go test ./tools/beb-lint/          # the rules, each with a passing and a failing case
 ```
 
+The module path is `github.com/BlumeCorporation/blume-events`; it must match the
+repository location or `go get` cannot resolve it.
+
 Every rule has a fixture in `tools/beb-lint/testdata/cases.yaml` that mutates the
 real tree and names the rule that must fire. Adding a rule without adding its
 failing case is how a rule silently stops working.
@@ -96,3 +99,15 @@ Structural rules run against the version `catalog.yaml` names. Superseded
 versions must still parse and resolve — a `dataschema` URI that resolved once
 resolves forever — but a rule tightened today does not retroactively fail a
 schema that was correct when it shipped.
+
+## Licence
+
+Apache License 2.0 — see [`LICENSE`](LICENSE).
+
+Copyright 2026 Blume.
+
+The licence covers the schemas, the catalogue, the specification and the tools
+alike. `SPEC.md` is the interoperability contract: implementing it, in any
+language, is the point of publishing it. The Apache patent grant is why this
+licence rather than a permissive one without it — an interoperability spec that
+five systems pin is exactly the case where an implementer wants that assurance.

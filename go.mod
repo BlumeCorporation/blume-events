@@ -1,4 +1,4 @@
-module github.com/blume-systems/blume-events
+module github.com/BlumeCorporation/blume-events
 
 go 1.23
 

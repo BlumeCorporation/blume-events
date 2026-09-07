@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: Apache-2.0
 """Bulk authoring aid for the M1 schema corpus.
 
 Emits schemas/<domain>/<name>/<version>.json, both envelope examples, and

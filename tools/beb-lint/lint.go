@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+
 // Package main implements beb-lint, the schema compatibility gate.
 //
 // This file holds the structural rules: every schema parses and resolves, every
